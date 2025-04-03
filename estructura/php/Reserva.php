@@ -1,4 +1,5 @@
 <?php
+include('conex.php');
 class Reserva {
     private $conexion;
     private $id;
@@ -10,7 +11,7 @@ class Reserva {
     
     // Constructor
     public function __construct($id = null, $evento = '', $fecha = '', $horaInicio = '', $horaFin = '', $zona = '') {
-        $this->conexion = new Conexion(); 
+        // $this->conexion = new Conexion(); 
         $this->id = $id;
         $this->evento = $evento;
         $this->fecha = $fecha;

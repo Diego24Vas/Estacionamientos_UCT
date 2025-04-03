@@ -1,30 +1,21 @@
 <?php
+include('Reserva.php');
 include('conex.php');
 
-$data = json_decode(file_get_contents("php://input"), true);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id = intval($_POST['id']);
+    $evento = trim($_POST['evento']);
+    $fecha = $_POST['fecha'];
+    $horaInicio = $_POST['hora_inicio'];
+    $horaFin = $_POST['hora_fin'];
+    $zona = trim($_POST['zona']); 
 
-if (isset($data['id']) && !empty($data['id'])) {
-    $id = intval($data['id']);
-    $evento = trim($data['evento']);
-    $fecha = $data['fecha'];
-    $horaInicio = $data['horaInicio'];
-    $horaFin = $data['horaFin'];
-    $zona = trim($data['zona']);
-
-    // Actualizar la reserva en la base de datos
-    $query = $conexion->prepare("UPDATE INFO1170_Reservas SET evento = ?, fecha = ?, hora_inicio = ?, hora_fin = ?, zona = ? WHERE id = ?");
-    $query->bind_param("sssssi", $evento, $fecha, $horaInicio, $horaFin, $zona, $id);
-
-    if ($query->execute()) {
-        echo json_encode(["status" => "success", "message" => "Reserva actualizada exitosamente."]);
+    // Crear objeto de la reserva para actualizar
+    $reserva = new Reserva($id, $evento, $fecha, $horaInicio, $horaFin, $zona);
+    if ($reserva->actualizarReserva()) {
+        echo "<script>alert('Reserva actualizada exitosamente.'); window.location.href = 'reservas.php';</script>";
     } else {
-        echo json_encode(["status" => "error", "message" => "Error al actualizar la reserva."]);
+        echo "<script>alert('Error al actualizar la reserva.'); window.history.back();</script>";
     }
-
-    $query->close();
-} else {
-    echo json_encode(["status" => "error", "message" => "ID de reserva no especificado o inválido."]);
 }
-
-$conexion->close();
 ?>
