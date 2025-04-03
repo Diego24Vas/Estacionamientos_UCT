@@ -1,0 +1,202 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    padding: 20px;
+}
+
+/* Contenedor del dashboard */
+.dashboard {
+    display: flex;
+    gap: 20px;
+}
+
+.dashboard-card, 
+.table-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+/* Resumen general */
+.resumen-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.resumen-container .resumen-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s ease;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.resumen-container .resumen-card:hover {
+    transform: translateY(-5px);
+}
+
+.resumen-container .card-icon {
+    font-size: 40px;
+    color: #0366d6;
+}
+
+.resumen-container .card-icon.available {
+    color: #28a745; /* Verde para disponibles */
+}
+
+.resumen-container .card-icon.occupied {
+    color: #dc3545; /* Rojo para ocupados */
+}
+
+.resumen-container .card-content {
+    text-align: left;
+    flex-grow: 1;
+}
+
+.resumen-container .card-content h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.resumen-container .card-content .number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0366d6;
+}
+
+/* Gráfico */
+.dashboard-card {
+    text-align: center;
+}
+
+/* Historial */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.table th, 
+.table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.table th {
+    background-color: #0366d6;
+    color: white;
+}
+
+/* Botones */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    background-color: #0366d6;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: #0249a0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .dashboard {
+        flex-direction: column;
+    }
+}
+
+
+
+/* Sidebar-------ESTILOS DE CABECERA------- */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #0366d6;
+    color: white;
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar-logo {
+    width: 150px;
+    margin: 0 auto;
+}
+
+.sidebar-header h2 {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin: 20px 0;
+    text-align: left;
+}
+
+.sidebar-menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s ease;
+}
+
+.sidebar-menu a:hover {
+    background-color: #0249a0;
+    color: #fff;
+}
+
+.menu-icon {
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 250px; /* Same width as the sidebar */
+    padding: 20px;
+    background: linear-gradient(to bottom, #93ceef, #c8d5e2);
+    min-height: 100vh;
+}
+
+/* Header dentro del contenido */
+.main-content header {
+    margin-bottom: 20px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

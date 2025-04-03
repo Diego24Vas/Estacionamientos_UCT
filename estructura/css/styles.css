@@ -1,0 +1,386 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.intro {
+    margin-top: 120px;
+    padding: 40px;
+}
+
+/*
+.intro h3, .intro p, .cta, .btn, table, th, td, form, .modal, .modal-content, header, nav, .acciones {
+    /* Añade estilos similares a los proporcionados anteriormente 
+}
+*/
+
+
+/* Contenedor para los gráficos */
+.chart-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+/* Tamaño aumentado para los gráficos circulares */
+.chart-container {
+    width: 200px; /* Aumentado desde 150px */
+    height: 200px; /* Aumentado desde 150px */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.intro p {
+    font-size: 18px;
+    color: #fff;
+}
+
+/* Botón de llamada a la acción */
+.cta {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #ff6600;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.cta:hover {
+    background-color: #e65c00;
+}
+
+/* Estilo para tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 16px;
+}
+
+th {
+    background-color: #343a40;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #e9ecef;
+    cursor: pointer;
+}
+
+.acciones .btn {
+    background-color: #007bff; /* Azul claro */
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    width: 10em;
+    border-radius: 1rem;
+    color: white;
+    box-shadow: 0 0.4rem rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    text-align: center; /* Asegura que el texto esté centrado */
+    display: inline-block; /* Asegura que los enlaces se comporten como botones */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Transiciones suaves */
+}
+
+.acciones .btn:active {
+    color: white;
+    box-shadow: 0 0.2rem rgba(0, 0, 0, 0.1);
+    transform: translateY(0.2rem);
+}
+
+.acciones .btn:hover:not(:disabled) {
+    background-color: #0056b3; /* Azul más oscuro */
+    color: white;
+    text-shadow: 0 0.1rem rgba(0, 0, 0, 0.1);
+}
+
+.acciones .btn:disabled {
+    cursor: auto;
+    background-color: #cccccc; /* Gris claro */
+    color: grey;
+}
+
+/* Botones adicionales */
+.btn-warning {
+    background-color: #ffc107;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Estilo para formularios */
+form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+form label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+    color: #343a40;
+    font-size: 14px;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="number"],
+form input[type="password"],
+form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="number"]:focus,
+form input[type="password"]:focus,
+form select:focus {
+    border-color: #0056b3;
+    outline: none;
+}
+
+/* Botones de formulario */
+form button,
+form input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover,
+form input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Estilo para el modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+}
+
+/* Botón de cierre del modal */
+.close {
+    color: #999;
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal-content h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #333;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-content button {
+    width: 100%;
+    background-color: #0066cc;
+    color: white;
+    padding: 12px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.modal-content button:hover {
+    background-color: #005bb5;
+}
+
+header {
+    background-color: #333;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.auth-buttons button {
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.auth-buttons button:hover {
+    background-color: #005bb5;
+}
+
+/* Menú desplegable */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;    margin-top: 20px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.acciones {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.text-center {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.acciones {
+    margin-bottom: 40px; 
+}
+
+table {
+    width: calc(100% - 40px); /* Ajusta el ancho para considerar los márgenes */
+    border-collapse: collapse;
+    margin: 20px 20px 20px 20px; /* Añade margen a todos los lados */
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+

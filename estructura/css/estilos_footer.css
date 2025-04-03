@@ -1,0 +1,215 @@
+/* Columan Redes Sociales */
+/* Primera Columna   */
+
+.content {
+    flex: 1;
+}
+footer {
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px 0;
+    margin-top: 20px; /* Ajusta el valor según sea necesario */
+    border-radius: 10px; /* Ajusta el valor según sea necesario */
+}
+footer p {
+    margin: 0;
+}
+footer a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+footer a:hover {
+    text-decoration: underline;
+}
+.footer {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+.footer-column {
+    flex: 1;
+    padding: 10px;
+}
+.footer-column h3 {
+    margin-top: 0;
+}
+.footer-column a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    margin: 5px 0;
+}
+.footer-column a:hover {
+    text-decoration: underline;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.social-icons img {
+    width: 24px;
+    height: 24px;
+}
+
+
+/* Columna contactos */
+/* Segunda Columna   */
+.contactos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.contactos a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+}
+.contactos img {
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+}
+
+
+/*Tercera columna */ 
+/* Columna información */
+/* Tercera Columna   */
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.info a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+}
+.info img {
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+}
+
+
+
+/* Logo imagen */
+/* Cuarta Columna   */
+.ing-logo img {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+    margin-left: -60px;
+}
+
+
+
+
+/* DErechos reservados */
+.derechos-reservados {
+    text-align: center;
+    padding: 20px ; /* Aumenta el padding para bajar el texto */
+    background-color: #007bff;
+    color: #fff;
+    font-size: 0,9em;
+}
+
+
+
+/* html Terminos y condiciones */
+
+.parrafos {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 800px;
+    background-color: #ffffff;
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.parrafos h1 {
+    text-align: center;
+    color: #0056b3;
+    margin-top: 20px;
+    font-size: 2.5em;
+}
+
+.parrafos h2 {
+    color: #0056b3;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+.parrafos p {
+    margin: 10px 0;
+}
+
+.parrafos ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.parrafos ul li {
+    margin: 5px 0;
+}
+
+.contactos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.contactos a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Cambia el color de fondo del encabezado de la tabla */
+.table .thead-dark th {
+    background-color: #4681ef; /* Cambia este color al que desees */
+    color: rgb(0, 0, 0); /* Cambia el color del texto */
+}
+
+/* Estilo general para la tabla */
+.table {
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    border-collapse: collapse; /* Elimina los espacios entre bordes */
+}
+
+/* Estilo para las filas alternadas */
+.table tbody tr:nth-child(odd) {
+    background-color: #a8dce4; /* Color para las filas impares */
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #a5e6e0; /* Color para las filas pares */
+}
+
+/* Estilo para las celdas */
+.table th, .table td {
+    padding: 10px 15px; /* Espaciado interno */
+    text-align: center; /* Centrado del texto */
+    border: 1px solid #000000; /* Borde suave */
+}
+
+/* Estilo para el encabezado */
+.table thead th {
+    font-weight: bold; /* Texto en negrita */
+    text-transform: uppercase; /* Texto en mayúsculas */
+}
+
+/* Estilo para los botones */
+.table .btn {
+    font-size: 0.9rem;
+    margin: 2px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
