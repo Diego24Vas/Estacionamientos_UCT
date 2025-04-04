@@ -1,25 +1,23 @@
 <?php
-include('conex.php');
+include('classReserva.php');
+include('conex.php'); // Asegúrate de tener la conexión a la base de datos disponible
 
-// Verifica si se proporciona un ID en la solicitud
-if (isset($_GET['id'])) {
-    $id = intval($_GET['id']); // Sanitiza el ID recibido
-    $query = $conexion->prepare("SELECT id, evento, fecha, hora_inicio, hora_fin, zona FROM INFO1170_Reservas WHERE id = ?");
-    $query->bind_param("i", $id); // Vincula el ID a la consulta
-    $query->execute();
-    $result = $query->get_result();
+// Crear una instancia de la clase Reserva
+$reserva = new Reserva();
+$reserva->id = $_GET['id'];  // Suponiendo que el ID de la reserva se pasa por GET
 
-    // Verifica si se encontró una reserva
-    if ($result->num_rows > 0) {
-        $reserva = $result->fetch_assoc(); // Obtiene la reserva como un arreglo asociativo
-        echo json_encode($reserva); // Devuelve los datos en formato JSON
-    } else {
-        echo json_encode(["error" => "Reserva no encontrada"]); // Mensaje de error si no se encuentra la reserva
-    }
+// Obtener la conexión
+$conexion = new Conexion();
+$conexion = $conexion->getConexion();
 
-    $query->close();
-    $conexion->close();
-} else {
-    echo json_encode(["error" => "ID no especificado"]); // Mensaje de error si no se proporciona un ID
-}
+// Llamar al método para obtener la reserva por ID
+$reserva_data = $reserva->obtenerReservaPorId($conexion);
+
+// // Mostrar la información de la reserva
+// echo "Evento: " . $reserva_data['evento'] . "<br>";
+// echo "Fecha: " . $reserva_data['fecha'] . "<br>";
+// echo "Hora de Inicio: " . $reserva_data['hora_inicio'] . "<br>";
+// echo "Hora de Fin: " . $reserva_data['hora_fin'] . "<br>";
+// echo "Zona: " . $reserva_data['zona'] . "<br>";
 ?>
+

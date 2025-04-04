@@ -1,21 +1,24 @@
 <?php
-include('Reserva.php');
-include('conex.php');
+include('../classReserva.php');
+include('conex.php'); // Asegúrate de tener la conexión a la base de datos disponible
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id = intval($_POST['id']);
-    $evento = trim($_POST['evento']);
-    $fecha = $_POST['fecha'];
-    $horaInicio = $_POST['hora_inicio'];
-    $horaFin = $_POST['hora_fin'];
-    $zona = trim($_POST['zona']); 
+// Crear una instancia de la clase Reserva
+$reserva = new Reserva();
+$reserva->id = $_POST['id']; // Suponiendo que el ID de la reserva se pasa por POST
 
-    // Crear objeto de la reserva para actualizar
-    $reserva = new Reserva($id, $evento, $fecha, $horaInicio, $horaFin, $zona);
-    if ($reserva->actualizarReserva()) {
-        echo "<script>alert('Reserva actualizada exitosamente.'); window.location.href = 'reservas.php';</script>";
-    } else {
-        echo "<script>alert('Error al actualizar la reserva.'); window.history.back();</script>";
-    }
-}
+// Obtener la conexión
+$conexion = new Conexion();
+$conexion = $conexion->getConexion();
+
+// Pasar los nuevos datos recibidos en el formulario
+$reserva->evento = $_POST['evento'];
+$reserva->fecha = $_POST['fecha'];
+$reserva->horaInicio = $_POST['horaInicio'];
+$reserva->horaFin = $_POST['horaFin'];
+$reserva->zona = $_POST['zona'];
+
+// Llamar al método para actualizar la reserva
+$reserva->actualizarReserva($conexion);
+
+echo "Reserva actualizada correctamente.";
 ?>

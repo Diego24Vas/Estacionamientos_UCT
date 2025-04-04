@@ -1,25 +1,23 @@
 <?php
-include('Reserva.php');
-include('conex.php');
+include('../classReserva.php');
+include('conex.php'); // Asegúrate de tener la conexión a la base de datos disponible
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $evento = trim($_POST['evento']);
-    $fecha = $_POST['fecha'];
-    $horaInicio = $_POST['hora_inicio'];
-    $horaFin = $_POST['hora_fin'];
-    $zona = trim($_POST['zona']); 
+// Crear una instancia de la clase Reserva
+$reserva = new Reserva();
 
-    // Verificar si la reserva ya existe
-    $reserva = new Reserva(null, $evento, $fecha, $horaInicio, $horaFin, $zona);
-    if ($reserva->validarReserva()) {
-        echo "<script>alert('La zona ya está reservada para esa fecha y hora.'); window.history.back();</script>";
-    } else {
-        // Crear la nueva reserva
-        if ($reserva->crearReserva()) {
-            echo "<script>alert('Reserva creada exitosamente.'); window.location.href = 'reservas.php';</script>";
-        } else {
-            echo "<script>alert('Error al crear la reserva.'); window.history.back();</script>";
-        }
-    }
-}
+// Obtener la conexión
+$conexion = new Conexion();
+$conexion = $conexion->getConexion();
+
+// Pasar los datos recibidos en el formulario
+$reserva->evento = $_POST['evento'];
+$reserva->fecha = $_POST['fecha'];
+$reserva->horaInicio = $_POST['horaInicio'];
+$reserva->horaFin = $_POST['horaFin'];
+$reserva->zona = $_POST['zona'];
+
+// Llamar al método para crear una reserva
+$reserva->crearReserva($conexion);
+
+echo "Reserva creada correctamente.";
 ?>

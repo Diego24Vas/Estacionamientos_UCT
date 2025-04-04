@@ -1,5 +1,6 @@
 <?php
 include('conex.php'); // Conexión a la base de datos
+include('../classReserva.php'); // Clase Reserva
 
 if (isset($_GET['zone'])) {
     $zone = $_GET['zone'];
