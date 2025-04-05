@@ -59,7 +59,7 @@ class Usuario {
         $stmt = $this->conexion->prepare("SELECT contraseña FROM INFO1170_RegistroUsuarios WHERE nombre = ?");
         if ($stmt === false) {
             return ["status" => "error", "message" => "Error en la preparación de la consulta: " . $this->conexion->error];
-        }
+        }        
 
         $stmt->bind_param("s", $username);
         $stmt->execute();
