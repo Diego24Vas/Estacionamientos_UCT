@@ -1,5 +1,5 @@
 <?php
-include('../classReserva.php');
+include('../NuevaEstructura/classReserva.php');
 include('conex.php'); // Asegúrate de tener la conexión a la base de datos disponible
 
 // Crear una instancia de la clase Reserva
