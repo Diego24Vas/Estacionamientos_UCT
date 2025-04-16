@@ -1,5 +1,5 @@
 <?php
-include('../classReserva.php');
+include('../NuevaEstructura/classReserva.php');
 include('conex.php'); 
 
 
