@@ -1,8 +1,9 @@
 <?php 
 require_once dirname(__DIR__) . '/config/config.php';
 include(VIEWS_PATH . '/components/cabecera.php');
+?>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="../css/estilos_footer.css">
+<link rel="stylesheet" href="<?php echo CSS_PATH; ?>/estilos_footer.css">
 <h2 class="text-center my-4">Historial de Vehículos</h2>
 <div class="container">
     <table class="table table-striped">
@@ -17,7 +18,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
         </thead>
         <tbody>
             <?php
-            include('conex.php'); 
+            require_once MODELS_PATH . '/conex.php'; 
 
             // Paginación
             $limit = 10; // Número de registros por página

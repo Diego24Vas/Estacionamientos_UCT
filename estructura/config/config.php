@@ -8,6 +8,11 @@ define('SERVICES_PATH', ROOT_PATH . '/services');
 define('CONFIG_PATH', ROOT_PATH . '/config');
 define('HELPERS_PATH', ROOT_PATH . '/helpers');
 
+// Rutas para recursos estáticos
+define('CSS_PATH', VIEWS_PATH . '/css');
+define('JS_PATH', VIEWS_PATH . '/js');
+define('IMAGES_PATH', VIEWS_PATH . '/images');
+
 // Función para cargar clases automáticamente
 spl_autoload_register(function ($class_name) {
     $paths = [

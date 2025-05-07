@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
 require_once MODELS_PATH . '/classReserva.php';
-include('conex.php'); // Asegúrate de tener la conexión a la base de datos disponible
+require_once CONFIG_PATH . '/conex.php'; // Corregido para usar la ruta correcta
 
 // Clase observadora para notificaciones por correo
 class EmailNotifier implements ReservaObserver {
@@ -37,7 +37,10 @@ try {
         'fecha' => $_POST['fecha'],
         'horaInicio' => $_POST['horaInicio'],
         'horaFin' => $_POST['horaFin'],
-        'zona' => $_POST['zona']
+        'zona' => $_POST['zona'],
+        'tipoVehiculo' => $_POST['tipoVehiculo'],
+        'usuarioId' => $_SESSION['usuario_id'] ?? null,
+        'capacidadMaxima' => $_POST['capacidadMaxima'] ?? 1
     ];
     
     // Crear la reserva usando el Factory

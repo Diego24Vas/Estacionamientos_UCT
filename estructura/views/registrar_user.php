@@ -3,8 +3,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include('conex.php');
-include('../NuevaEstructura/classUser.php');
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/conex.php';
+require_once MODELS_PATH . '/classUser.php';
 
 header('Content-Type: application/json');
 

@@ -5,8 +5,7 @@ error_reporting(E_ALL);
 
 require_once dirname(__DIR__) . '/config/config.php';
 require_once MODELS_PATH . '/classUser.php';
-
-include('conex.php');
+require_once CONFIG_PATH . '/conex.php';
 
 header('Content-Type: application/json');
 

@@ -1,5 +1,6 @@
 <?php
-include('conex.php');
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/conex.php';
 
 // Máximo de ocupación diaria: Día con mayor ocupación (basado en entradas)
 $query_max_ocupacion = "

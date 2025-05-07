@@ -1,21 +1,24 @@
+<?php
+require_once dirname(__DIR__) . '/config/config.php';
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recuperar Contraseña</title>
-  <link rel="stylesheet" href="../estructura/css/estilo_inicio.css"> <!-- Usamos el mismo archivo CSS -->
+  <link rel="stylesheet" href="<?php echo CSS_PATH; ?>/estilo_inicio.css">
   <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js' type="module"></script>
   <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js' type="module"></script>
 </head>
 <body>
   <header>
-    <img src="../estructura/img/logo.png" alt="IUCT Logo">
+    <img src="<?php echo ROOT_PATH; ?>/img/logo.png" alt="IUCT Logo">
   </header>
   <section>
     <div class="form-box">
       <div class="form-value">
-        <form method="POST" id="recoveryForm"> <!-- Formulario de recuperación -->
+        <form method="POST" id="recoveryForm">
           <h2>Recuperar Contraseña</h2>
           <div class="inputbox">
               <ion-icon name="mail-outline"></ion-icon>
@@ -24,12 +27,12 @@
           </div>
           <button type="submit">Recuperar Contraseña</button>
           <div class="register">
-            <p>¿Ya tienes una cuenta? <a href="../estructura/inicio.php">Inicia Sesión aquí</a></p>
+            <p>¿Ya tienes una cuenta? <a href="<?php echo VIEWS_PATH; ?>/inicio.php">Inicia Sesión aquí</a></p>
           </div>
         </form>
       </div>
     </div>
   </section>
-  <script src="../estructura/js/Inicio-Register.js"></script> <!-- Validación común -->
+  <script src="<?php echo JS_PATH; ?>/Inicio-Register.js"></script>
 </body>
 </html>

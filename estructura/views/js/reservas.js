@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     cargarEventos();
+    cargarZonas();
     verificarProximosEventos(); // Verificar eventos al cargar la página
 });
 
@@ -19,7 +20,8 @@ function cargarEventos() {
                             <strong>Evento:</strong> ${evento.evento}<br>
                             <strong>Fecha:</strong> ${evento.fecha}<br>
                             <strong>Hora:</strong> ${evento.hora_inicio} - ${evento.hora_fin}<br>
-                            <strong>Zona de Estacionamiento:</strong> ${evento.zona}<br>
+                            <strong>Zona:</strong> ${evento.zona}<br>
+                            <strong>Tipo de Vehículo:</strong> ${evento.tipo_vehiculo}<br>
                         </div>
                         <div>
                             <button class="btn btn-warning btn-sm" onclick="editarReserva(${evento.id})">Editar</button>
@@ -46,6 +48,7 @@ function editarReserva(id) {
                 document.getElementById('editarHoraInicio').value = data.hora_inicio || '';
                 document.getElementById('editarHoraFin').value = data.hora_fin || '';
                 document.getElementById('editarZona').value = data.zona || '';
+                document.getElementById('editarTipoVehiculo').value = data.tipo_vehiculo || '';
 
                 const modal = new bootstrap.Modal(document.getElementById('editarReservaModal'));
                 modal.show();
@@ -86,22 +89,31 @@ document.getElementById('editarReservaForm').addEventListener('submit', function
     const horaInicio = document.getElementById('editarHoraInicio').value;
     const horaFin = document.getElementById('editarHoraFin').value;
     const zona = document.getElementById('editarZona').value;
+    const tipoVehiculo = document.getElementById('editarTipoVehiculo').value;
 
     fetch('procesar_edicion_reserva.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, evento, fecha, horaInicio, horaFin, zona })
-    })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            if (data.status === "success") {
-                cargarEventos(); // Actualiza la lista de eventos
-                const modal = bootstrap.Modal.getInstance(document.getElementById('editarReservaModal'));
-                modal.hide();
-            }
+        body: JSON.stringify({ 
+            id, 
+            evento, 
+            fecha, 
+            horaInicio, 
+            horaFin, 
+            zona,
+            tipoVehiculo
         })
-        .catch(error => console.error('Error al actualizar la reserva:', error));
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        if (data.status === "success") {
+            cargarEventos();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editarReservaModal'));
+            modal.hide();
+        }
+    })
+    .catch(error => console.error('Error al actualizar la reserva:', error));
 });
 
 // NUEVO: Verificar eventos próximos
@@ -131,4 +143,22 @@ function alertarEventoProximo(evento) {
     `;
     const container = document.querySelector('.container');
     container.prepend(alertaDiv); // Inserta la alerta al inicio del contenedor
+}
+
+// Función para cargar las zonas disponibles
+function cargarZonas() {
+    fetch('get_parking_spaces.php')
+        .then(response => response.json())
+        .then(data => {
+            const zonaSelect = document.getElementById('zona');
+            zonaSelect.innerHTML = '<option value="">Seleccione una zona</option>';
+            
+            data.forEach(zona => {
+                const option = document.createElement('option');
+                option.value = zona.id;
+                option.textContent = `${zona.nombre} (${zona.tipos_vehiculos_permitidos})`;
+                zonaSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error al cargar las zonas:', error));
 }

@@ -1,5 +1,5 @@
 <?php
-include('conex.php'); // Conexión a la base de datos
+require_once MODELS_PATH . '/conex.php'; // Conexión a la base de datos
 
 $query_reserved_spaces = "SELECT * FROM INFO1170_Estacionamiento WHERE Estado = 'Reservado' AND TIMESTAMPDIFF(HOUR, fecha_reserva, NOW()) >= 24";
 $result_reserved_spaces = $conexion->query($query_reserved_spaces);

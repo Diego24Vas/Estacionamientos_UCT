@@ -1,5 +1,7 @@
 <?php
-include('conex.php'); // Conexión a la base de datos
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/classVehiculo.php';
+require_once CONFIG_PATH . '/conex.php';; // Conexión a la base de datos
 
 $alert_message = null;
 $alert_type = '';

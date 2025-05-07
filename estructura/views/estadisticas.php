@@ -1,5 +1,5 @@
-<?php include('cabecera.php'); ?>
-<?php include('logica_estadisticas.php'); ?>
+<?php include(VIEWS_PATH . '/components/cabecera.php'); ?>
+<?php include(SERVICES_PATH . '/logica_estadisticas.php'); ?>
 
 <!DOCTYPE html>
 <html lang="es">

@@ -1,5 +1,7 @@
 <?php
-include('conex.php'); // Archivo de conexión a la base de datos
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/classUser.php';
+require_once CONFIG_PATH . '/conex.php';
 
 $token = $_POST['token'];
 $nueva_contraseña = password_hash($_POST['nueva_contraseña'], PASSWORD_BCRYPT);

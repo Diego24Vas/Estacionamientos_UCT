@@ -1,5 +1,5 @@
 <?php
-include('cabecera.php');
+include(VIEWS_PATH . '/components/cabecera.php');
 session_start();
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: index.php');

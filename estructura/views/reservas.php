@@ -1,5 +1,5 @@
 <?php
-include('cabecera.php');
+include(VIEWS_PATH . '/components/cabecera.php');
 ?>
 
 <!DOCTYPE html>
@@ -42,9 +42,23 @@ include('cabecera.php');
                         <input type="text" id="patente" name="patente" class="form-control" placeholder="Ejemplo: ABCD12" required>
                     </div>
                     <div class="mb-3">
-                        <label for="zona" class="form-label">Zona de Estacionamiento</label>
-                        <input type="text" id="zona" name="zona" class="form-control" placeholder="Ejemplo: A1" required>
+                        <label for="tipoVehiculo" class="form-label">Tipo de Vehículo</label>
+                        <select id="tipoVehiculo" name="tipoVehiculo" class="form-control" required>
+                            <option value="">Seleccione un tipo</option>
+                            <option value="automovil">Automóvil</option>
+                            <option value="camioneta">Camioneta</option>
+                            <option value="bus">Bus</option>
+                            <option value="moto">Motocicleta</option>
+                        </select>
                     </div>
+                    <div class="mb-3">
+                        <label for="zona" class="form-label">Zona de Estacionamiento</label>
+                        <select id="zona" name="zona" class="form-control" required>
+                            <option value="">Seleccione una zona</option>
+                            <!-- Las opciones se cargarán dinámicamente -->
+                        </select>
+                    </div>
+                    <input type="hidden" name="capacidadMaxima" value="1">
                     <button type="submit" class="btn btn-primary w-100">Reservar</button>
                 </form>
             </div>
@@ -100,7 +114,20 @@ include('cabecera.php');
                     </div>
                     <div class="mb-3">
                         <label for="editarZona" class="form-label">Zona de Estacionamiento</label>
-                        <input type="text" id="editarZona" class="form-control" required>
+                        <select id="editarZona" class="form-control" required>
+                            <option value="">Seleccione una zona</option>
+                            <!-- Las opciones se cargarán dinámicamente -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editarTipoVehiculo" class="form-label">Tipo de Vehículo</label>
+                        <select id="editarTipoVehiculo" class="form-control" required>
+                            <option value="">Seleccione un tipo</option>
+                            <option value="automovil">Automóvil</option>
+                            <option value="camioneta">Camioneta</option>
+                            <option value="bus">Bus</option>
+                            <option value="moto">Motocicleta</option>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
                 </form>

@@ -23,13 +23,19 @@ if (file_exists($controllerFile)) {
             $controllerInstance->$action();
         } else {
             // Acción no encontrada
-            header('Location: ' . VIEWS_PATH . '/error.php');
+            $_SESSION['error'] = 'La acción solicitada no existe';
+            header('Location: /error.php');
+            exit();
         }
     } else {
         // Controlador no encontrado
-        header('Location: ' . VIEWS_PATH . '/error.php');
+        $_SESSION['error'] = 'El controlador solicitado no existe';
+        header('Location: /error.php');
+        exit();
     }
 } else {
     // Archivo de controlador no encontrado
-    header('Location: ' . VIEWS_PATH . '/error.php');
+    $_SESSION['error'] = 'El archivo del controlador no existe';
+    header('Location: /error.php');
+    exit();
 } 

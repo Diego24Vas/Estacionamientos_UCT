@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
 require_once MODELS_PATH . '/classReserva.php';
-include('conex.php'); // Conexión a la base de datos
+require_once MODELS_PATH . '/conex.php'; // Conexión a la base de datos
 
 if (isset($_GET['zone'])) {
     $zone = $_GET['zone'];

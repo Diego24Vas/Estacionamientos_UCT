@@ -2,17 +2,45 @@
 require_once dirname(__DIR__) . '/config/config.php';
 require_once MODELS_PATH . '/classReserva.php';
 
+// Clase observadora para notificaciones por correo
+class EmailNotifier implements ReservaObserver {
+    public function update($message) {
+        error_log("Notificación por correo: " . $message);
+    }
+}
+
+// Clase observadora para notificaciones en la interfaz
+class UINotifier implements ReservaObserver {
+    public function update($message) {
+        $_SESSION['notificacion'] = $message;
+    }
+}
+
+// Clase observadora para registro de auditoría
+class AuditNotifier implements ReservaObserver {
+    public function update($message) {
+        error_log("Auditoría: " . $message);
+    }
+}
+
 try {
+    // Obtener los datos del POST
+    $datos = json_decode(file_get_contents('php://input'), true);
+    
     // Usar el Factory Method para crear la reserva
     $factory = new ReservaFactoryImpl();
     $datosReserva = [
-        'id' => $_POST['id'],
-        'evento' => $_POST['evento'],
-        'fecha' => $_POST['fecha'],
-        'horaInicio' => $_POST['horaInicio'],
-        'horaFin' => $_POST['horaFin'],
-        'zona' => $_POST['zona']
+        'id' => $datos['id'],
+        'evento' => $datos['evento'],
+        'fecha' => $datos['fecha'],
+        'horaInicio' => $datos['horaInicio'],
+        'horaFin' => $datos['horaFin'],
+        'zona' => $datos['zona'],
+        'tipoVehiculo' => $datos['tipoVehiculo'],
+        'usuarioId' => $_SESSION['usuario_id'] ?? null,
+        'capacidadMaxima' => $datos['capacidadMaxima'] ?? 1
     ];
+    
     $reserva = $factory->crearReserva($datosReserva);
     
     // Agregar observadores

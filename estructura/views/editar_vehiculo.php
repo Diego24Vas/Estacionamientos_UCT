@@ -1,6 +1,7 @@
 <?php
-include('cabecera.php');
-include('conex.php');
+include(VIEWS_PATH . '/components/cabecera.php');
+require_once MODELS_PATH . '/conex.php';
+require_once __DIR__ . '/../config/config.php';
 
 // verifica si se pasa un id en la url
 if (isset($_GET['id'])) {

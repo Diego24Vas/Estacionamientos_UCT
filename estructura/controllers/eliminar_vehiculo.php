@@ -1,5 +1,7 @@
 <?php
-include('conex.php');
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/classVehiculo.php';
+require_once CONFIG_PATH . '/conex.php';
 
 // Verificar si se ha pasado el id del registro por GET
 if (isset($_GET['id'])) {

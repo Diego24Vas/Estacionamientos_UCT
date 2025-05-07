@@ -1,4 +1,4 @@
-<?php include('cabecera.php'); 
+<?php include(VIEWS_PATH . '/components/cabecera.php'); 
 ?>
 <link rel="stylesheet" href="../css/registro_vehiculos.css">
 

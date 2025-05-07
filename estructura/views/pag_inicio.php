@@ -3,7 +3,7 @@ require_once dirname(__DIR__) . '/config/config.php';
 include(VIEWS_PATH . '/components/cabecera.php'); 
 include(SERVICES_PATH . '/procesar_patente.php'); 
 include(SERVICES_PATH . '/logica_main.php'); 
-
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,8 +12,8 @@ include(SERVICES_PATH . '/logica_main.php');
     <title>Verificar Patente y Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="../css/stylesnew.css">
-    <script src="../js/alertas.js"></script>
+    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>/stylesnew.css">
+    <script src="<?php echo JS_PATH; ?>/alertas.js"></script>
     <style>
         .custom-alert {
             background-color: #e3f2fd;
@@ -60,7 +60,7 @@ include(SERVICES_PATH . '/logica_main.php');
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        fetch('recordatorios.php')
+        fetch('<?php echo VIEWS_PATH; ?>/recordatorios.php')
             .then(response => response.json())
             .then(data => {
                 if (data.message) {
@@ -72,11 +72,6 @@ include(SERVICES_PATH . '/logica_main.php');
             .catch(error => console.error('Error al obtener el mensaje de recordatorio:', error));
     });
 </script>
-    </script>
-
-
-
-
 
     <!-- Contenedor del formulario de patente -->
     <div class="container">
@@ -159,14 +154,10 @@ include(SERVICES_PATH . '/logica_main.php');
         </div>
     </div>
 
-
-
     <!-- Botón de acción -->
     <div class="actions">
-        <a href="registro_vehiculos.php" class="btn btn-primary">Registrar Vehículo</a>
+        <a href="<?php echo VIEWS_PATH; ?>/registro_vehiculos.php" class="btn btn-primary">Registrar Vehículo</a>
     </div>
-
-    
 
     <!-- Script para el gráfico -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -216,6 +207,5 @@ include(SERVICES_PATH . '/logica_main.php');
     <?php include(VIEWS_PATH . '/components/pie.php'); ?>
 </body>
 </html>
-
 
 <?php $conexion->close(); ?>

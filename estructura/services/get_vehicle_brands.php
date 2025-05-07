@@ -1,5 +1,6 @@
 <?php
-include('conex.php'); // Conexión a la base de datos
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/conex.php'; // Conexión a la base de datos
 
 header('Content-Type: application/json');
 

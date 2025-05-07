@@ -1,5 +1,7 @@
 <?php
-include('conex.php');
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/classReserva.php';
+require_once CONFIG_PATH . '/conex.php';
 
 // Obtener la fecha actual y calcular el rango (hoy + 1 y hoy + 2 días)
 $fecha_actual = date('Y-m-d');

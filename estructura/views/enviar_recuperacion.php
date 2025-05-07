@@ -1,5 +1,6 @@
 <?php
-include('conex.php');
+require_once MODELS_PATH . '/conex.php';
+require_once __DIR__ . '/../config/config.php';
 
 $email = $_POST['email'];
 

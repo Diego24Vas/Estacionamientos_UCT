@@ -3,11 +3,11 @@ require_once dirname(__DIR__) . '/config/config.php';
 session_start();
 
 if (!isset($_SESSION['usuario'])) {
-    header("Location: inicio.php");
+    header("Location: " . VIEWS_PATH . "/inicio.php");
     exit();
 }
 
-include('conex.php');
+require_once MODELS_PATH . '/conex.php';
 
 // Resumen de espacios
 $query_estacionamiento = "

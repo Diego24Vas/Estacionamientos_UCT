@@ -1,6 +1,6 @@
 <?php
-include('cabecera.php');
-include('conex.php'); // Asegúrate de que esto esté incluido para manejar la conexión
+include(VIEWS_PATH . '/components/cabecera.php');
+require_once MODELS_PATH . '/conex.php'; // Asegúrate de que esto esté incluido para manejar la conexión
 
 // Verificar si se presionó el botón de salida
 if (isset($_GET['exit_id'])) {

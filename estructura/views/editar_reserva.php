@@ -1,11 +1,10 @@
 <?php
-include('../NuevaEstructura/classReserva.php');
-include('conex.php'); 
-
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/classReserva.php';
+require_once MODELS_PATH . '/conex.php';
 
 $reserva = new Reserva();
 $reserva->id = $_GET['id'];  
-
 
 $conexion = new Conexion();
 $conexion = $conexion->getConexion();
@@ -28,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Editar Reserva</h2>
-    <form action="procesar_edicion_reserva.php" method="POST" class="p-4 bg-white shadow rounded">
+    <form action="<?php echo CONTROLLERS_PATH; ?>/procesar_edicion_reserva.php" method="POST" class="p-4 bg-white shadow rounded">
         <input type="hidden" name="id" value="<?= $reserva_data['id'] ?>">
         <div class="mb-3">
             <label for="evento" class="form-label">Nombre del Evento</label>

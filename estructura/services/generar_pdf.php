@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
 require_once ROOT_PATH . '/fpdf186/fpdf.php';
-require('conex.php');
+require_once MODELS_PATH . '/conex.php';
 
 // Obtener parámetros de filtro
 $filtro = isset($_GET['filtro']) ? $_GET['filtro'] : null;
@@ -30,7 +30,7 @@ class PDF extends FPDF
 {
     function Header()
     {
-        $this->Image('../img/images.png', 10, 8, 30);
+        $this->Image(ROOT_PATH . '/img/images.png', 10, 8, 30);
         $this->Ln(10);
         $this->SetFont('Arial', 'B', 16);
         $this->Cell(0, 10, 'Universidad Catolica de Temuco', 0, 1, 'C');
