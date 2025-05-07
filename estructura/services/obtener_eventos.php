@@ -1,19 +1,19 @@
 <?php
-include('conex.php');
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/classReserva.php';
 
-// Consulta para obtener los eventos reservados
-$query = "SELECT id, evento, fecha, hora_inicio, hora_fin, zona FROM INFO1170_Reservas ORDER BY fecha, hora_inicio";
-$result = $conexion->query($query);
-
-$eventos = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $eventos[] = $row;
-    }
+try {
+    // Usar el Factory Method para crear la reserva
+    $factory = new ReservaFactoryImpl();
+    $reserva = $factory->crearReserva([]);
+    
+    // Obtener todas las reservas usando la interfaz IReserva
+    $eventos = $reserva->obtenerTodasLasReservas();
+    
+    header('Content-Type: application/json');
+    echo json_encode($eventos);
+} catch (Exception $e) {
+    header('Content-Type: application/json');
+    echo json_encode(['error' => $e->getMessage()]);
 }
-
-header('Content-Type: application/json');
-echo json_encode($eventos);
-
-$conexion->close();
 ?>

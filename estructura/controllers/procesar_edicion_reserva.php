@@ -1,24 +1,32 @@
 <?php
-include('../NuevaEstructura/classReserva.php');
-include('conex.php'); // Asegúrate de tener la conexión a la base de datos disponible
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/classReserva.php';
 
-// Crear una instancia de la clase Reserva
-$reserva = new Reserva();
-$reserva->id = $_POST['id']; // Suponiendo que el ID de la reserva se pasa por POST
-
-// Obtener la conexión
-$conexion = new Conexion();
-$conexion = $conexion->getConexion();
-
-// Pasar los nuevos datos recibidos en el formulario
-$reserva->evento = $_POST['evento'];
-$reserva->fecha = $_POST['fecha'];
-$reserva->horaInicio = $_POST['horaInicio'];
-$reserva->horaFin = $_POST['horaFin'];
-$reserva->zona = $_POST['zona'];
-
-// Llamar al método para actualizar la reserva
-$reserva->actualizarReserva($conexion);
-
-echo "Reserva actualizada correctamente.";
+try {
+    // Usar el Factory Method para crear la reserva
+    $factory = new ReservaFactoryImpl();
+    $datosReserva = [
+        'id' => $_POST['id'],
+        'evento' => $_POST['evento'],
+        'fecha' => $_POST['fecha'],
+        'horaInicio' => $_POST['horaInicio'],
+        'horaFin' => $_POST['horaFin'],
+        'zona' => $_POST['zona']
+    ];
+    $reserva = $factory->crearReserva($datosReserva);
+    
+    // Agregar observadores
+    $reserva->attachObserver(new EmailNotifier());
+    $reserva->attachObserver(new UINotifier());
+    $reserva->attachObserver(new AuditNotifier());
+    
+    // Actualizar la reserva usando la interfaz IReserva
+    if ($reserva->actualizarReserva()) {
+        echo json_encode(['status' => 'success', 'message' => 'Reserva actualizada correctamente.']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Error al actualizar la reserva.']);
+    }
+} catch (Exception $e) {
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+}
 ?>
