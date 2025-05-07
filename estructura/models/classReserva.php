@@ -51,6 +51,148 @@ class ReservaSubject {
     }
 }
 
+// Clase para manejar las validaciones
+class ReservaValidator {
+    private $conexion;
+
+    public function __construct($conexion) {
+        $this->conexion = $conexion;
+    }
+
+    public function validarDatos($reserva) {
+        if (empty($reserva->getEvento()) || empty($reserva->getFecha()) || 
+            empty($reserva->getHoraInicio()) || empty($reserva->getHoraFin()) || 
+            empty($reserva->getZona()) || empty($reserva->getTipoVehiculo())) {
+            throw new Exception("Todos los campos son obligatorios");
+        }
+
+        if (!$this->validarFechaHora($reserva)) {
+            throw new Exception("La fecha y hora no son válidas");
+        }
+
+        if (!$this->validarFormatoFechaHora($reserva)) {
+            throw new Exception("El formato de fecha y hora no es válido");
+        }
+
+        if (!$this->validarTipoVehiculo($reserva)) {
+            throw new Exception("El tipo de vehículo no está permitido en esta zona");
+        }
+
+        if (!$this->validarCapacidad($reserva)) {
+            throw new Exception("La zona ha alcanzado su capacidad máxima");
+        }
+
+        if (!$this->validarPermisos($reserva)) {
+            throw new Exception("No tiene permisos para realizar esta reserva");
+        }
+
+        return true;
+    }
+
+    private function validarFechaHora($reserva) {
+        $fechaActual = new DateTime();
+        $fechaReserva = new DateTime($reserva->getFecha() . ' ' . $reserva->getHoraInicio());
+        
+        if ($fechaReserva < $fechaActual) {
+            return false;
+        }
+
+        $horaInicio = new DateTime($reserva->getHoraInicio());
+        $horaFin = new DateTime($reserva->getHoraFin());
+        
+        return $horaFin > $horaInicio;
+    }
+
+    private function validarFormatoFechaHora($reserva) {
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $reserva->getFecha())) {
+            return false;
+        }
+
+        if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $reserva->getHoraInicio()) ||
+            !preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $reserva->getHoraFin())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function validarTipoVehiculo($reserva) {
+        try {
+            $query = $this->conexion->prepare("
+                SELECT COUNT(*) as count 
+                FROM INFO1170_Zonas 
+                WHERE id = ? 
+                AND tipos_vehiculos_permitidos LIKE ?
+            ");
+            
+            $tipoVehiculoPattern = "%" . $reserva->getTipoVehiculo() . "%";
+            $query->bind_param("is", $reserva->getZona(), $tipoVehiculoPattern);
+            $query->execute();
+            $result = $query->get_result()->fetch_assoc();
+            
+            return $result['count'] > 0;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    private function validarCapacidad($reserva) {
+        try {
+            $query = $this->conexion->prepare("
+                SELECT COUNT(*) as reservas_actuales 
+                FROM INFO1170_Reservas 
+                WHERE zona = ? 
+                AND fecha = ? 
+                AND (
+                    (hora_inicio <= ? AND hora_fin > ?) OR
+                    (hora_inicio < ? AND hora_fin >= ?) OR
+                    (hora_inicio >= ? AND hora_fin <= ?)
+                )
+            ");
+            
+            $query->bind_param("sssssssss", 
+                $reserva->getZona(), 
+                $reserva->getFecha(), 
+                $reserva->getHoraInicio(), $reserva->getHoraInicio(),
+                $reserva->getHoraFin(), $reserva->getHoraFin(),
+                $reserva->getHoraInicio(), $reserva->getHoraFin()
+            );
+            
+            $query->execute();
+            $result = $query->get_result()->fetch_assoc();
+            
+            return $result['reservas_actuales'] < $reserva->getCapacidadMaxima();
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    private function validarPermisos($reserva) {
+        try {
+            $query = $this->conexion->prepare("
+                SELECT COUNT(*) as count 
+                FROM INFO1170_Usuarios 
+                WHERE id = ? 
+                AND estado = 'activo'
+                AND (
+                    SELECT COUNT(*) 
+                    FROM INFO1170_Reservas 
+                    WHERE usuario_id = ? 
+                    AND fecha = ?
+                ) < 3
+            ");
+            
+            $query->bind_param("iis", $reserva->getUsuarioId(), $reserva->getUsuarioId(), $reserva->getFecha());
+            $query->execute();
+            $result = $query->get_result()->fetch_assoc();
+            
+            return $result['count'] > 0;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+}
+
 class Reserva implements IReserva {
     private $id;
     private $evento;
@@ -60,10 +202,15 @@ class Reserva implements IReserva {
     private $zona;
     private $conexion;
     private $subject;
+    private $tipoVehiculo;
+    private $usuarioId;
+    private $capacidadMaxima;
+    private $validator;
 
     public function __construct($datos = []) {
         $this->conexion = new Conexion();
         $this->subject = new ReservaSubject();
+        $this->validator = new ReservaValidator($this->conexion);
         
         if (!empty($datos)) {
             $this->id = $datos['id'] ?? null;
@@ -72,6 +219,9 @@ class Reserva implements IReserva {
             $this->horaInicio = $datos['horaInicio'] ?? '';
             $this->horaFin = $datos['horaFin'] ?? '';
             $this->zona = $datos['zona'] ?? '';
+            $this->tipoVehiculo = $datos['tipoVehiculo'] ?? '';
+            $this->usuarioId = $datos['usuarioId'] ?? null;
+            $this->capacidadMaxima = $datos['capacidadMaxima'] ?? 1;
         }
     }
 
@@ -91,38 +241,28 @@ class Reserva implements IReserva {
     public function getHoraInicio() { return $this->horaInicio; }
     public function getHoraFin() { return $this->horaFin; }
     public function getZona() { return $this->zona; }
+    public function getTipoVehiculo() { return $this->tipoVehiculo; }
+    public function getUsuarioId() { return $this->usuarioId; }
+    public function getCapacidadMaxima() { return $this->capacidadMaxima; }
 
     public function setEvento($evento) { $this->evento = $evento; }
     public function setFecha($fecha) { $this->fecha = $fecha; }
     public function setHoraInicio($horaInicio) { $this->horaInicio = $horaInicio; }
     public function setHoraFin($horaFin) { $this->horaFin = $horaFin; }
     public function setZona($zona) { $this->zona = $zona; }
+    public function setTipoVehiculo($tipoVehiculo) { $this->tipoVehiculo = $tipoVehiculo; }
+    public function setUsuarioId($usuarioId) { $this->usuarioId = $usuarioId; }
+    public function setCapacidadMaxima($capacidadMaxima) { $this->capacidadMaxima = $capacidadMaxima; }
 
     // Método para validar datos
     private function validarDatos() {
-        if (empty($this->evento) || empty($this->fecha) || empty($this->horaInicio) || 
-            empty($this->horaFin) || empty($this->zona)) {
-            throw new Exception("Todos los campos son obligatorios");
+        try {
+            $this->validator->validarDatos($this);
+            return true;
+        } catch (Exception $e) {
+            $this->subject->notify("Error al validar datos: " . $e->getMessage());
+            throw $e;
         }
-
-        if (!$this->validarFechaHora()) {
-            throw new Exception("La fecha y hora no son válidas");
-        }
-    }
-
-    // Método para validar fecha y hora
-    private function validarFechaHora() {
-        $fechaActual = new DateTime();
-        $fechaReserva = new DateTime($this->fecha . ' ' . $this->horaInicio);
-        
-        if ($fechaReserva < $fechaActual) {
-            return false;
-        }
-
-        $horaInicio = new DateTime($this->horaInicio);
-        $horaFin = new DateTime($this->horaFin);
-        
-        return $horaFin > $horaInicio;
     }
 
     // Implementación de métodos de la interfaz
