@@ -37,4 +37,28 @@ class PDFGen extends FPDF {
         $this->Output();
     }
 }
+
+
+
+/*
+
+ejemplo de uso
+
+<?php
+require_once('models/PDFGen.php');  // Incluir la clase PDFGen
+
+// Crear una instancia de la clase PDFGen
+$pdf = new PDFGen();
+
+// Contenido del reporte
+$title = 'Reporte de Estacionamientos';
+$content = "Aquí va el contenido del reporte.\nPuedes agregar más detalles según sea necesario.";
+
+// Generar el PDF
+$pdf->generatePDF($title, $content);
+?>
+
+*/
+
+
 ?>
