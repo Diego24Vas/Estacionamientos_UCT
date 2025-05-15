@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const formData = new FormData(registerForm);
 
-            fetch('/controllers/registrar_user.php', {
+            fetch(`${BASE_URL}/controllers/registrar_user.php`, {
                 method: 'POST',
                 body: formData
             })
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert(data.message);
                 if (data.status === "success") {
                     registerForm.reset();
-                    window.location.href = '/views/inicio.php';
+                    window.location.href = `${BASE_URL}/estructura/views/inicio.php`;
                 }
             })
             .catch(error => {
@@ -36,14 +36,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const formData = new FormData(loginForm);
 
-            fetch('/controllers/procesar_inicio.php', {
+            fetch(`${BASE_URL}/controllers/procesar_inicio.php`, {
                 method: 'POST',
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
-                    window.location.href = '/views/pag_inicio.php';
+                    window.location.href = `${BASE_URL}/estructura/views/pag_inicio.php`;
                 } else {
                     alert(data.message || 'Usuario o contraseña incorrectos');
                 }
