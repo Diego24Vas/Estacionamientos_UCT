@@ -13,7 +13,7 @@ require_once dirname(__DIR__) . '/config/config.php';
 </head>
 <body>
   <header>
-    <img src="<?php echo ROOT_PATH; ?>/img/logo.png" alt="IUCT Logo">
+    <img src="<?php echo BASE_URL; ?>/estructura/img/logo.png" alt="IUCT Logo">
   </header>
   <section>
     <div class="form-box">
@@ -27,7 +27,7 @@ require_once dirname(__DIR__) . '/config/config.php';
           </div>
           <button type="submit">Recuperar Contraseña</button>
           <div class="register">
-            <p>¿Ya tienes una cuenta? <a href="<?php echo VIEWS_PATH; ?>/inicio.php">Inicia Sesión aquí</a></p>
+            <p>¿Ya tienes una cuenta? <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php">Inicia Sesión aquí</a></p>
           </div>
         </form>
       </div>

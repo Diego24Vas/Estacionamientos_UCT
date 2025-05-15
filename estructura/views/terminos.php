@@ -1,10 +1,14 @@
+<?php
+require_once dirname(__DIR__) . '/config/config.php';
+include(VIEWS_PATH . '/components/cabecera.php');
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Términos y Condiciones</title>
-    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>/estilos_footer.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/estilos_footer.css">
 </head>
 <body>
     <div class="parrafos">
@@ -58,8 +62,7 @@
     <div class="content">
         <!-- Contenido de la página -->
     </div>
+
+<?php include(VIEWS_PATH . '/components/pie.php'); ?>
 </body>
-
-<?php include('pie.php'); ?>
-
 </html>

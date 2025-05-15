@@ -1,6 +1,6 @@
 <?php
 // Incluir el archivo de FPDF
-require_once('../fpdf186/fpdf.php');  // Asegúrate de que la ruta sea correcta
+require_once dirname(__DIR__) . '/fpdf186/fpdf.php';  // Actualizado para usar ruta relativa
 
 class PDFGen extends FPDF {
 

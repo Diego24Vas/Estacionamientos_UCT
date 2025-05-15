@@ -7,7 +7,7 @@ require_once dirname(__DIR__) . '/config/config.php';
     <meta charset="UTF-8">
     <title>Registro - Sistema de Estacionamiento</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>/estilo_inicio.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/estilo_inicio.css">
     <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js' type="module"></script>
     <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js' type="module"></script>
 </head>
@@ -16,7 +16,7 @@ require_once dirname(__DIR__) . '/config/config.php';
         <section class="form-section">
             <div class="form-box">
                 <div class="form-value">
-                    <form method="POST" action="index.php?controller=usuario&action=registrar" id="registerForm">
+                    <form method="POST" action="<?php echo BASE_URL; ?>/estructura/controllers/usuario.php?action=registrar" id="registerForm">
                         <h2>Regí­strate</h2>
                         
                         <?php if (isset($_SESSION['error'])): ?>
@@ -63,6 +63,6 @@ require_once dirname(__DIR__) . '/config/config.php';
 
     <?php include VIEWS_PATH . '/components/pie.php'; ?>
     
-    <script src="<?php echo JS_PATH; ?>/Inicio-Register.js"></script>
+    <script src="<?php echo BASE_URL; ?>/estructura/views/js/Inicio-Register.js"></script>
 </body>
 </html>

@@ -28,7 +28,7 @@ function formatearFecha($fecha) {
  */
 function validarSesion() {
     if (!isset($_SESSION['user_id'])) {
-        redirect(VIEWS_PATH . '/inicio.php');
+        redirect(BASE_URL . '/estructura/views/inicio.php');
     }
 }
 

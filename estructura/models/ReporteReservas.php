@@ -1,6 +1,7 @@
 <?php
-require_once('PDFGen.php');  // Incluir la clase para generar PDFs
-require_once('conex.php');  // Asegúrate de incluir la conexión a la base de datos
+require_once dirname(__DIR__) . '/config/config.php';
+require_once dirname(__DIR__) . '/models/PDFGen.php';  // Actualizado para usar ruta relativa
+require_once dirname(__DIR__) . '/config/conex.php';  // Actualizado para usar ruta relativa
 
 class ReporteReservas {
 

@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__DIR__) . '/config/config.php';
 include(VIEWS_PATH . '/components/cabecera.php');
 require_once MODELS_PATH . '/conex.php'; // Asegúrate de que esto esté incluido para manejar la conexión
 
@@ -62,12 +63,12 @@ if (isset($_GET['exit_id'])) {
 }
 echo "<script>
     setTimeout(function() {
-        window.location.href = 'ver_registros_vehiculos.php';
-    }, 2000); // 2000 ms = 2 segundos
+        window.location.href = '" . BASE_URL . "/estructura/views/ver_registros_vehiculos.php';
+    }, 2000);
 </script>";
 
 // Mensaje adicional
 echo "<p>Redirigiendo a la página de registros en 2 segundos...</p>";
 
-include('pie.php');
+include(VIEWS_PATH . '/components/pie.php');
 ?>

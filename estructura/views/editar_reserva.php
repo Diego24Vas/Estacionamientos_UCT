@@ -2,6 +2,10 @@
 require_once dirname(__DIR__) . '/config/config.php';
 require_once MODELS_PATH . '/classReserva.php';
 require_once MODELS_PATH . '/conex.php';
+include(VIEWS_PATH . '/components/cabecera.php');
+?>
+
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/estilos_footer.css">
 
 $reserva = new Reserva();
 $reserva->id = $_GET['id'];  
@@ -27,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Editar Reserva</h2>
-    <form action="<?php echo CONTROLLERS_PATH; ?>/procesar_edicion_reserva.php" method="POST" class="p-4 bg-white shadow rounded">
+    <form action="<?php echo BASE_URL; ?>/estructura/controllers/procesar_edicion_reserva.php" method="POST" class="p-4 bg-white shadow rounded">
         <input type="hidden" name="id" value="<?= $reserva_data['id'] ?>">
         <div class="mb-3">
             <label for="evento" class="form-label">Nombre del Evento</label>
@@ -52,3 +56,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
     </form>
 </div>
+
+<?php include(VIEWS_PATH . '/components/pie.php'); ?>

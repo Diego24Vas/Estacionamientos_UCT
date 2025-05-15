@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $conexion->close();
 ?>
 
-<link rel="stylesheet" href="../css/estilos_footer.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/estilos_footer.css">
 <h2 class="text-center my-4">Editar Registro de Vehículo</h2>
 
 <div class="container">
@@ -74,4 +74,4 @@ $conexion->close();
     </form>
 </div>
 
-<?php include('pie.php'); ?>
+<?php include(BASE_URL . '/estructura/views/components/pie.php'); ?>

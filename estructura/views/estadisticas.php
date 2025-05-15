@@ -1,5 +1,7 @@
-<?php include(VIEWS_PATH . '/components/cabecera.php'); ?>
-<?php include(SERVICES_PATH . '/logica_estadisticas.php'); ?>
+<?php
+require_once dirname(__DIR__) . '/config/config.php';
+include(VIEWS_PATH . '/components/cabecera.php');
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -202,6 +204,7 @@
 
     </script>
 
-    <?php include('pie.php'); ?> <!-- Pie de página fuera del contenedor principal -->
+    <?php include(VIEWS_PATH . '/components/pie.php'); ?> <!-- Pie de página fuera del contenedor principal -->
 </body>
 </html>
+<

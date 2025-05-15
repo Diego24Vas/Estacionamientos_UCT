@@ -75,9 +75,9 @@ include(VIEWS_PATH . '/components/cabecera.php');
                         <td>{$row['patente']}</td>
                         <td>{$row['espacio_estacionamiento']}</td>
                         <td>
-                            <a class='btn btn-primary btn-sm' href='" . VIEWS_PATH . "/editar_vehiculo.php?id={$row['id']}'>Editar</a>
-                            <a class='btn btn-danger btn-sm' href='" . VIEWS_PATH . "/eliminar_vehiculo.php?id={$row['id']}'>Eliminar</a>
-                            <a class='btn btn-success btn-sm' href='" . VIEWS_PATH . "/salida_vehiculos.php?exit_id={$row['id']}'>Salida</a>
+                            <a class='btn btn-primary btn-sm' href='<?php echo BASE_URL; ?>/estructura/views/editar_vehiculo.php?id=<?php echo $row['id']; ?>'>Editar</a>
+                            <a class='btn btn-danger btn-sm' href='<?php echo BASE_URL; ?>/estructura/views/eliminar_vehiculo.php?id=<?php echo $row['id']; ?>'>Eliminar</a>
+                            <a class='btn btn-success btn-sm' href='<?php echo BASE_URL; ?>/estructura/views/salida_vehiculos.php?exit_id=<?php echo $row['id']; ?>'>Salida</a>
                         </td>
                     </tr>";
             }
@@ -89,7 +89,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
     </table>
 
     <!-- Botón para generar PDF -->
-    <form action="<?php echo VIEWS_PATH; ?>/generar_pdf.php" method="get">
+    <form action="<?php echo BASE_URL; ?>/estructura/views/generar_pdf.php" method="get">
         <input type="hidden" name="page" value="<?php echo isset($_GET['page']) ? $_GET['page'] : 1; ?>">
         <input type="hidden" name="filtro" value="<?php echo isset($_GET['filtro']) ? $_GET['filtro'] : ''; ?>">
         <input type="hidden" name="valor" value="<?php echo isset($_GET['valor']) ? $_GET['valor'] : ''; ?>">
@@ -106,7 +106,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
 
         // Generar los enlaces de paginación
         for ($i = 1; $i <= $total_pages; $i++) {
-            echo "<a href='" . VIEWS_PATH . "/ver_registros_vehiculos.php?page=$i' class='btn btn-link'>$i</a> ";
+            echo "<a href='" . BASE_URL . "/estructura/views/ver_registros_vehiculos.php?page=$i' class='btn btn-link'>$i</a> ";
         }
         ?>
     </div>
@@ -162,7 +162,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
                 
                 document.getElementById('aplicar-filtro').addEventListener('click', function () {
                     // Redirigir a la página original sin filtros
-                    window.location.href = '<?php echo VIEWS_PATH; ?>/ver_registros_vehiculos.php';
+                    window.location.href = '<?php echo BASE_URL; ?>/estructura/views/ver_registros_vehiculos.php';
                 });
 
                 return; // Salir del resto del código
@@ -187,7 +187,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
             document.getElementById('aplicar-filtro').addEventListener('click', function () {
                 const valor = document.getElementById('filtro-valor').value;
                 if (valor) {
-                    window.location.href = `<?php echo VIEWS_PATH; ?>/ver_registros_vehiculos.php?filtro=${filtro}&valor=${valor}`;
+                    window.location.href = `<?php echo BASE_URL; ?>/estructura/views/ver_registros_vehiculos.php?filtro=${filtro}&valor=${valor}`;
                 } else {
                     alert('Por favor, complete el campo para aplicar el filtro.');
                 }

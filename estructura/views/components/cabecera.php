@@ -52,42 +52,42 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="<?php echo ROOT_PATH; ?>/img/logo.png" alt="Logo Universidad" class="sidebar-logo">
+            <img src="<?php echo BASE_URL; ?>/estructura/img/logo.png" alt="Logo Universidad" class="sidebar-logo">
             <h2>Gestión Estacionamiento</h2>
         </div>
         <ul class="sidebar-menu">
             <li>
-                <a href="<?php echo VIEWS_PATH; ?>/pag_inicio.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/pag_inicio.php">
                     <i class="fas fa-home menu-icon"></i> Inicio
                 </a>
             </li>
             <li>
-                <a href="<?php echo VIEWS_PATH; ?>/registro_vehiculos.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/registro_vehiculos.php">
                     <i class="fas fa-car menu-icon"></i> Registro de Vehículos
                 </a>
             </li>
             <li>
-                <a href="<?php echo VIEWS_PATH; ?>/ver_registros_vehiculos.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/ver_registros_vehiculos.php">
                     <i class="fas fa-edit menu-icon"></i> Modificar Registros
                 </a>
             </li>
             <li>
-                <a href="<?php echo VIEWS_PATH; ?>/ver_historial_vehiculos.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/ver_historial_vehiculos.php">
                     <i class="fas fa-history menu-icon"></i> Ver Historial
                 </a>
             </li>
             <li>
-                <a href="<?php echo VIEWS_PATH; ?>/estadisticas.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/estadisticas.php">
                     <i class="fas fa-chart-bar menu-icon"></i> Estadísticas
                 </a>
             </li>
             <li>
-                <a href="<?php echo VIEWS_PATH; ?>/reservas.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/reservas.php">
                     <i class="fas fa-calendar-check menu-icon"></i> Reservas
                 </a>
             </li>
             <li>
-                <a href="<?php echo VIEWS_PATH; ?>/inicio.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php">
                     <i class="fas fa-sign-out-alt menu-icon"></i> Cerrar Sesión
                 </a>
             </li>

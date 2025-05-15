@@ -7,7 +7,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../css/estilo_reservas.css" rel="stylesheet">
+    <link href="<?php echo BASE_URL; ?>/estructura/views/css/estilo_reservas.css" rel="stylesheet">
     <title>Reservas</title>
 </head>
 <body>

@@ -1,5 +1,4 @@
-
-<link rel="stylesheet" href="../css/estilos_footer.css">
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/estilos_footer.css">
 
 
 
@@ -8,12 +7,12 @@
     <!-- Bootstrap JS desde CDN -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <!-- Archivo JavaScript de la lógica -->
-    <script src="../js/Inicio-Register.js"></script>
+    <script src="<?php echo BASE_URL; ?>/estructura/views/js/Inicio-Register.js"></script>
 </body>
     <!-- Bootstrap JS desde CDN -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
         <!-- Archivo JavaScript de la lógica -->
-    <script src="../js/Inicio-Register.js"></script>
+    <script src="<?php echo BASE_URL; ?>/estructura/views/js/Inicio-Register.js"></script>
 
     <footer>
         <!-- Primera Columna -->
@@ -23,10 +22,10 @@
             <div class="footer-column">
                 <h3>Redes Sociales</h3>
                 <div class="social-icons">
-                    <a href="https://www.instagram.com/uctemuco/"><img src="../img/footer/instagram.png" alt="Instagram"></a>
-                    <a href="https://www.facebook.com/canaluctemuco"><img src="../img/footer/facebook.png" alt="Facebook"></a>
-                    <a href="https://twitter.com/uctemuco"><img src="../img/footer/Twitter.png" alt="Twitter"></a>
-                    <a href="https://www.youtube.com/user/canaluctemuco"><img src="../img/footer/youtube.png" alt="Youtube"></a>
+                    <a href="https://www.instagram.com/uctemuco/"><img src="<?php echo BASE_URL; ?>/estructura/views/img/footer/instagram.png" alt="Instagram"></a>
+                    <a href="https://www.facebook.com/canaluctemuco"><img src="<?php echo BASE_URL; ?>/estructura/views/img/footer/facebook.png" alt="Facebook"></a>
+                    <a href="https://twitter.com/uctemuco"><img src="<?php echo BASE_URL; ?>/estructura/views/img/footer/Twitter.png" alt="Twitter"></a>
+                    <a href="https://www.youtube.com/user/canaluctemuco"><img src="<?php echo BASE_URL; ?>/estructura/views/img/footer/youtube.png" alt="Youtube"></a>
                 </div>
             </div>
 

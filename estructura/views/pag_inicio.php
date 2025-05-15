@@ -156,7 +156,7 @@ include(SERVICES_PATH . '/logica_main.php');
 
     <!-- Botón de acción -->
     <div class="actions">
-        <a href="<?php echo VIEWS_PATH; ?>/registro_vehiculos.php" class="btn btn-primary">Registrar Vehículo</a>
+        <a href="<?php echo BASE_URL; ?>/estructura/views/registro_vehiculos.php" class="btn btn-primary">Registrar Vehículo</a>
     </div>
 
     <!-- Script para el gráfico -->

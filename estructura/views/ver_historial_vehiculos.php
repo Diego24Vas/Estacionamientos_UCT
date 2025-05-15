@@ -65,7 +65,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
         $total_pages = ceil($total_rows / $limit);
 
         for ($i = 1; $i <= $total_pages; $i++) {
-            echo "<a href='ver_historial_vehiculos.php?page=$i'>$i</a> ";
+            echo "<a href='" . BASE_URL . "/estructura/views/ver_historial_vehiculos.php?page=$i'>$i</a> ";
         }
         ?>
     </div>

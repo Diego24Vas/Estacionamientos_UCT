@@ -17,7 +17,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Informe de Ocupación</title>
-        <link rel="stylesheet" href="../css/styles.css"> <!-- Estilo para la tabla -->
+        <link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/styles.css"> <!-- Estilo para la tabla -->
     </head>
     <body>
 

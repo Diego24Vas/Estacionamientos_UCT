@@ -13,7 +13,7 @@ require_once dirname(__DIR__) . '/config/config.php';
     <div class="error-container">
         <h1>Error</h1>
         <p>Lo sentimos, ha ocurrido un error al procesar su solicitud.</p>
-        <a href="<?php echo VIEWS_PATH; ?>/inicio.php" class="btn">Volver al inicio</a>
+        <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php" class="btn">Volver al inicio</a>
     </div>
 </body>
 </html> 
