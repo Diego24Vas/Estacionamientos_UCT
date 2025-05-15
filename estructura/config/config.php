@@ -9,8 +9,9 @@ define('CONFIG_PATH', ROOT_PATH . '/config');
 define('HELPERS_PATH', ROOT_PATH . '/helpers');
 
 // Rutas para recursos estáticos
-define('CSS_PATH', VIEWS_PATH . '/css');
-define('JS_PATH', VIEWS_PATH . '/js');
+define('BASE_URL', 'https://pillan.inf.uct.cl/~rpedraza/Estacionamientos_UCT');
+define('CSS_PATH', BASE_URL . '/estructura/views/css');
+define('JS_PATH', BASE_URL . '/estructura/views/js');
 define('IMAGES_PATH', VIEWS_PATH . '/images');
 
 // Función para cargar clases automáticamente
@@ -35,4 +36,4 @@ spl_autoload_register(function ($class_name) {
 require_once CONFIG_PATH . '/conex.php';
 
 // Incluir funciones de ayuda
-require_once HELPERS_PATH . '/functions.php'; 
+require_once HELPERS_PATH . '/functions.php';

@@ -1,6 +1,5 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
-require_once VIEWS_PATH . '/components/cabecera.php';
 ?>
 <!DOCTYPE html> 
 <html lang="es">
@@ -8,19 +7,17 @@ require_once VIEWS_PATH . '/components/cabecera.php';
     <meta charset="UTF-8">
     <title>Registro - Sistema de Estacionamiento</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>/registro.css">
+    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>/estilo_inicio.css">
     <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js' type="module"></script>
     <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js' type="module"></script>
 </head>
-<body>
-    <?php include VIEWS_PATH . '/components/cabecera.php'; ?>
-    
+<body>    
     <main class="container">
         <section class="form-section">
             <div class="form-box">
                 <div class="form-value">
                     <form method="POST" action="index.php?controller=usuario&action=registrar" id="registerForm">
-                        <h2>Regístrate</h2>
+                        <h2>Regí­strate</h2>
                         
                         <?php if (isset($_SESSION['error'])): ?>
                             <div class="alert alert-danger">
@@ -56,7 +53,7 @@ require_once VIEWS_PATH . '/components/cabecera.php';
                         <button type="submit" class="btn btn-primary">Registrarse</button>
                         
                         <div class="register">
-                            <p>¿Ya tienes una cuenta? <a href="index.php?controller=usuario&action=login">Inicia Sesión aquí</a></p>
+                            <p>¿Ya tienes una cuenta? <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php">Inicia Sesion Aqui</a></p>
                         </div>
                     </form>
                 </div>
