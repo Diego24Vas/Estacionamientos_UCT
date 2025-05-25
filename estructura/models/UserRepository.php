@@ -66,6 +66,129 @@ class UserRepository implements IUserRepository {
 
         return $exists;
     }
+
+    /**
+     * Obtener usuarios con paginación
+     */
+    public function findAllWithPagination(int $offset, int $limit): array {
+        $stmt = $this->conexion->prepare("SELECT id, nombre, email, fecha_registro FROM INFO1170_RegistroUsuarios ORDER BY id DESC LIMIT ? OFFSET ?");
+        if ($stmt === false) {
+            return [];
+        }
+
+        $stmt->bind_param("ii", $limit, $offset);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $users = [];
+        while ($row = $result->fetch_assoc()) {
+            $users[] = $row;
+        }
+        
+        $stmt->close();
+        return $users;
+    }
+
+    /**
+     * Obtener el total de usuarios
+     */
+    public function getTotalUsersCount(): int {
+        $stmt = $this->conexion->prepare("SELECT COUNT(*) as total FROM INFO1170_RegistroUsuarios");
+        if ($stmt === false) {
+            return 0;
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        
+        return (int) $row['total'];
+    }
+
+    /**
+     * Buscar usuarios con filtros y paginación
+     */
+    public function findUsersWithFilters(array $filters, int $offset, int $limit): array {
+        $whereClause = "WHERE 1=1";
+        $params = [];
+        $types = "";
+
+        if (!empty($filters['nombre'])) {
+            $whereClause .= " AND nombre LIKE ?";
+            $params[] = '%' . $filters['nombre'] . '%';
+            $types .= "s";
+        }
+
+        if (!empty($filters['email'])) {
+            $whereClause .= " AND email LIKE ?";
+            $params[] = '%' . $filters['email'] . '%';
+            $types .= "s";
+        }
+
+        $sql = "SELECT id, nombre, email, fecha_registro FROM INFO1170_RegistroUsuarios $whereClause ORDER BY id DESC LIMIT ? OFFSET ?";
+        $params[] = $limit;
+        $params[] = $offset;
+        $types .= "ii";
+
+        $stmt = $this->conexion->prepare($sql);
+        if ($stmt === false) {
+            return [];
+        }
+
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $users = [];
+        while ($row = $result->fetch_assoc()) {
+            $users[] = $row;
+        }
+        
+        $stmt->close();
+        return $users;
+    }
+
+    /**
+     * Obtener total de usuarios con filtros
+     */
+    public function getTotalUsersCountWithFilters(array $filters): int {
+        $whereClause = "WHERE 1=1";
+        $params = [];
+        $types = "";
+
+        if (!empty($filters['nombre'])) {
+            $whereClause .= " AND nombre LIKE ?";
+            $params[] = '%' . $filters['nombre'] . '%';
+            $types .= "s";
+        }
+
+        if (!empty($filters['email'])) {
+            $whereClause .= " AND email LIKE ?";
+            $params[] = '%' . $filters['email'] . '%';
+            $types .= "s";
+        }
+
+        $sql = "SELECT COUNT(*) as total FROM INFO1170_RegistroUsuarios $whereClause";
+        $stmt = $this->conexion->prepare($sql);
+        if ($stmt === false) {
+            return 0;
+        }
+
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        
+        return (int) $row['total'];
+    }
 }
 
 ?>
