@@ -8,7 +8,7 @@ require_once dirname(__DIR__) . '/controllers/UsuarioController.php';
 // Crear instancia del controlador
 $usuarioController = new UsuarioController();
 
-// Manejar la acción de registro
-$usuarioController->handleRequest('registro');
+// Manejar la acción de logout
+$usuarioController->handleRequest('logout');
 
 ?>
