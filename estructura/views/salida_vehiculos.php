@@ -1,7 +1,15 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
 include(VIEWS_PATH . '/components/cabecera.php');
-require_once MODELS_PATH . '/conex.php'; // Asegúrate de que esto esté incluido para manejar la conexión
+require_once MODELS_PATH . '/conex.php';
+require_once MODELS_PATH . '/class_espacioEStacionamiento.php';
+require_once MODELS_PATH . '/LogObserver.php';
+require_once MODELS_PATH . '/EstadisticasObserver.php';
+
+// Instanciar el gestor de espacios de estacionamiento con observers
+$espacioManager = new EspacioEstacionamiento($conexion);
+$espacioManager->agregarObserver(new LogObserver());
+$espacioManager->agregarObserver(new EstadisticasObserver());
 
 // Verificar si se presionó el botón de salida
 if (isset($_GET['exit_id'])) {
@@ -33,15 +41,9 @@ if (isset($_GET['exit_id'])) {
             // Registrar la salida en el historial
             $query_historial = "INSERT INTO INFO1170_HistorialRegistros (idVehiculo, fecha, accion) VALUES (?, NOW(), 'Salida')";
             $stmt_historial = $conexion->prepare($query_historial);
-            $stmt_historial->bind_param("i", $vehiculo_id);
-
-            if ($stmt_historial->execute()) {
-                // Actualizar el estado del espacio de estacionamiento a "Disponible"
-                $query_update = "UPDATE INFO1170_Estacionamiento SET Estado = 'Disponible' WHERE IdEstacionamiento = ?";
-                $stmt_update = $conexion->prepare($query_update);
-                $stmt_update->bind_param("s", $parking_space);
-
-                if ($stmt_update->execute()) {
+            $stmt_historial->bind_param("i", $vehiculo_id);            if ($stmt_historial->execute()) {
+                // Usar el gestor de espacios para liberar el espacio
+                if ($espacioManager->liberarEspacio($parking_space)) {
                     echo "<p style='color:green;'>Salida registrada correctamente y espacio actualizado.</p>";
                 } else {
                     echo "<p style='color:red;'>Error al actualizar el estado del espacio.</p>";
@@ -51,7 +53,6 @@ if (isset($_GET['exit_id'])) {
             }
 
             $stmt_historial->close();
-            $stmt_update->close();
         } else {
             echo "<p style='color:red;'>Vehículo no encontrado.</p>";
         }
