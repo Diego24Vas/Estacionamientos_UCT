@@ -16,7 +16,7 @@ require_once dirname(__DIR__) . '/config/config.php';
         <section class="form-section">
             <div class="form-box">
                 <div class="form-value">
-                    <form method="POST" action="<?php echo BASE_URL; ?>/estructura/controllers/usuario.php?action=registrar" id="registerForm">
+                    <form method="POST" action="" id="registerForm">
                         <h2>Regí­strate</h2>
                         
                         <?php if (isset($_SESSION['error'])): ?>
@@ -30,10 +30,10 @@ require_once dirname(__DIR__) . '/config/config.php';
 
                         <div class="inputbox">
                             <ion-icon name="person-outline"></ion-icon>
-                            <input type="text" name="username" required 
+                            <input type="text" name="nombre" required 
                                    pattern="[A-Za-z0-9_]{3,20}" 
                                    title="El nombre de usuario debe tener entre 3 y 20 caracteres alfanuméricos">
-                            <label for="username">Nombre Usuario</label>
+                            <label for="nombre">Nombre Usuario</label>
                         </div>
 
                         <div class="inputbox">
