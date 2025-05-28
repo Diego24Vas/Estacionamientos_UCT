@@ -138,9 +138,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <?php
+require_once dirname(__DIR__) . '/config/config.php';
+require_once MODELS_PATH . '/class_espacioEStacionamiento.php';
+require_once MODELS_PATH . '/LogObserver.php';
+require_once MODELS_PATH . '/EstadisticasObserver.php';
 include('conex.php'); // Conexión a la base de datos
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Crear instancia de EspacioEstacionamiento con observers
+    $espacioEstacionamiento = new EspacioEstacionamiento($conexion);
+    $logObserver = new LogObserver();
+    $estadisticasObserver = new EstadisticasObserver($conexion);
+    
+    $espacioEstacionamiento->agregarObserver($logObserver);
+    $espacioEstacionamiento->agregarObserver($estadisticasObserver);
+
     // Obtener los datos del formulario
     $owner_first_name = $_POST['owner_first_name'] ?? '';
     $owner_last_name = $_POST['owner_last_name'] ?? '';
@@ -152,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("<p style='color:red;'>Error: Todos los campos son obligatorios.</p>");
     }
 
-    // Consulta para insertar datos
+    // Consulta para insertar datos del vehículo
     $query_insertar = "INSERT INTO INFO1170_VehiculosRegistrados 
         (nombre, apellido, patente, espacio_estacionamiento) 
         VALUES (?, ?, ?, ?)";
@@ -163,31 +175,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->execute()) {
         echo "<p style='color:green;'>Vehículo registrado exitosamente.</p>";
 
-
         // Obtener el ID del vehículo insertado
         $vehiculo_id = $conexion->insert_id;
 
+        // Insertar en el historial
         $query_historial = "INSERT INTO INFO1170_HistorialRegistros (idVehiculo, fecha, accion) 
         VALUES (?, NOW(), 'Entrada')";
         $stmt_historial = $conexion->prepare($query_historial);
         $stmt_historial->bind_param("i", $vehiculo_id);
 
         if (!$stmt_historial->execute()) {
-        die("<p style='color:red;'>Error al insertar en el historial: " . $stmt_historial->error . "</p>");
+            die("<p style='color:red;'>Error al insertar en el historial: " . $stmt_historial->error . "</p>");
         }
 
-
-        // Actualizar el espacio de estacionamiento a 'Ocupado'
-        $query_actualizar_espacio = "UPDATE INFO1170_Estacionamiento SET Estado = 'Ocupado' WHERE IdEstacionamiento = ?";
-        $stmt_actualizar = $conexion->prepare($query_actualizar_espacio);
-        $stmt_actualizar->bind_param("s", $parking_space);
-
-        if ($stmt_actualizar->execute()) {
+        // Usar el método de la clase para ocupar el espacio (esto disparará las notificaciones del Observer)
+        if ($espacioEstacionamiento->ocuparEspacio($parking_space, $vehicle_plate)) {
             echo "<p>Espacio de estacionamiento actualizado correctamente.</p>";
         } else {
             echo "<p style='color:red;'>Error al actualizar el estado del espacio.</p>";
         }
-        $stmt_actualizar->close();
 
     } else {
         echo "<p style='color:red;'>Error al registrar el vehículo: " . $stmt->error . "</p>";

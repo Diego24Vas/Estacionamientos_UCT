@@ -1,7 +1,15 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
 require_once MODELS_PATH . '/classVehiculo.php';
+require_once MODELS_PATH . '/class_espacioEStacionamiento.php';
+require_once MODELS_PATH . '/LogObserver.php';
+require_once MODELS_PATH . '/EstadisticasObserver.php';
 require_once CONFIG_PATH . '/conex.php';; // Conexión a la base de datos
+
+// Instanciar el gestor de espacios de estacionamiento con observers
+$espacioManager = new EspacioEstacionamiento($conexion);
+$espacioManager->agregarObserver(new LogObserver());
+$espacioManager->agregarObserver(new EstadisticasObserver());
 
 $alert_message = null;
 $alert_type = '';
@@ -63,19 +71,11 @@ try {
             
                 if ($result_historial->num_rows > 0) {
                     $alert_message = "El vehículo con la patente <strong>$patente</strong> ya se encuentra dentro del estacionamiento.";
-                    $alert_type = "warning";
-                } else {
-                    $query_estacionamiento = "SELECT IdEstacionamiento FROM INFO1170_Estacionamiento WHERE Estado = 'Disponible' LIMIT 1";
-                    $result_estacionamiento = $conexion->query($query_estacionamiento);
+                    $alert_type = "warning";                } else {
+                    // Usar el gestor de espacios para encontrar un espacio disponible
+                    $espacio_estacionamiento = $espacioManager->obtenerPrimerEspacioDisponible();
             
-                    if (!$result_estacionamiento) {
-                        throw new Exception("Error en la consulta de espacios disponibles: " . $conexion->error);
-                    }
-            
-                    if ($result_estacionamiento->num_rows > 0) {
-                        $espacio = $result_estacionamiento->fetch_assoc();
-                        $espacio_estacionamiento = $espacio['IdEstacionamiento'];
-            
+                    if ($espacio_estacionamiento) {
                         $vehiculo = $result->fetch_assoc();
                         $query_insert_historial = "
                             INSERT INTO INFO1170_HistorialRegistros (IdVehiculo, accion, fecha) 
@@ -89,17 +89,13 @@ try {
                         $stmt_insert_historial->bind_param("i", $vehiculo['id']);
                         $stmt_insert_historial->execute();
             
-                        $query_update_estacionamiento = "UPDATE INFO1170_Estacionamiento SET Estado = 'Ocupado' WHERE IdEstacionamiento = ?";
-                        $stmt_update_estacionamiento = $conexion->prepare($query_update_estacionamiento);
-                        if (!$stmt_update_estacionamiento) {
-                            throw new Exception("Error en la preparación de la consulta de actualización de espacio: " . $conexion->error);
+                        // Usar el gestor de espacios para ocupar el espacio
+                        if ($espacioManager->ocuparEspacio($espacio_estacionamiento)) {
+                            $alert_message = "El vehículo con la patente <strong>$patente</strong> ha ingresado al estacionamiento en el espacio <strong>$espacio_estacionamiento</strong>.";
+                            $alert_type = "success";
+                        } else {
+                            throw new Exception("Error al actualizar el estado del espacio de estacionamiento");
                         }
-            
-                        $stmt_update_estacionamiento->bind_param("s", $espacio_estacionamiento);
-                        $stmt_update_estacionamiento->execute();
-            
-                        $alert_message = "El vehículo con la patente <strong>$patente</strong> ha ingresado al estacionamiento en el espacio <strong>$espacio_estacionamiento</strong>.";
-                        $alert_type = "success";
                     } else {
                         $alert_message = "No hay espacios disponibles en el estacionamiento.";
                         $alert_type = "warning";
