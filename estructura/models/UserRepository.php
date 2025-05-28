@@ -2,6 +2,113 @@
 
 require_once dirname(__DIR__) . '/interfaces/IUserRepository.php';
 
+// Patrón Decorator para UserRepository
+abstract class UserRepositoryDecorator implements IUserRepository {
+    protected $userRepository;
+    
+    public function __construct(IUserRepository $userRepository) {
+        $this->userRepository = $userRepository;
+    }
+    
+    public function findByUsername(string $username): ?array {
+        return $this->userRepository->findByUsername($username);
+    }
+    
+    public function findByEmail(string $email): ?array {
+        return $this->userRepository->findByEmail($email);
+    }
+    
+    public function create(string $nombre, string $email, string $hashedPassword): bool {
+        return $this->userRepository->create($nombre, $email, $hashedPassword);
+    }
+    
+    public function userExists(string $username, string $email): bool {
+        return $this->userRepository->userExists($username, $email);
+    }
+    
+    public function findAllWithPagination(int $offset, int $limit): array {
+        return $this->userRepository->findAllWithPagination($offset, $limit);
+    }
+    
+    public function getTotalUsersCount(): int {
+        return $this->userRepository->getTotalUsersCount();
+    }
+    
+    public function findUsersWithFilters(array $filters, int $offset, int $limit): array {
+        return $this->userRepository->findUsersWithFilters($filters, $offset, $limit);
+    }
+    
+    public function getTotalUsersCountWithFilters(array $filters): int {
+        return $this->userRepository->getTotalUsersCountWithFilters($filters);
+    }
+}
+
+// Decorator para logging
+class LoggingUserRepositoryDecorator extends UserRepositoryDecorator {
+    public function findByUsername(string $username): ?array {
+        error_log("REPOSITORY: Buscando usuario por nombre: " . $username);
+        $result = parent::findByUsername($username);
+        error_log("REPOSITORY: Usuario encontrado: " . ($result ? 'Sí' : 'No'));
+        return $result;
+    }
+    
+    public function create(string $nombre, string $email, string $hashedPassword): bool {
+        error_log("REPOSITORY: Creando usuario: " . $nombre . " (" . $email . ")");
+        $result = parent::create($nombre, $email, $hashedPassword);
+        error_log("REPOSITORY: Usuario creado: " . ($result ? 'Exitoso' : 'Fallido'));
+        return $result;
+    }
+}
+
+// Decorator para caché
+class CachingUserRepositoryDecorator extends UserRepositoryDecorator {
+    private $cache = [];
+    private $cacheTimeout = 300; // 5 minutos
+    
+    public function findByUsername(string $username): ?array {
+        $cacheKey = "user_by_username_" . md5($username);
+        
+        if (isset($this->cache[$cacheKey]) && 
+            (time() - $this->cache[$cacheKey]['timestamp']) < $this->cacheTimeout) {
+            error_log("CACHE: Usuario obtenido del caché: " . $username);
+            return $this->cache[$cacheKey]['data'];
+        }
+        
+        $result = parent::findByUsername($username);
+        
+        if ($result) {
+            $this->cache[$cacheKey] = [
+                'data' => $result,
+                'timestamp' => time()
+            ];
+            error_log("CACHE: Usuario guardado en caché: " . $username);
+        }
+        
+        return $result;
+    }
+    
+    public function create(string $nombre, string $email, string $hashedPassword): bool {
+        $result = parent::create($nombre, $email, $hashedPassword);
+        
+        // Limpiar caché relacionado cuando se crea un usuario
+        if ($result) {
+            $this->clearUserCache($nombre, $email);
+        }
+        
+        return $result;
+    }
+    
+    private function clearUserCache(string $username, string $email): void {
+        $usernameKey = "user_by_username_" . md5($username);
+        $emailKey = "user_by_email_" . md5($email);
+        
+        unset($this->cache[$usernameKey]);
+        unset($this->cache[$emailKey]);
+        
+        error_log("CACHE: Caché limpiado para usuario: " . $username);
+    }
+}
+
 class UserRepository implements IUserRepository {
     private $conexion;
 
