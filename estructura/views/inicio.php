@@ -1,6 +1,5 @@
 <?php 
 require_once dirname(__DIR__) . '/config/config.php';
-include(CSS_PATH .  '/estilo_inicio.css')
 
 ?>
 <!DOCTYPE html> 
@@ -45,9 +44,77 @@ include(CSS_PATH .  '/estilo_inicio.css')
           <a href="<?php echo BASE_URL; ?>/estructura/views/registro.php">Regístrate por aquí</a></p>
           </div>
         </form>
-      </div>
-    </div>
+      </div>    </div>
   </section>
-  <script src="https://pillan.inf.uct.cl/~rpedraza/Estacionamientos_UCT/estructura/views/js/Inicio-Register.js"></script>
+  
+  <!-- JavaScript inline para evitar problemas de cache -->
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const loginBtn = document.getElementById('loginBtn');
+    const registerForm = document.getElementById('registerForm');
+    const loginForm = document.getElementById('loginForm');
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(registerForm);
+
+            fetch('<?php echo BASE_URL; ?>/estructura/controllers/registrar_user.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === "success") {
+                    alert(data.message);
+                    registerForm.reset();
+                    window.location.href = '<?php echo BASE_URL; ?>/estructura/views/inicio.php';
+                } else {
+                    alert(data.message || 'Error al registrar usuario');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Hubo un problema al registrar el usuario. Por favor, intente nuevamente.');
+            });
+        });
+    }
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(loginForm);
+
+            console.log('🔍 Iniciando login con URL:', '<?php echo BASE_URL; ?>/estructura/controllers/procesar_inicio.php');
+
+            fetch('<?php echo BASE_URL; ?>/estructura/controllers/procesar_inicio.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('📡 Respuesta del servidor:', response);
+                if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                return response.json();
+            })
+            .then(data => {
+                console.log('📊 Datos recibidos:', data);
+                if (data.status === "success") {
+                    console.log('✅ Login exitoso, redirigiendo a:', '<?php echo BASE_URL; ?>/estructura/views/pag_inicio.php');
+                    window.location.href = '<?php echo BASE_URL; ?>/estructura/views/pag_inicio.php';
+                } else {
+                    alert(data.message || 'Usuario o contraseña incorrectos');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error en login:', error);
+                alert('Hubo un problema al iniciar sesión. Por favor, intente nuevamente.');
+            });
+        });
+    }
+});
+</script>
 </body>
 </html>

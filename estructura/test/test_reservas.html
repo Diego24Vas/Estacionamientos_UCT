@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test de Reservas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>Test de Funcionalidad de Reservas</h1>
+    
+    <h2>Verificación de Archivos</h2>
+    <ul>
+        <li>reservas.php: <?= file_exists('estructura/views/reservas.php') ? '<span class="success">✓ Existe</span>' : '<span class="error">✗ No existe</span>' ?></li>
+        <li>procesar_reserva.php: <?= file_exists('estructura/controllers/procesar_reserva.php') ? '<span class="success">✓ Existe</span>' : '<span class="error">✗ No existe</span>' ?></li>
+        <li>obtener_eventos.php: <?= file_exists('estructura/services/obtener_eventos.php') ? '<span class="success">✓ Existe</span>' : '<span class="error">✗ No existe</span>' ?></li>
+        <li>obtener_zonas.php: <?= file_exists('estructura/services/obtener_zonas.php') ? '<span class="success">✓ Existe</span>' : '<span class="error">✗ No existe</span>' ?></li>
+        <li>eliminar_reserva.php: <?= file_exists('estructura/services/eliminar_reserva.php') ? '<span class="success">✓ Existe</span>' : '<span class="error">✗ No existe</span>' ?></li>
+        <li>config.php: <?= file_exists('estructura/config/config.php') ? '<span class="success">✓ Existe</span>' : '<span class="error">✗ No existe</span>' ?></li>
+        <li>conex.php: <?= file_exists('estructura/config/conex.php') ? '<span class="success">✓ Existe</span>' : '<span class="error">✗ No existe</span>' ?></li>
+    </ul>
+    
+    <h2>Test de Carga de Páginas</h2>
+    <p><a href="estructura/views/reservas.php" target="_blank">🔗 Abrir página de reservas</a></p>
+    <p><a href="estructura/views/inicio.php" target="_blank">🔗 Abrir página de login</a></p>
+    
+    <h2>Test de Servicios</h2>
+    <p><a href="estructura/services/obtener_zonas.php" target="_blank">🔗 Test obtener_zonas.php</a></p>
+    <p><a href="estructura/services/obtener_eventos.php" target="_blank">🔗 Test obtener_eventos.php</a></p>
+    
+    <h2>Instrucciones</h2>
+    <ol>
+        <li>Haz clic en "Abrir página de reservas" para probar la página principal</li>
+        <li>Si ves errores HTTP 500, revisa los logs del servidor</li>
+        <li>Prueba los servicios para verificar que devuelvan JSON válido</li>
+        <li>Si todo funciona, procede a hacer login y probar la funcionalidad completa</li>
+    </ol>
+    
+    <h2>Estado del Proyecto</h2>
+    <div style="background: #f0f0f0; padding: 10px; border-radius: 5px;">
+        <p><strong>✅ Login:</strong> Funciona correctamente</p>
+        <p><strong>🔧 Reservas:</strong> En proceso de corrección</p>
+        <p><strong>📅 Próximo paso:</strong> Verificar que reservas.php carga sin error HTTP 500</p>
+    </div>
+</body>
+</html>

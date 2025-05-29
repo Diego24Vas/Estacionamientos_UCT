@@ -30,9 +30,46 @@ require_once dirname(__DIR__) . '/config/config.php';
             <p>¿Ya tienes una cuenta? <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php">Inicia Sesión aquí</a></p>
           </div>
         </form>
-      </div>
-    </div>
+      </div>    </div>
   </section>
-  <script src="<?php echo JS_PATH; ?>/Inicio-Register.js"></script>
+  
+  <!-- JavaScript inline para evitar problemas de cache -->
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const recoveryForm = document.getElementById('recoveryForm');
+    
+    if (recoveryForm) {
+        recoveryForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(recoveryForm);
+
+            console.log('🔍 Iniciando recuperación con URL:', '<?php echo BASE_URL; ?>/estructura/controllers/enviar_recuperacion.php');
+
+            fetch('<?php echo BASE_URL; ?>/estructura/controllers/enviar_recuperacion.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('📡 Respuesta del servidor:', response);
+                if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                return response.json();
+            })
+            .then(data => {
+                console.log('📊 Datos recibidos:', data);
+                if (data.status === "success") {
+                    alert(data.message);
+                    recoveryForm.reset();
+                } else {
+                    alert(data.message || 'Error al procesar la solicitud');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error en recuperación:', error);
+                alert('Hubo un problema al procesar la solicitud. Por favor, intente nuevamente.');
+            });
+        });
+    }
+});
+</script>
 </body>
 </html>

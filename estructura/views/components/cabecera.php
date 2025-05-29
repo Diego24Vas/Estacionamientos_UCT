@@ -65,9 +65,8 @@
                 <a href="<?php echo BASE_URL; ?>/estructura/views/registro_vehiculos.php">
                     <i class="fas fa-car menu-icon"></i> Registro de Vehículos
                 </a>
-            </li>
-            <li>
-                <a href="<?php echo BASE_URL; ?>/estructura/views/ver_registros_vehiculos.php">
+            </li>            <li>
+                <a href="<?php echo BASE_URL; ?>/estructura/views/modificar_registros_simple.php">
                     <i class="fas fa-edit menu-icon"></i> Modificar Registros
                 </a>
             </li>
@@ -81,8 +80,7 @@
                     <i class="fas fa-chart-bar menu-icon"></i> Estadísticas
                 </a>
             </li>
-            <li>
-                <a href="<?php echo BASE_URL; ?>/estructura/views/reservas.php">
+            <li>                <a href="<?php echo BASE_URL; ?>/estructura/views/reservas_simple.php">
                     <i class="fas fa-calendar-check menu-icon"></i> Reservas
                 </a>
             </li>

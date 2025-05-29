@@ -30,14 +30,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Hubo un problema al registrar el usuario. Por favor, intente nuevamente.');
             });
         });
-    }
-
-    if (loginForm) {
+    }    if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const formData = new FormData(loginForm);
 
-            fetch('/~rpedraza/Estacionamientos_UCT/estructura/controllers/procesar_inicio.php', {
+            fetch('../controllers/procesar_inicio.php', {
                 method: 'POST',
                 body: formData
             })
@@ -47,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 if (data.status === "success") {
-                    window.location.href = '/~rpedraza/Estacionamientos_UCT/estructura/views/pag_inicio.php';
+                    window.location.href = 'pag_inicio.php';
                 } else {
                     alert(data.message || 'Usuario o contraseña incorrectos');
                 }

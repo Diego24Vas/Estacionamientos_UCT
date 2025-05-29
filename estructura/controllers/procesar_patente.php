@@ -4,7 +4,7 @@ require_once MODELS_PATH . '/classVehiculo.php';
 require_once MODELS_PATH . '/class_espacioEStacionamiento.php';
 require_once MODELS_PATH . '/LogObserver.php';
 require_once MODELS_PATH . '/EstadisticasObserver.php';
-require_once CONFIG_PATH . '/conex.php';; // Conexión a la base de datos
+require_once CONFIG_PATH . '/conex.php'; // Conexión a la base de datos
 
 // Instanciar el gestor de espacios de estacionamiento con observers
 $espacioManager = new EspacioEstacionamiento($conexion);

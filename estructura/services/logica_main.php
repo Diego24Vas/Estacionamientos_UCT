@@ -7,7 +7,7 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-require_once MODELS_PATH . '/conex.php';
+require_once CONFIG_PATH . '/conex.php';
 
 // Resumen de espacios
 $query_estacionamiento = "

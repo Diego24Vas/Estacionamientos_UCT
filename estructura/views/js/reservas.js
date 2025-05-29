@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function () {
     cargarEventos();
-    cargarZonas();
+    // cargarZonas(); // Comentado porque usamos zonas estáticas
     verificarProximosEventos(); // Verificar eventos al cargar la página
 });
 
 function cargarEventos() {
-    fetch('obtener_eventos.php')
+    fetch('../services/obtener_eventos.php')
         .then(response => response.json())
         .then(data => {
             const recordatoriosDiv = document.getElementById('recordatorios');
@@ -16,12 +16,12 @@ function cargarEventos() {
                     const eventoDiv = document.createElement('div');
                     eventoDiv.className = 'alert alert-primary d-flex justify-content-between align-items-center';
                     eventoDiv.innerHTML = `
-                        <div>
-                            <strong>Evento:</strong> ${evento.evento}<br>
+                        <div>                            <strong>Evento:</strong> ${evento.evento}<br>
                             <strong>Fecha:</strong> ${evento.fecha}<br>
                             <strong>Hora:</strong> ${evento.hora_inicio} - ${evento.hora_fin}<br>
+                            <strong>Usuario:</strong> ${evento.usuario}<br>
+                            <strong>Patente:</strong> ${evento.patente}<br>
                             <strong>Zona:</strong> ${evento.zona}<br>
-                            <strong>Tipo de Vehículo:</strong> ${evento.tipo_vehiculo}<br>
                         </div>
                         <div>
                             <button class="btn btn-warning btn-sm" onclick="editarReserva(${evento.id})">Editar</button>
@@ -38,17 +38,17 @@ function cargarEventos() {
 }
 
 function editarReserva(id) {
-    fetch(`obtener_reserva.php?id=${id}`)
+    fetch(`../services/obtener_reserva.php?id=${id}`)
         .then(response => response.json())
         .then(data => {
-            if (data) {
-                document.getElementById('editarReservaId').value = data.id || '';
+            if (data) {                document.getElementById('editarReservaId').value = data.id || '';
                 document.getElementById('editarEvento').value = data.evento || '';
                 document.getElementById('editarFecha').value = data.fecha || '';
                 document.getElementById('editarHoraInicio').value = data.hora_inicio || '';
                 document.getElementById('editarHoraFin').value = data.hora_fin || '';
+                document.getElementById('editarUsuario').value = data.usuario || '';
+                document.getElementById('editarPatente').value = data.patente || '';
                 document.getElementById('editarZona').value = data.zona || '';
-                document.getElementById('editarTipoVehiculo').value = data.tipo_vehiculo || '';
 
                 const modal = new bootstrap.Modal(document.getElementById('editarReservaModal'));
                 modal.show();
@@ -66,7 +66,7 @@ function eliminarReserva(id) {
     }
 
     if (confirm('¿Estás seguro de que deseas eliminar esta reserva?')) {
-        fetch(`eliminar_reservas.php?id=${id}`, { method: 'GET' })
+        fetch(`../controllers/eliminar_reservas.php?id=${id}`, { method: 'GET' })
             .then(response => response.json())
             .then(data => {
                 if (data.status === "success") {
@@ -84,24 +84,24 @@ document.getElementById('editarReservaForm').addEventListener('submit', function
     e.preventDefault();
 
     const id = document.getElementById('editarReservaId').value;
-    const evento = document.getElementById('editarEvento').value;
-    const fecha = document.getElementById('editarFecha').value;
+    const evento = document.getElementById('editarEvento').value;    const fecha = document.getElementById('editarFecha').value;
     const horaInicio = document.getElementById('editarHoraInicio').value;
     const horaFin = document.getElementById('editarHoraFin').value;
+    const usuario = document.getElementById('editarUsuario').value;
+    const patente = document.getElementById('editarPatente').value;
     const zona = document.getElementById('editarZona').value;
-    const tipoVehiculo = document.getElementById('editarTipoVehiculo').value;
 
-    fetch('procesar_edicion_reserva.php', {
+    fetch('../controllers/procesar_edicion_reserva.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        headers: { 'Content-Type': 'application/json' },        body: JSON.stringify({ 
             id, 
             evento, 
             fecha, 
             horaInicio, 
             horaFin, 
-            zona,
-            tipoVehiculo
+            usuario,
+            patente,
+            zona
         })
     })
     .then(response => response.json())
@@ -118,7 +118,7 @@ document.getElementById('editarReservaForm').addEventListener('submit', function
 
 // NUEVO: Verificar eventos próximos
 function verificarProximosEventos() {
-    fetch('notificar_eventos.php')
+    fetch('../controllers/notificar_eventos.php')
         .then(response => response.json())
         .then(data => {
             if (data.length > 0) {
@@ -145,9 +145,10 @@ function alertarEventoProximo(evento) {
     container.prepend(alertaDiv); // Inserta la alerta al inicio del contenedor
 }
 
-// Función para cargar las zonas disponibles
+// Función para cargar las zonas disponibles (comentada porque usamos zonas estáticas)
+/*
 function cargarZonas() {
-    fetch('get_parking_spaces.php')
+    fetch('../services/get_parking_spaces.php')
         .then(response => response.json())
         .then(data => {
             const zonaSelect = document.getElementById('zona');
@@ -162,3 +163,4 @@ function cargarZonas() {
         })
         .catch(error => console.error('Error al cargar las zonas:', error));
 }
+*/

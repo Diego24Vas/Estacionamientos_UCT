@@ -1,4 +1,6 @@
-<?php include(VIEWS_PATH . '/components/cabecera.php'); 
+<?php 
+require_once dirname(__DIR__) . '/config/config.php';
+include(VIEWS_PATH . '/components/cabecera.php'); 
 ?>
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/registro_vehiculos.css">
 
@@ -142,7 +144,7 @@ require_once dirname(__DIR__) . '/config/config.php';
 require_once MODELS_PATH . '/class_espacioEStacionamiento.php';
 require_once MODELS_PATH . '/LogObserver.php';
 require_once MODELS_PATH . '/EstadisticasObserver.php';
-include('conex.php'); // Conexión a la base de datos
+require_once CONFIG_PATH . '/conex.php'; // Conexión a la base de datos
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Crear instancia de EspacioEstacionamiento con observers

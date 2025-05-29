@@ -1,19 +1,43 @@
 <?php
-require_once dirname(__DIR__) . '/config/config.php';
-require_once MODELS_PATH . '/classReserva.php';
+// Obtener eventos/reservas
+header('Content-Type: application/json');
+
+// Incluir configuración
+require_once('../config/config.php');
+require_once('../config/conex.php');
 
 try {
-    // Usar el Factory Method para crear la reserva
-    $factory = new ReservaFactoryImpl();
-    $reserva = $factory->crearReserva([]);
+    // Conectar a la base de datos
+    $pdo = new PDO("mysql:host=$host;dbname=$BD", $user, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Obtener todas las reservas usando la interfaz IReserva
-    $eventos = $reserva->obtenerTodasLasReservas();
+    // Consultar reservas/eventos
+    $stmt = $pdo->prepare("
+        SELECT 
+            id,
+            evento,
+            fecha,
+            hora_inicio,
+            hora_fin,
+            zona,
+            usuario,
+            patente,
+            tipo_vehiculo
+        FROM reservas 
+        WHERE fecha >= CURDATE() 
+        ORDER BY fecha ASC, hora_inicio ASC
+    ");
+    $stmt->execute();
     
-    header('Content-Type: application/json');
+    $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
     echo json_encode($eventos);
+    
+} catch (PDOException $e) {
+    // En caso de error de base de datos, devolver array vacío
+    echo json_encode([]);
 } catch (Exception $e) {
-    header('Content-Type: application/json');
-    echo json_encode(['error' => $e->getMessage()]);
+    // Error genérico
+    echo json_encode(['error' => 'Error obteniendo eventos: ' . $e->getMessage()]);
 }
 ?>

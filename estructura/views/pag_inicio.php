@@ -1,7 +1,7 @@
 <?php 
 require_once dirname(__DIR__) . '/config/config.php';
 include(VIEWS_PATH . '/components/cabecera.php'); 
-include(SERVICES_PATH . '/procesar_patente.php'); 
+include(CONTROLLERS_PATH . '/procesar_patente.php'); 
 include(SERVICES_PATH . '/logica_main.php'); 
 ?>
 <!DOCTYPE html>

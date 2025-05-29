@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Estacionamiento UCT - Estado</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #086fd5, #93ceef);
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-custom {
+            background: #0d6efd;
+            border: #0d6efd;
+            color: white;
+        }
+        .btn-custom:hover {
+            background: #0b5ed7;
+            border: #0b5ed7;
+            color: white;
+        }
+        .status-ok {
+            color: #28a745;
+        }
+        .status-error {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <div class="card">
+                    <div class="card-body" style="background: #0d6efd; color: white;">
+                        <h1><i class="fas fa-parking"></i> Sistema de Estacionamiento UCT</h1>
+                        <p class="mb-0">Sistema Simplificado - Estado del Proyecto</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado de Páginas -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header" style="background: #0d6efd; color: white;">
+                            <h5><i class="fas fa-file-code"></i> Páginas Principales</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <i class="fas fa-sign-in-alt status-ok"></i>
+                                <strong>Login:</strong> 
+                                <a href="estructura/views/inicio.php" target="_blank">inicio.php</a>
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-home status-ok"></i>
+                                <strong>Dashboard:</strong> 
+                                <a href="estructura/views/pag_inicio_simple.php" target="_blank">pag_inicio_simple.php</a>
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-car status-ok"></i>
+                                <strong>Registro Vehículos:</strong> 
+                                <a href="estructura/views/registro_vehiculos_simple.php" target="_blank">registro_vehiculos_simple.php</a>
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-calendar-check status-ok"></i>
+                                <strong>Reservas:</strong> 
+                                <a href="estructura/views/reservas.php" target="_blank">reservas.php</a>
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-edit status-ok"></i>
+                                <strong>Modificar Registros:</strong> 
+                                <a href="estructura/views/modificar_registros_simple.php" target="_blank">modificar_registros_simple.php</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header" style="background: #0d6efd; color: white;">
+                            <h5><i class="fas fa-cogs"></i> Procesadores</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <i class="fas fa-car-side status-ok"></i>
+                                <strong>Procesar Vehículo:</strong> 
+                                <code>procesar_vehiculo_simple.php</code>
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-search status-ok"></i>
+                                <strong>Verificar Patente:</strong> 
+                                <code>verificar_patente_simple.php</code>
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-calendar-plus status-ok"></i>
+                                <strong>Procesar Reserva:</strong> 
+                                <code>procesar_reserva_simple.php</code>
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-database status-ok"></i>
+                                <strong>Configuración:</strong> 
+                                <code>config.php</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Características del Sistema -->
+            <div class="card mb-4">
+                <div class="card-header" style="background: #0d6efd; color: white;">
+                    <h5><i class="fas fa-check-circle"></i> Características Implementadas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Navegación consistente entre páginas</li>
+                                <li><i class="fas fa-check text-success"></i> Tema visual uniforme (azul #0d6efd)</li>
+                                <li><i class="fas fa-check text-success"></i> Efectos hover en navegación</li>
+                                <li><i class="fas fa-check text-success"></i> Formularios con validación</li>
+                                <li><i class="fas fa-check text-success"></i> Mensajes de éxito/error</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Conexión directa a base de datos</li>
+                                <li><i class="fas fa-check text-success"></i> CRUD completo para vehículos</li>
+                                <li><i class="fas fa-check text-success"></i> CRUD completo para reservas</li>
+                                <li><i class="fas fa-check text-success"></i> Verificación de patentes</li>
+                                <li><i class="fas fa-check text-success"></i> Interface responsive</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flujo de Trabajo -->
+            <div class="card mb-4">
+                <div class="card-header" style="background: #0d6efd; color: white;">
+                    <h5><i class="fas fa-route"></i> Flujo de Trabajo Recomendado</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ol class="mb-0">
+                                <li><strong>Iniciar sesión</strong> en <code>inicio.php</code></li>
+                                <li><strong>Ir al dashboard</strong> (<code>pag_inicio_simple.php</code>) para verificar patentes</li>
+                                <li><strong>Registrar vehículos</strong> en <code>registro_vehiculos_simple.php</code></li>
+                                <li><strong>Crear reservas</strong> en <code>reservas.php</code></li>
+                                <li><strong>Modificar registros</strong> en <code>modificar_registros_simple.php</code></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acceso Rápido -->
+            <div class="text-center mb-4">
+                <div class="card">
+                    <div class="card-header" style="background: #0d6efd; color: white;">
+                        <h5><i class="fas fa-rocket"></i> Acceso Rápido</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="estructura/views/inicio.php" class="btn btn-custom btn-lg m-2">
+                            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                        </a>
+                        <a href="estructura/views/pag_inicio_simple.php" class="btn btn-custom btn-lg m-2">
+                            <i class="fas fa-home"></i> Dashboard
+                        </a>
+                        <a href="test_sistema_completo.php" class="btn btn-outline-info btn-lg m-2">
+                            <i class="fas fa-vial"></i> Test Completo
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center">
+                <div class="card">
+                    <div class="card-body" style="background: #f8f9fa;">
+                        <p class="mb-0 text-muted">
+                            <i class="fas fa-university"></i> 
+                            Universidad Católica de Temuco - Sistema de Estacionamiento Simplificado
+                        </p>
+                        <small class="text-muted">Versión Completa - Mayo 2025</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -21,10 +21,8 @@ if ($query->num_rows > 0) {
     // Guardar el token en la base de datos
     $insert = $mysqli->prepare("INSERT INTO INFO1170_RecuperacionPassword (user_id, token, expira) VALUES (?, ?, ?)");
     $insert->bind_param("iss", $user_id, $token, $expira);
-    $insert->execute();
-
-    // Enviar el email de recuperación
-    $link = "https://pillan.inf.uct.cl/       ~NOMBRE DE USUARIO       /      DIRECTORIO     /proyecto/Integracion1_version2/Integracion_I/estructura/resetear_contraseña.php?token=" . $token;
+    $insert->execute();    // Enviar el email de recuperación
+    $link = BASE_URL . "/estructura/resetear_contraseña.php?token=" . $token;
     $subject = "Recuperación de Contraseña";
     $message = "Haz clic en el siguiente enlace para restablecer tu contraseña: $link";
     $headers = "From: no-reply@tu-sitio.com";
