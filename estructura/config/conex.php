@@ -1,8 +1,8 @@
 <?php
-$host = "db.inf.uct.cl";
-$user = "dvasquez";
-$password = "aVOeGU27CWrnwXMyx";
-$BD = "A2024_dvasquez";
+$host = "localhost";
+$user = "root";
+$password = "";
+$BD = "a2024_dvasquez";
 $conexion = new mysqli($host, $user, $password, $BD);
 
 // Verificar conexión
