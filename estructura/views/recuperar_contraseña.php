@@ -7,31 +7,32 @@ require_once dirname(__DIR__) . '/config/config.php';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recuperar Contraseña</title>
-  <link rel="stylesheet" href="<?php echo CSS_PATH; ?>/estilo_inicio.css">
+  <link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/login.css">
   <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js' type="module"></script>
   <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js' type="module"></script>
 </head>
 <body>
-  <header>
-    <img src="<?php echo BASE_URL; ?>/estructura/img/logo.png" alt="IUCT Logo">
-  </header>
-  <section>
-    <div class="form-box">
-      <div class="form-value">
-        <form method="POST" id="recoveryForm">
-          <h2>Recuperar Contraseña</h2>
-          <div class="inputbox">
-              <ion-icon name="mail-outline"></ion-icon>
-              <input type="email" name="email" required>
-              <label for="">Correo electrónico</label>
-          </div>
-          <button type="submit">Recuperar Contraseña</button>
-          <div class="register">
-            <p>¿Ya tienes una cuenta? <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php">Inicia Sesión aquí</a></p>
-          </div>
-        </form>
-      </div>    </div>
-  </section>
+  <div class="login-container">
+    <div id="img-logo">
+      <img src="<?php echo BASE_URL; ?>/estructura/img/logo.png" alt="logo">
+    </div>
+    <form method="POST" id="recoveryForm">
+      <h2 style="margin-bottom: 20px;">Recuperar Contraseña</h2>
+      
+      <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <input type="email" id="email" name="email" placeholder="tucorreo@ejemplo.com" required>
+      </div>
+      
+      <button type="submit" class="btn">Recuperar Contraseña</button>
+      
+      <div style="text-align: center; margin-top: 20px;">
+        <p style="color: #ccc; font-size: 14px;">¿Ya tienes una cuenta? 
+          <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php" style="color: #0d6efd; text-decoration: none;">Inicia Sesión aquí</a>
+        </p>
+      </div>
+    </form>
+  </div>
   
   <!-- JavaScript inline para evitar problemas de cache -->
   <script>

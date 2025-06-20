@@ -46,7 +46,7 @@
         </tbody>
     </table>
 
-    <?php include('pie.php'); // Pie de página ?>
+    <?php include(VIEWS_PATH . '/components/pie.php'); // Pie de página ?>
 
     </body>
     </html>

@@ -434,6 +434,8 @@ setTimeout(function() {
 }, 5000);
 </script>
 
+<?php include(VIEWS_PATH . '/components/pie.php'); ?>
+
 </body>
 </html>
 

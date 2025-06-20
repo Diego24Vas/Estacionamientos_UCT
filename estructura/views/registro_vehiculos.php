@@ -248,4 +248,4 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
-<?php include('pie.php'); ?>
+<?php include(VIEWS_PATH . '/components/pie.php'); ?>

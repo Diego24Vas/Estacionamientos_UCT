@@ -74,4 +74,4 @@ $conexion->close();
     </form>
 </div>
 
-<?php include(BASE_URL . '/estructura/views/components/pie.php'); ?>
+<?php include(VIEWS_PATH . '/components/pie.php'); ?>

@@ -9,3 +9,5 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 <h1>Panel de Administración</h1>
 <p>Bienvenido al panel de administración, donde puedes gestionar usuarios y ver informes detallados.</p>
+
+<?php include(VIEWS_PATH . '/components/pie.php'); ?>

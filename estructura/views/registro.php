@@ -7,68 +7,60 @@ require_once dirname(__DIR__) . '/config/config.php';
     <meta charset="UTF-8">
     <title>Registro - Sistema de Estacionamiento</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/estilo_inicio.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/login.css">
     <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js' type="module"></script>
     <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js' type="module"></script>
 </head>
 <body>    
-    <main class="container">
-        <section class="form-section">
-            <div class="form-box">
-                <div class="form-value">
-                    <form method="POST" action="" id="registerForm">
-                        <h2>Regí­strate</h2>
-                        
-                        <?php if (isset($_SESSION['error'])): ?>
-                            <div class="alert alert-danger">
-                                <?php 
-                                echo $_SESSION['error'];
-                                unset($_SESSION['error']);
-                                ?>
-                            </div>
-                        <?php endif; ?>
+  <div class="login-container">
+    <div id="img-logo">
+      <img src="<?php echo BASE_URL; ?>/estructura/img/logo.png" alt="logo">
+    </div>
+    <form method="POST" id="registerForm">
+      <h2 style="margin-bottom: 20px;">Registro</h2>
+      
+      <?php if (isset($_SESSION['error'])): ?>
+        <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+          <?php 
+          echo $_SESSION['error'];
+          unset($_SESSION['error']);
+          ?>
+        </div>
+      <?php endif; ?>
 
-                        <div class="inputbox">
-                            <ion-icon name="person-outline"></ion-icon>
-                            <input type="text" name="nombre" required 
-                                   pattern="[A-Za-z0-9_]{3,20}" 
-                                   title="El nombre de usuario debe tener entre 3 y 20 caracteres alfanuméricos">
-                            <label for="nombre">Nombre Usuario</label>
-                        </div>
+      <div class="form-group">
+        <label for="nombre">Nombre de Usuario</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Ingresa tu nombre de usuario" required 
+               pattern="[A-Za-z0-9_]{3,20}" 
+               title="El nombre de usuario debe tener entre 3 y 20 caracteres alfanuméricos">
+      </div>
 
-                        <div class="inputbox">
-                            <ion-icon name="mail-outline"></ion-icon>
-                            <input type="email" name="email" required>
-                            <label for="email">Correo</label>
-                        </div>
+      <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <input type="email" id="email" name="email" placeholder="tucorreo@ejemplo.com" required>
+      </div>
 
-                        <div class="inputbox">
-                            <ion-icon name="lock-closed-outline"></ion-icon>
-                            <input type="password" name="password" required 
-                                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
-                                   title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número">
-                            <label for="password">Contraseña</label>
-                        </div>
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" placeholder="********" required 
+               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+               title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número">
+      </div>
 
-                        <button type="submit" class="btn btn-primary">Registrarse</button>
-                        
-                        <div class="register">
-                            <p>¿Ya tienes una cuenta? <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php">Inicia Sesion Aqui</a></p>
-                        </div>
-                    </form>
-                </div>
-            </div>
-    </section>
-    </main>
+      <button type="submit" class="btn">Registrarse</button>
+      
+      <div style="text-align: center; margin-top: 20px;">
+        <p style="color: #ccc; font-size: 14px;">¿Ya tienes una cuenta? 
+          <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php" style="color: #0d6efd; text-decoration: none;">Inicia Sesión Aquí</a>
+        </p>
+      </div>
+    </form>
+  </div>
 
-    <?php include VIEWS_PATH . '/components/pie.php'; ?>
-    
-    <!-- JavaScript inline para evitar problemas de cache -->
-    <script>
+  <!-- JavaScript inline para evitar problemas de cache -->
+  <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const loginBtn = document.getElementById('loginBtn');
     const registerForm = document.getElementById('registerForm');
-    const loginForm = document.getElementById('loginForm');
 
     if (registerForm) {
         registerForm.addEventListener('submit', function (e) {
@@ -100,38 +92,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => {
                 console.error('❌ Error en registro:', error);
                 alert('Hubo un problema al registrar el usuario. Por favor, intente nuevamente.');
-            });
-        });
-    }
-
-    if (loginForm) {
-        loginForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(loginForm);
-
-            console.log('🔍 Iniciando login con URL:', '<?php echo BASE_URL; ?>/estructura/controllers/procesar_inicio.php');
-
-            fetch('<?php echo BASE_URL; ?>/estructura/controllers/procesar_inicio.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                console.log('📡 Respuesta del servidor:', response);
-                if (!response.ok) throw new Error('Error en la respuesta del servidor');
-                return response.json();
-            })
-            .then(data => {
-                console.log('📊 Datos recibidos:', data);
-                if (data.status === "success") {
-                    console.log('✅ Login exitoso, redirigiendo a:', '<?php echo BASE_URL; ?>/estructura/views/pag_inicio.php');
-                    window.location.href = '<?php echo BASE_URL; ?>/estructura/views/pag_inicio.php';
-                } else {
-                    alert(data.message || 'Usuario o contraseña incorrectos');
-                }
-            })
-            .catch(error => {
-                console.error('❌ Error en login:', error);
-                alert('Hubo un problema al iniciar sesión. Por favor, intente nuevamente.');
             });
         });
     }

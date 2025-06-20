@@ -1,13 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const loginBtn = document.getElementById('loginBtn');
     const registerForm = document.getElementById('registerForm');
     const loginForm = document.getElementById('loginForm');
 
+    // Manejo del formulario de registro
     if (registerForm) {
         registerForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const formData = new FormData(registerForm);
-
+            
             fetch('../controllers/registrar_user.php', {
                 method: 'POST',
                 body: formData
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.status === "success") {
                     alert(data.message);
                     registerForm.reset();
-                    window.location.href = 'inicio.php'; // ruta relativa también
+                    window.location.href = 'inicio.php';
                 } else {
                     alert(data.message || 'Error al registrar usuario');
                 }
@@ -30,11 +30,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('Hubo un problema al registrar el usuario. Por favor, intente nuevamente.');
             });
         });
-    }    if (loginForm) {
+    }
+
+    // Manejo del formulario de login
+    if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const formData = new FormData(loginForm);
-
+            
             fetch('../controllers/procesar_inicio.php', {
                 method: 'POST',
                 body: formData

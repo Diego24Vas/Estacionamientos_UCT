@@ -2,86 +2,43 @@
 require_once dirname(__DIR__) . '/config/config.php';
 
 ?>
-<!DOCTYPE html> 
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Iniciar Sesión</title>
-  <link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/estilo_inicio.css">
-  <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js' type="module"></script>
-  <script src='https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js' type="module"></script>
+  <link rel="stylesheet" href="<?php echo BASE_URL; ?>/estructura/views/css/login.css">
 </head>
 <body>
-  <header>
-    <img src="<?php echo BASE_URL; ?>/estructura/img/logo.png" alt="IUCT Logo">
-  </header>
-  <section>
-    <div class="form-box">
-      <div class="form-value">
-        <form method="POST" id="loginForm">
-          <h2>Inicio Sesión</h2>
-          <div class="inputbox">
-            <ion-icon name="mail-outline"></ion-icon>
-            <input type="text" name="username" required>
-            <label for="">Nombre Usuario</label>
-          </div>
-          <div class="inputbox">
-            <ion-icon name="lock-closed-outline"></ion-icon>
-            <input type="password" name="password" required>
-            <label for="">Contraseña</label>
-          </div>
-          <div class="forget">
-            <label>
-              <input type="checkbox"> Recuérdame
-            </label>
-            <label>
-            <a href="<?php echo BASE_URL; ?>/estructura/views/recuperar_contraseña.php">¿Olvidaste tu contraseña?</a>
-            </label>
-          </div>
-          <button id="loginBtn" type="submit">Iniciar Sesión</button>
-          <div class="register">
-          <a href="<?php echo BASE_URL; ?>/estructura/views/registro.php">Regístrate por aquí</a></p>
-          </div>
-        </form>
-      </div>    </div>
-  </section>
+
+  <div class="login-container">
+    <div id="img-logo">
+      <img src="<?php echo BASE_URL; ?>/estructura/img/logo.png" alt="logo">
+    </div>
+    <form method="POST" id="loginForm">
+      <div class="form-group">
+        <label for="username">Nombre de Usuario</label>
+        <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" placeholder="********" required>
+      </div>
+
+      <button type="submit" class="btn">Entrar</button>
+
+      <!-- Botones adicionales -->
+      <div class="extra-buttons">
+        <button type="button" class="btn-secondary" onclick="location.href='<?php echo BASE_URL; ?>/estructura/views/registro.php'">Registrarse</button>
+        <button type="button" class="btn-secondary" onclick="location.href='<?php echo BASE_URL; ?>/estructura/views/recuperar_contraseña.php'">Recuperar Contraseña</button>
+      </div>
+    </form>
+  </div>
   
   <!-- JavaScript inline para evitar problemas de cache -->
   <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const loginBtn = document.getElementById('loginBtn');
-    const registerForm = document.getElementById('registerForm');
     const loginForm = document.getElementById('loginForm');
-
-    if (registerForm) {
-        registerForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(registerForm);
-
-            fetch('<?php echo BASE_URL; ?>/estructura/controllers/registrar_user.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Error en la respuesta del servidor');
-                return response.json();
-            })
-            .then(data => {
-                if (data.status === "success") {
-                    alert(data.message);
-                    registerForm.reset();
-                    window.location.href = '<?php echo BASE_URL; ?>/estructura/views/inicio.php';
-                } else {
-                    alert(data.message || 'Error al registrar usuario');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Hubo un problema al registrar el usuario. Por favor, intente nuevamente.');
-            });
-        });
-    }
 
     if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
