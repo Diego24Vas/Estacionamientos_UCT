@@ -84,6 +84,12 @@
                     <i class="fas fa-calendar-check menu-icon"></i> Reservas
                 </a>
             </li>
+            <!-- Botón de Modo Oscuro -->
+            <li>
+                <button id="modoOscuroBtn" class="btn btn-dark-mode" style="width:90%;margin:0 5%;display:flex;align-items:center;gap:10px;justify-content:left;background:none;border:none;color:white;font-size:1rem;padding:10px 20px;cursor:pointer;">
+                    <i class="fas fa-moon"></i> <span id="modoOscuroTexto">Modo Oscuro</span>
+                </button>
+            </li>
             <li>
                 <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php">
                     <i class="fas fa-sign-out-alt menu-icon"></i> Cerrar Sesión
@@ -92,6 +98,43 @@
         </ul>
     </div>
 
+    <!-- Script para modo oscuro -->
+    <script>
+    // Modo Oscuro con persistencia y sin saturar imágenes
+    function activarModoOscuro() {
+        document.body.classList.add('modo-oscuro');
+        document.querySelectorAll('*').forEach(function(el) {
+            if (el.tagName !== 'IMG') {
+                el.classList.add('letra-blanca');
+            }
+        });
+        document.getElementById('modoOscuroTexto').textContent = 'Modo Claro';
+        document.getElementById('modoOscuroBtn').querySelector('i').className = 'fas fa-sun';
+    }
+    function desactivarModoOscuro() {
+        document.body.classList.remove('modo-oscuro');
+        document.querySelectorAll('.letra-blanca').forEach(function(el) {
+            el.classList.remove('letra-blanca');
+        });
+        document.getElementById('modoOscuroTexto').textContent = 'Modo Oscuro';
+        document.getElementById('modoOscuroBtn').querySelector('i').className = 'fas fa-moon';
+    }
+    function actualizarModoOscuro() {
+        if (localStorage.getItem('modoOscuro') === 'true') {
+            activarModoOscuro();
+        } else {
+            desactivarModoOscuro();
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        actualizarModoOscuro();
+        document.getElementById('modoOscuroBtn').addEventListener('click', function() {
+            const activado = localStorage.getItem('modoOscuro') === 'true';
+            localStorage.setItem('modoOscuro', !activado);
+            actualizarModoOscuro();
+        });
+    });
+    </script>
     <!-- Contenido principal -->
     <div class="main-content">
         <header class="bg-primary py-3 text-center">

@@ -5,6 +5,94 @@ body {
     color: #333;
     margin: 0;
     padding: 0;
+    transition: background 0.3s, color 0.3s;
+}
+
+body.modo-oscuro {
+    background-color: #181a1b !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .main-content {
+    background: linear-gradient(to bottom, #23272b, #181a1b) !important;
+}
+
+.modo-oscuro .dashboard-card,
+.modo-oscuro .table-card {
+    background: #23272b !important;
+    color: #fff !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.modo-oscuro .sidebar {
+    background-color: #23272b !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .sidebar-menu a,
+.modo-oscuro .sidebar-menu .btn-dark-mode {
+    color: #fff !important;
+}
+
+.modo-oscuro .sidebar-menu a:hover,
+.modo-oscuro .sidebar-menu .btn-dark-mode:hover {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .sidebar-header h2 {
+    color: #fff !important;
+}
+
+.modo-oscuro .btn {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .btn:hover {
+    background-color: #444 !important;
+}
+
+.modo-oscuro .table th,
+.modo-oscuro .table td {
+    background: #23272b !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+.modo-oscuro .form-control,
+.modo-oscuro input,
+.modo-oscuro select,
+.modo-oscuro textarea {
+    background: #23272b !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+.modo-oscuro .alert {
+    background: #222 !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+.modo-oscuro footer,
+.modo-oscuro .footer {
+    background: #23272b !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .footer-column h3,
+.modo-oscuro .footer-column a,
+.modo-oscuro .footer .social-icons a {
+    color: #fff !important;
+}
+
+.modo-oscuro .footer .social-icons a:hover {
+    color: #ffdd57 !important;
+}
+
+.letra-blanca {
+    color: #fff !important;
 }
 
 .main-container {

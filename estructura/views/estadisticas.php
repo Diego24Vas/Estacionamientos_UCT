@@ -207,4 +207,3 @@ include(VIEWS_PATH . '/components/cabecera.php');
     <?php include(VIEWS_PATH . '/components/pie.php'); ?> <!-- Pie de página fuera del contenedor principal -->
 </body>
 </html>
-<
