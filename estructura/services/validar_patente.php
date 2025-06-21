@@ -1,6 +1,6 @@
 <?php
-require_once '../config/config.php';
-require_once '../config/conex.php';
+// Validar patente usando Dependency Injection
+require_once dirname(__DIR__) . '/core/Application.php';
 
 header('Content-Type: application/json');
 
@@ -11,12 +11,12 @@ try {
     
     $patente = strtoupper(trim($_GET['patente']));
     
-    // Conectar a la base de datos
-    $pdo = new PDO("mysql:host=$host;dbname=$BD", $user, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Inicializar la aplicación y obtener la conexión de la BD
+    $app = Application::getInstance();
+    $database = $app->get('database');
     
     // Verificar si la patente existe
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM vehiculos WHERE patente = ?");
+    $stmt = $database->prepare("SELECT COUNT(*) FROM vehiculos WHERE patente = ?");
     $stmt->execute([$patente]);
     $existe = $stmt->fetchColumn() > 0;
     
@@ -25,10 +25,6 @@ try {
         'patente' => $patente
     ]);
     
-} catch (PDOException $e) {
-    echo json_encode([
-        'error' => 'Error de base de datos: ' . $e->getMessage()
-    ]);
 } catch (Exception $e) {
     echo json_encode([
         'error' => $e->getMessage()

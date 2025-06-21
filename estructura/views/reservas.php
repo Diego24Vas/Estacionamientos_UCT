@@ -1,7 +1,22 @@
 <?php
+// Inicializar la aplicación con Dependency Injection
+require_once dirname(__DIR__) . '/core/Application.php';
+
+// Inicializar el contenedor DI
+$app = Application::getInstance();
+
+// Obtener servicios a través del DI
+$configService = $app->get('service.config');
+$sessionManager = $app->get('service.session');
+$notificationService = $app->get('service.notification');
+$viewHelper = $app->get('service.view');
+
+// Configuración tradicional para compatibilidad (se mantiene por ahora)
 require_once dirname(__DIR__) . '/config/config.php';
 require_once CONFIG_PATH . '/conex.php';
-session_start();
+
+// La sesión ya está manejada por SessionManager
+// session_start(); // Ya no necesario
 
 include(VIEWS_PATH . '/components/cabecera.php');
 ?>
@@ -13,7 +28,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="<?php echo CSS_PATH; ?>/estilo_reservas.css" rel="stylesheet">
+    <link href="<?php echo $viewHelper->url('css/estilo_reservas.css'); ?>" rel="stylesheet">
     <title>Gestión de Reservas</title>
     <style>
         .validation-success { color: #28a745; }
@@ -41,25 +56,28 @@ include(VIEWS_PATH . '/components/cabecera.php');
 <body>
 <div class="container mt-5">
     <?php
-    // Mostrar mensajes de éxito o error
+    // Mostrar mensajes usando NotificationService
+    echo $notificationService->renderNotifications();
+    
+    // Compatibilidad con mensajes por URL (para transición gradual)
     if (isset($_GET['mensaje'])) {
         echo '<div class="alert alert-success alert-dismissible fade show" role="alert">';
-        echo htmlspecialchars($_GET['mensaje']);
+        echo '<i class="fas fa-check-circle"></i> ' . htmlspecialchars($_GET['mensaje']);
         echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
         echo '</div>';
     }
     if (isset($_GET['error'])) {
         echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
-        echo htmlspecialchars($_GET['error']);
+        echo '<i class="fas fa-exclamation-circle"></i> ' . htmlspecialchars($_GET['error']);
         echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
         echo '</div>';
     }
-    ?>    <h2 class="text-center mb-4"><i class="fas fa-parking"></i> Gestión de Reservas de Estacionamiento</h2>
+    ?><h2 class="text-center mb-4"><i class="fas fa-parking"></i> Gestión de Reservas de Estacionamiento</h2>
     <div class="row">
         <div class="col-md-6">
             <div class="card shadow p-4 bg-white rounded">
-                <h4 class="text-center mb-4"><i class="fas fa-plus-circle"></i> Nueva Reserva</h4>
-                <form id="reservaForm" action="<?php echo CONTROLLERS_PATH; ?>/procesar_reserva.php" method="POST">
+                <h4 class="text-center mb-4"><i class="fas fa-plus-circle"></i> Nueva Reserva</h4>                <form id="reservaForm" action="<?php echo $viewHelper->url('controllers/procesar_reserva.php'); ?>" method="POST">
+                    <?php echo $viewHelper->csrfField(); ?>
                     <div class="mb-3">
                         <label for="evento" class="form-label"><i class="fas fa-calendar-alt"></i> Nombre del Evento</label>
                         <input type="text" id="evento" name="evento" class="form-control" placeholder="Ejemplo: Concierto de Verano" required>
@@ -70,18 +88,14 @@ include(VIEWS_PATH . '/components/cabecera.php');
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="fecha" class="form-label"><i class="fas fa-calendar"></i> Fecha</label>
-                                <input type="date" id="fecha" name="fecha" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
+                                <input type="date" id="fecha" name="fecha" class="form-control" required min="<?php echo $viewHelper->getMinDate(); ?>">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="zona" class="form-label"><i class="fas fa-map-marker-alt"></i> Zona</label>
                                 <select id="zona" name="zona" class="form-control" required>
-                                    <option value="">Seleccione una zona</option>
-                                    <option value="A">Zona A - Administrativa</option>
-                                    <option value="B">Zona B - Académica</option>
-                                    <option value="C">Zona C - Deportiva</option>
-                                    <option value="D">Zona D - Visitantes</option>
+                                    <?php echo $viewHelper->renderZonaOptions(); ?>
                                 </select>
                             </div>
                         </div>
@@ -132,7 +146,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
                     </ul>
                 </div>
                 <p>Para registrar un nuevo vehículo, diríjase al módulo de <strong>Registro de Vehículos</strong>.</p>
-                <img src="<?php echo IMG_PATH; ?>/mapa.png" alt="Mapa del estacionamiento" class="img-fluid rounded mt-3">
+                <img src="<?php echo $viewHelper->url('img/mapa.png'); ?>" alt="Mapa del estacionamiento" class="img-fluid rounded mt-3">
             </div>
         </div>
     </div>
@@ -170,21 +184,16 @@ include(VIEWS_PATH . '/components/cabecera.php');
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
+                        <div class="col-md-6">                            <div class="mb-3">
                                 <label for="editarFecha" class="form-label"><i class="fas fa-calendar"></i> Fecha</label>
-                                <input type="date" id="editarFecha" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
+                                <input type="date" id="editarFecha" class="form-control" required min="<?php echo $viewHelper->getMinDate(); ?>">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="editarZona" class="form-label"><i class="fas fa-map-marker-alt"></i> Zona</label>
                                 <select class="form-control" id="editarZona" required>
-                                    <option value="">Seleccione una zona</option>
-                                    <option value="A">Zona A - Administrativa</option>
-                                    <option value="B">Zona B - Académica</option>
-                                    <option value="C">Zona C - Deportiva</option>
-                                    <option value="D">Zona D - Visitantes</option>
+                                    <?php echo $viewHelper->renderZonaOptions(); ?>
                                 </select>
                             </div>
                         </div>
@@ -221,11 +230,59 @@ include(VIEWS_PATH . '/components/cabecera.php');
                     </button>
                 </form>
             </div>
-        </div>
-    </div>
+        </div>    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="<?php echo JS_PATH; ?>/reservas.js"></script>
+<script src="<?php echo $viewHelper->url('js/reservas.js'); ?>"></script>
+
+<script>
+// Configuración DI para JavaScript
+window.appConfig = {
+    paths: {
+        controllers: '<?php echo $viewHelper->url('controllers'); ?>',
+        services: '<?php echo $viewHelper->url('services'); ?>',
+        base: '<?php echo $configService->getUrl('base'); ?>'
+    },
+    user: <?php echo json_encode($viewHelper->getCurrentUser() ?: ['id' => null]); ?>,
+    csrf: '<?php echo $viewHelper->csrfToken(); ?>'
+};
+
+// Helper para mostrar notificaciones desde JavaScript
+window.showNotification = function(type, message) {
+    const alertClass = {
+        'success': 'alert-success',
+        'error': 'alert-danger', 
+        'warning': 'alert-warning',
+        'info': 'alert-info'
+    };
+    
+    const icon = {
+        'success': 'fas fa-check-circle',
+        'error': 'fas fa-exclamation-circle',
+        'warning': 'fas fa-exclamation-triangle', 
+        'info': 'fas fa-info-circle'
+    };
+    
+    const alert = document.createElement('div');
+    alert.className = `alert ${alertClass[type] || 'alert-info'} alert-dismissible fade show`;
+    alert.setAttribute('role', 'alert');
+    alert.innerHTML = `
+        <i class="${icon[type] || 'fas fa-info-circle'}"></i> ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    
+    // Insertar al inicio del container
+    const container = document.querySelector('.container');
+    container.insertBefore(alert, container.firstChild);
+    
+    // Auto-remove después de 5 segundos
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.remove();
+        }
+    }, 5000);
+};
+</script>
 </body>
 </html>
 
