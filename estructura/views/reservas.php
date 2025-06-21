@@ -1,0 +1,232 @@
+<?php
+require_once dirname(__DIR__) . '/config/config.php';
+require_once CONFIG_PATH . '/conex.php';
+session_start();
+
+include(VIEWS_PATH . '/components/cabecera.php');
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="<?php echo CSS_PATH; ?>/estilo_reservas.css" rel="stylesheet">
+    <title>Gestión de Reservas</title>
+    <style>
+        .validation-success { color: #28a745; }
+        .validation-error { color: #dc3545; }
+        .validation-warning { color: #ffc107; }
+        .card-reserva {
+            border-left: 4px solid #007bff;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+        .card-reserva:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .patente-status {
+            font-size: 0.9em;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <?php
+    // Mostrar mensajes de éxito o error
+    if (isset($_GET['mensaje'])) {
+        echo '<div class="alert alert-success alert-dismissible fade show" role="alert">';
+        echo htmlspecialchars($_GET['mensaje']);
+        echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+        echo '</div>';
+    }
+    if (isset($_GET['error'])) {
+        echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+        echo htmlspecialchars($_GET['error']);
+        echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+        echo '</div>';
+    }
+    ?>    <h2 class="text-center mb-4"><i class="fas fa-parking"></i> Gestión de Reservas de Estacionamiento</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow p-4 bg-white rounded">
+                <h4 class="text-center mb-4"><i class="fas fa-plus-circle"></i> Nueva Reserva</h4>
+                <form id="reservaForm" action="<?php echo CONTROLLERS_PATH; ?>/procesar_reserva.php" method="POST">
+                    <div class="mb-3">
+                        <label for="evento" class="form-label"><i class="fas fa-calendar-alt"></i> Nombre del Evento</label>
+                        <input type="text" id="evento" name="evento" class="form-control" placeholder="Ejemplo: Concierto de Verano" required>
+                        <div class="form-text">Ingrese un nombre descriptivo para el evento</div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="fecha" class="form-label"><i class="fas fa-calendar"></i> Fecha</label>
+                                <input type="date" id="fecha" name="fecha" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="zona" class="form-label"><i class="fas fa-map-marker-alt"></i> Zona</label>
+                                <select id="zona" name="zona" class="form-control" required>
+                                    <option value="">Seleccione una zona</option>
+                                    <option value="A">Zona A - Administrativa</option>
+                                    <option value="B">Zona B - Académica</option>
+                                    <option value="C">Zona C - Deportiva</option>
+                                    <option value="D">Zona D - Visitantes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="hora_inicio" class="form-label"><i class="fas fa-clock"></i> Hora de Inicio</label>
+                                <input type="time" id="hora_inicio" name="hora_inicio" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="hora_fin" class="form-label"><i class="fas fa-clock"></i> Hora de Fin</label>
+                                <input type="time" id="hora_fin" name="hora_fin" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="usuario" class="form-label"><i class="fas fa-user"></i> Nombre del Usuario</label>
+                        <input type="text" id="usuario" name="usuario" class="form-control" placeholder="Tu nombre completo" required>
+                        <div class="form-text">Ingrese el nombre completo del responsable</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="patente" class="form-label"><i class="fas fa-car"></i> Patente del Vehículo</label>
+                        <input type="text" id="patente" name="patente" class="form-control" placeholder="Ejemplo: ABCD12" required maxlength="8" style="text-transform: uppercase;">
+                        <div id="patente-validation" class="patente-status"></div>
+                        <div class="form-text">La patente debe estar registrada en el sistema</div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="btn btn-primary w-100">
+                        <i class="fas fa-save"></i> Crear Reserva
+                    </button>
+                </form>
+            </div>        </div>        <div class="col-md-6">
+            <div class="card shadow p-4 bg-white rounded">
+                <h4 class="text-center"><i class="fas fa-info-circle"></i> Instrucciones y Mapa</h4>
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-exclamation-triangle"></i> Importante:</h6>
+                    <ul class="mb-0">
+                        <li>La patente debe estar registrada en el sistema</li>
+                        <li>No se permite reservar en fechas pasadas</li>
+                        <li>No se permiten solapamientos de horarios en la misma zona</li>
+                        <li>La hora de fin debe ser posterior a la hora de inicio</li>
+                    </ul>
+                </div>
+                <p>Para registrar un nuevo vehículo, diríjase al módulo de <strong>Registro de Vehículos</strong>.</p>
+                <img src="<?php echo IMG_PATH; ?>/mapa.png" alt="Mapa del estacionamiento" class="img-fluid rounded mt-3">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="card shadow p-4 bg-white rounded">
+            <h4 class="text-center mb-4"><i class="fas fa-list"></i> Reservas Activas</h4>
+            <div id="recordatorios">
+                <!-- Aquí se cargarán los eventos reservados -->
+                <div class="text-center text-muted">
+                    <i class="fas fa-spinner fa-spin"></i> Cargando reservas...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal para editar reserva -->
+<div class="modal fade" id="editarReservaModal" tabindex="-1" aria-labelledby="editarReservaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="editarReservaModalLabel">
+                    <i class="fas fa-edit"></i> Editar Reserva
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarReservaForm">
+                    <input type="hidden" id="editarReservaId">
+                    
+                    <div class="mb-3">
+                        <label for="editarEvento" class="form-label"><i class="fas fa-calendar-alt"></i> Nombre del Evento</label>
+                        <input type="text" id="editarEvento" class="form-control" required>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editarFecha" class="form-label"><i class="fas fa-calendar"></i> Fecha</label>
+                                <input type="date" id="editarFecha" class="form-control" required min="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editarZona" class="form-label"><i class="fas fa-map-marker-alt"></i> Zona</label>
+                                <select class="form-control" id="editarZona" required>
+                                    <option value="">Seleccione una zona</option>
+                                    <option value="A">Zona A - Administrativa</option>
+                                    <option value="B">Zona B - Académica</option>
+                                    <option value="C">Zona C - Deportiva</option>
+                                    <option value="D">Zona D - Visitantes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editarHoraInicio" class="form-label"><i class="fas fa-clock"></i> Hora de Inicio</label>
+                                <input type="time" id="editarHoraInicio" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editarHoraFin" class="form-label"><i class="fas fa-clock"></i> Hora de Fin</label>
+                                <input type="time" id="editarHoraFin" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editarUsuario" class="form-label"><i class="fas fa-user"></i> Usuario</label>
+                        <input type="text" id="editarUsuario" class="form-control" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editarPatente" class="form-label"><i class="fas fa-car"></i> Patente</label>
+                        <input type="text" id="editarPatente" class="form-control" required maxlength="8" style="text-transform: uppercase;">
+                        <div id="editarPatente-validation" class="patente-status"></div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="<?php echo JS_PATH; ?>/reservas.js"></script>
+</body>
+</html>
+
+<?php include(VIEWS_PATH . '/components/pie.php'); ?>

@@ -1,60 +1,95 @@
 <?php
-require_once dirname(__DIR__) . '/config/config.php';
-require_once MODELS_PATH . '/classReserva.php';
+session_start();
+require_once('../config/config.php');
+require_once('../config/conex.php');
 
-// Clase observadora para notificaciones por correo
-class EmailNotifier implements ReservaObserver {
-    public function update($message) {
-        error_log("Notificación por correo: " . $message);
-    }
-}
-
-// Clase observadora para notificaciones en la interfaz
-class UINotifier implements ReservaObserver {
-    public function update($message) {
-        $_SESSION['notificacion'] = $message;
-    }
-}
-
-// Clase observadora para registro de auditoría
-class AuditNotifier implements ReservaObserver {
-    public function update($message) {
-        error_log("Auditoría: " . $message);
-    }
-}
+header('Content-Type: application/json');
 
 try {
     // Obtener los datos del POST
     $datos = json_decode(file_get_contents('php://input'), true);
     
-    // Usar el Factory Method para crear la reserva
-    $factory = new ReservaFactoryImpl();
-    $datosReserva = [
-        'id' => $datos['id'],
-        'evento' => $datos['evento'],
-        'fecha' => $datos['fecha'],
-        'horaInicio' => $datos['horaInicio'],
-        'horaFin' => $datos['horaFin'],
-        'zona' => $datos['zona'],
-        'tipoVehiculo' => $datos['tipoVehiculo'],
-        'usuarioId' => $_SESSION['usuario_id'] ?? null,
-        'capacidadMaxima' => $datos['capacidadMaxima'] ?? 1
-    ];
+    // Verificar que se enviaron todos los datos requeridos
+    $campos_requeridos = ['id', 'evento', 'fecha', 'horaInicio', 'horaFin', 'usuario', 'patente', 'zona'];
     
-    $reserva = $factory->crearReserva($datosReserva);
-    
-    // Agregar observadores
-    $reserva->attachObserver(new EmailNotifier());
-    $reserva->attachObserver(new UINotifier());
-    $reserva->attachObserver(new AuditNotifier());
-    
-    // Actualizar la reserva usando la interfaz IReserva
-    if ($reserva->actualizarReserva()) {
-        echo json_encode(['status' => 'success', 'message' => 'Reserva actualizada correctamente.']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Error al actualizar la reserva.']);
+    foreach ($campos_requeridos as $campo) {
+        if (!isset($datos[$campo]) || empty($datos[$campo])) {
+            throw new Exception("El campo '$campo' es requerido");
+        }
     }
+    
+    $id = intval($datos['id']);
+    $evento = $datos['evento'];
+    $fecha = $datos['fecha'];
+    $hora_inicio = $datos['horaInicio'];
+    $hora_fin = $datos['horaFin'];
+    $usuario = $datos['usuario'];
+    $patente = strtoupper($datos['patente']);
+    $zona = $datos['zona'];
+    
+    // Validar que la fecha no sea en el pasado
+    if (strtotime($fecha) < strtotime(date('Y-m-d'))) {
+        throw new Exception("No se puede reservar para fechas pasadas");
+    }
+    
+    // Validar que la hora de fin sea después de la hora de inicio
+    if (strtotime($hora_fin) <= strtotime($hora_inicio)) {
+        throw new Exception("La hora de fin debe ser posterior a la hora de inicio");
+    }
+    
+    // Conectar a la base de datos
+    $pdo = new PDO("mysql:host=$host;dbname=$BD", $user, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Validar que la patente exista en el sistema
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM vehiculos WHERE patente = ?");
+    $stmt->execute([$patente]);
+    if ($stmt->fetchColumn() == 0) {
+        throw new Exception("La patente '$patente' no está registrada en el sistema.");
+    }
+    
+    // Verificar que no exista conflicto de horarios (excluyendo la reserva actual)
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) 
+        FROM reservas 
+        WHERE zona = ? AND fecha = ? AND id != ?
+        AND ((hora_inicio <= ? AND hora_fin > ?) OR (hora_inicio < ? AND hora_fin >= ?))
+    ");
+    $stmt->execute([$zona, $fecha, $id, $hora_inicio, $hora_inicio, $hora_fin, $hora_fin]);
+    
+    if ($stmt->fetchColumn() > 0) {
+        throw new Exception("Ya existe una reserva en esa zona para el horario solicitado");
+    }
+    
+    // Actualizar la reserva
+    $stmt = $pdo->prepare("
+        UPDATE reservas 
+        SET evento = ?, fecha = ?, hora_inicio = ?, hora_fin = ?, usuario = ?, patente = ?, zona = ?
+        WHERE id = ?
+    ");
+    
+    $result = $stmt->execute([$evento, $fecha, $hora_inicio, $hora_fin, $usuario, $patente, $zona, $id]);
+    
+    if ($result) {
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Reserva actualizada exitosamente'
+        ]);
+    } else {
+        throw new Exception("Error al actualizar la reserva");
+    }
+    
+} catch (PDOException $e) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Error de base de datos: ' . $e->getMessage()
+    ]);
 } catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $e->getMessage()
+    ]);
 }
+
+exit;
 ?>

@@ -1,47 +1,55 @@
 <?php
-require_once dirname(__DIR__) . '/config/config.php';
-require_once MODELS_PATH . '/classReserva.php';
+session_start();
+require_once('../config/config.php');
+require_once('../config/conex.php');
 
-// Clase observadora para notificaciones por correo
-class EmailNotifier implements ReservaObserver {
-    public function update($message) {
-        error_log("Notificación por correo: " . $message);
-    }
-}
-
-// Clase observadora para notificaciones en la interfaz
-class UINotifier implements ReservaObserver {
-    public function update($message) {
-        $_SESSION['notificacion'] = $message;
-    }
-}
-
-// Clase observadora para registro de auditoría
-class AuditNotifier implements ReservaObserver {
-    public function update($message) {
-        error_log("Auditoría: " . $message);
-    }
-}
+header('Content-Type: application/json');
 
 try {
-    // Usar el Factory Method para crear la reserva
-    $factory = new ReservaFactoryImpl();
-    $datosReserva = ['id' => $_GET['id']];
-    $reserva = $factory->crearReserva($datosReserva);
-    
-    // Agregar observadores
-    $reserva->attachObserver(new EmailNotifier());
-    $reserva->attachObserver(new UINotifier());
-    $reserva->attachObserver(new AuditNotifier());
-    
-    // Eliminar la reserva usando la interfaz IReserva
-    if ($reserva->eliminarReserva()) {
-        echo json_encode(['status' => 'success', 'message' => 'Reserva eliminada con éxito.']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Error al eliminar la reserva.']);
+    // Verificar que se envió el ID
+    if (!isset($_GET['id']) || empty($_GET['id'])) {
+        throw new Exception("ID de reserva requerido");
     }
+    
+    $id = intval($_GET['id']);
+    
+    // Conectar a la base de datos
+    $pdo = new PDO("mysql:host=$host;dbname=$BD", $user, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Verificar que la reserva existe
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM reservas WHERE id = ?");
+    $stmt->execute([$id]);
+    
+    if ($stmt->fetchColumn() == 0) {
+        throw new Exception("Reserva no encontrada");
+    }
+    
+    // Eliminar la reserva
+    $stmt = $pdo->prepare("DELETE FROM reservas WHERE id = ?");
+    $result = $stmt->execute([$id]);
+    
+    if ($result) {
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Reserva eliminada exitosamente'
+        ]);
+    } else {
+        throw new Exception("Error al eliminar la reserva");
+    }
+    
+} catch (PDOException $e) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Error de base de datos: ' . $e->getMessage()
+    ]);
 } catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $e->getMessage()
+    ]);
 }
+
+exit;
 ?>
  

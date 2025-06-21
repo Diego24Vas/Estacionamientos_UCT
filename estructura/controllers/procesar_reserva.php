@@ -8,7 +8,7 @@ require_once('../config/conex.php');
 
 try {
     // Verificar que se enviaron todos los datos requeridos
-    $campos_requeridos = ['evento', 'fecha', 'hora_inicio', 'hora_fin', 'usuario', 'patente', 'tipoVehiculo', 'zona'];
+    $campos_requeridos = ['evento', 'fecha', 'hora_inicio', 'hora_fin', 'usuario', 'patente', 'zona'];
     
     foreach ($campos_requeridos as $campo) {
         if (!isset($_POST[$campo]) || empty($_POST[$campo])) {
@@ -23,21 +23,33 @@ try {
     $hora_fin = $_POST['hora_fin'];
     $usuario = $_POST['usuario'];
     $patente = strtoupper($_POST['patente']);
-    $tipo_vehiculo = $_POST['tipoVehiculo'];
     $zona = $_POST['zona'];
+    
+    // El tipo de vehículo lo obtenemos de la base de datos basado en la patente
+    $tipo_vehiculo = null;
     
     // Validar que la fecha no sea en el pasado
     if (strtotime($fecha) < strtotime(date('Y-m-d'))) {
         throw new Exception("No se puede reservar para fechas pasadas");
     }
-    
-    // Validar que la hora de fin sea después de la hora de inicio
+      // Validar que la hora de fin sea después de la hora de inicio
     if (strtotime($hora_fin) <= strtotime($hora_inicio)) {
         throw new Exception("La hora de fin debe ser posterior a la hora de inicio");
     }
-      // Conectar a la base de datos
+    
+    // Conectar a la base de datos
     $pdo = new PDO("mysql:host=$host;dbname=$BD", $user, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      // Validar que la patente exista en el sistema y obtener el tipo de vehículo
+    $stmt = $pdo->prepare("SELECT tipo FROM vehiculos WHERE patente = ?");
+    $stmt->execute([$patente]);
+    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$resultado) {
+        throw new Exception("La patente '$patente' no está registrada en el sistema. Debe registrar el vehículo primero.");
+    }
+    
+    $tipo_vehiculo = $resultado['tipo'];
     
     // Verificar si ya existe una reserva en esa zona, fecha y horario
     $stmt = $pdo->prepare("
