@@ -28,6 +28,7 @@
     <title>Gestión de Estacionamiento - Universidad</title>
 <script>
     $(document).ready(function() {
+        // Inicializar el calendario
         $('#calendar').fullCalendar({
             defaultView: 'month',
             events: [
@@ -44,6 +45,29 @@
                 }
             ]
         });
+        
+        // Verificar estado de autenticación cada 5 minutos
+        function verificarAutenticacion() {
+            $.ajax({
+                url: '<?php echo BASE_URL; ?>/estructura/controllers/verificar_autenticacion.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (!data.authenticated) {
+                        console.log('Sesión expirada o no válida. Redirigiendo...');
+                        window.location.href = '<?php echo BASE_URL; ?>/estructura/views/inicio.php';
+                    } else {
+                        console.log('Sesión activa:', data.user.nombre);
+                    }
+                },
+                error: function() {
+                    console.error('Error al verificar autenticación');
+                }
+            });
+        }
+        
+        // Verificar autenticación cada 5 minutos (300000 ms)
+        setInterval(verificarAutenticacion, 300000);
     });
 </script>
 
@@ -89,12 +113,33 @@
                 <button id="modoOscuroBtn" class="btn btn-dark-mode" style="width:90%;margin:0 5%;display:flex;align-items:center;gap:10px;justify-content:left;background:none;border:none;color:white;font-size:1rem;padding:10px 20px;cursor:pointer;">
                     <i class="fas fa-moon"></i> <span id="modoOscuroTexto">Modo Oscuro</span>
                 </button>
-            </li>
-            <li>
-                <a href="<?php echo BASE_URL; ?>/estructura/views/inicio.php">
+            </li>            <li>
+                <a href="javascript:void(0)" onclick="cerrarSesion()">
                     <i class="fas fa-sign-out-alt menu-icon"></i> Cerrar Sesión
                 </a>
             </li>
+            
+            <script>
+            function cerrarSesion() {
+                if(confirm('¿Está seguro que desea cerrar sesión?')) {
+                    fetch('<?php echo BASE_URL; ?>/estructura/controllers/logout.php')
+                    .then(response => {
+                        console.log('📡 Respuesta del servidor:', response);
+                        if(response.ok || response.redirected) {
+                            window.location.href = '<?php echo BASE_URL; ?>/estructura/views/inicio.php';
+                        } else {
+                            throw new Error('Error en la respuesta del servidor');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('❌ Error al cerrar sesión:', error);
+                        alert('Hubo un problema al cerrar sesión. Por favor, intente nuevamente.');
+                        // Redirigir de todas formas como plan B
+                        window.location.href = '<?php echo BASE_URL; ?>/estructura/views/inicio.php';
+                    });
+                }
+            }
+            </script>
         </ul>
     </div>
 

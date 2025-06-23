@@ -1,11 +1,52 @@
 <?php
-// Navegador de archivos simple para la carpeta actual
+// Incluir configuraciones y gestor de sesiones
+require_once __DIR__ . '/estructura/config/config.php';
+require_once __DIR__ . '/estructura/services/session_manager.php';
+
+// Crear carpeta de logs si no existe
+$log_dir = __DIR__ . '/estructura/logs';
+if (!file_exists($log_dir)) {
+    mkdir($log_dir, 0755, true);
+}
+
+// Registrar acceso para depuración
+file_put_contents(
+    $log_dir . '/index_access.log',
+    date('Y-m-d H:i:s') . " - Acceso al index principal - Autenticado: " . (is_authenticated() ? 'Sí' : 'No') . PHP_EOL,
+    FILE_APPEND
+);
+
+// Construir URL base
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$baseURL = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['SCRIPT_NAME']);
+
+// Redirigir según estado de autenticación
+if (is_authenticated()) {
+    // Si está autenticado, redirigir al panel principal
+    $redirect_url = $baseURL . "/estructura/views/pag_inicio.php";
+    file_put_contents(
+        $log_dir . '/index_redirect.log',
+        date('Y-m-d H:i:s') . " - Usuario autenticado, redirigiendo a: " . $redirect_url . PHP_EOL,
+        FILE_APPEND
+    );
+} else {
+    // Si no está autenticado, redirigir a la página de inicio de sesión
+    $redirect_url = $baseURL . "/estructura/views/inicio.php";
+    file_put_contents(
+        $log_dir . '/index_redirect.log',
+        date('Y-m-d H:i:s') . " - Usuario NO autenticado, redirigiendo a: " . $redirect_url . PHP_EOL,
+        FILE_APPEND
+    );
+}
+
+// Ejecutar la redirección
+if (!headers_sent()) {
+    header("Location: " . $redirect_url);
+} else {
+    echo '<script>window.location.href="' . htmlspecialchars($redirect_url, ENT_QUOTES, 'UTF-8') . '";</script>';
+}
+exit();
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Navegador de archivos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {

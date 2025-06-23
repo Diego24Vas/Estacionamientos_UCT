@@ -1,18 +1,46 @@
 <?php
 require_once 'config/config.php';
+require_once 'services/session_manager.php';
 
-// Iniciar sesión si no está iniciada
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+// Crear carpeta de logs si no existe
+$log_dir = __DIR__ . '/logs';
+if (!file_exists($log_dir)) {
+    mkdir($log_dir, 0755, true);
 }
 
-// Determinar qué controlador y acción usar
-$controller = isset($_GET['controller']) ? $_GET['controller'] : 'inicio';
-$action = isset($_GET['action']) ? $_GET['action'] : 'index';
+// Registrar acceso para depuración
+file_put_contents(
+    $log_dir . '/estructura_index_access.log',
+    date('Y-m-d H:i:s') . " - Acceso al index de estructura - Autenticado: " . (is_authenticated() ? 'Sí' : 'No') . PHP_EOL,
+    FILE_APPEND
+);
 
-// Construir el nombre del controlador
-$controllerName = ucfirst($controller) . 'Controller';
-$controllerFile = CONTROLLERS_PATH . '/' . $controller . '.php';
+// Determinar si el usuario está autenticado
+if (is_authenticated()) {
+    // Si está autenticado, redirigir al panel principal
+    $redirect_url = BASE_URL . "/estructura/views/pag_inicio.php";
+    file_put_contents(
+        $log_dir . '/estructura_index_redirect.log',
+        date('Y-m-d H:i:s') . " - Usuario autenticado, redirigiendo a: " . $redirect_url . PHP_EOL,
+        FILE_APPEND
+    );
+} else {
+    // Si no está autenticado, redirigir a la página de inicio de sesión
+    $redirect_url = BASE_URL . "/estructura/views/inicio.php";
+    file_put_contents(
+        $log_dir . '/estructura_index_redirect.log',
+        date('Y-m-d H:i:s') . " - Usuario NO autenticado, redirigiendo a: " . $redirect_url . PHP_EOL,
+        FILE_APPEND
+    );
+}
+
+// Ejecutar la redirección
+if (!headers_sent()) {
+    header("Location: " . $redirect_url);
+} else {
+    echo '<script>window.location.href="' . htmlspecialchars($redirect_url, ENT_QUOTES, 'UTF-8') . '";</script>';
+}
+exit();
 
 // Verificar si el controlador existe
 if (file_exists($controllerFile)) {

@@ -1,12 +1,11 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
-session_start();
+require_once dirname(__DIR__) . '/services/session_manager.php';
 
-if (!isset($_SESSION['usuario'])) {
-    header("Location: " . VIEWS_PATH . "/inicio.php");
-    exit();
-}
+// Redirigir si no está autenticado
+redirect_if_not_authenticated();
 
+// Incluir la conexión a la base de datos
 require_once CONFIG_PATH . '/conex.php';
 
 // Resumen de espacios

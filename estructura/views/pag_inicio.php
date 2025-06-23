@@ -1,8 +1,10 @@
 <?php 
 require_once dirname(__DIR__) . '/config/config.php';
-include(VIEWS_PATH . '/components/cabecera.php'); 
-include(CONTROLLERS_PATH . '/procesar_patente.php'); 
+// Primero incluimos los archivos que manejan sesiones y cabeceras
 include(SERVICES_PATH . '/logica_main.php'); 
+include(CONTROLLERS_PATH . '/procesar_patente.php'); 
+// Después incluimos la cabecera que contiene HTML
+include(VIEWS_PATH . '/components/cabecera.php'); 
 ?>
 <!DOCTYPE html>
 <html lang="es">
