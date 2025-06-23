@@ -46,10 +46,39 @@ include(VIEWS_PATH . '/components/cabecera.php');
         .btn-actions {
             display: flex;
             gap: 0.5rem;
-        }
-        .patente-status {
+        }        .patente-status {
             font-size: 0.9em;
             margin-top: 0.25rem;
+        }
+        .availability-indicator {
+            margin-top: 0.5rem;
+            font-size: 0.9em;
+        }
+        .availability-indicator.checking {
+            color: #6c757d;
+        }
+        .availability-indicator.available {
+            color: #28a745;
+        }
+        .availability-indicator.full {
+            color: #dc3545;
+        }
+        .availability-indicator.error {
+            color: #ffc107;
+        }
+        .parking-stats .card {
+            transition: transform 0.2s;
+        }
+        .parking-stats .card:hover {
+            transform: translateY(-1px);
+        }
+        .border-success { border-color: #28a745 !important; }
+        .border-info { border-color: #17a2b8 !important; }
+        .border-warning { border-color: #ffc107 !important; }
+        .border-danger { border-color: #dc3545 !important; }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
     </style>
 </head>

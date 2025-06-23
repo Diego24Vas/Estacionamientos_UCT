@@ -116,8 +116,7 @@ class VehicleService {
             return null;
         }
     }
-    
-    /**
+      /**
      * Registrar nuevo vehículo
      */
     public function createVehicle(array $data): array {
@@ -125,17 +124,21 @@ class VehicleService {
             // Validar datos
             $validation = $this->validateVehicleData($data);
             if (!$validation['valido']) {
-                return $validation;
+                return [
+                    'exito' => false,
+                    'mensaje' => $validation['mensaje']
+                ];
             }
             
             // Verificar que la patente no exista
             if ($this->patenteExists($data['patente'])) {
                 return [
                     'exito' => false,
-                    'mensaje' => 'La patente ya está registrada en el sistema'
+                    'mensaje' => 'La patente ' . $data['patente'] . ' ya está registrada en el sistema'
                 ];
             }
             
+            // Usar repository si está disponible
             if (method_exists($this->vehicleRepository, 'create')) {
                 $id = $this->vehicleRepository->create($data);
                 return [
@@ -147,17 +150,30 @@ class VehicleService {
             
             // Fallback a inserción directa
             global $conexion;
+            if (!$conexion) {
+                throw new Exception("No hay conexión a la base de datos");
+            }
+            
             $stmt = $conexion->prepare("
-                INSERT INTO vehiculos (patente, marca_id, modelo, color, año, propietario) 
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO vehiculos (
+                    propietario_nombre, propietario_apellido, propietario_email, propietario_telefono,
+                    patente, tipo, marca, modelo, año, color, zona_autorizada, tipo_usuario, fecha_registro
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
             ");
-            $stmt->bind_param("sissss", 
+            
+            $stmt->bind_param("ssssssssssss", 
+                $data['propietario_nombre'],
+                $data['propietario_apellido'], 
+                $data['propietario_email'],
+                $data['propietario_telefono'],
                 $data['patente'],
-                $data['marca_id'],
+                $data['tipo'],
+                $data['marca'],
                 $data['modelo'],
-                $data['color'],
                 $data['año'],
-                $data['propietario']
+                $data['color'],
+                $data['zona_autorizada'],
+                $data['tipo_usuario']
             );
             
             if ($stmt->execute()) {
@@ -165,29 +181,39 @@ class VehicleService {
                 $stmt->close();
                 return [
                     'exito' => true,
-                    'mensaje' => 'Vehículo registrado exitosamente',
+                    'mensaje' => 'Vehículo registrado exitosamente con ID: ' . $id,
                     'id' => $id
                 ];
             } else {
+                $error = $stmt->error;
                 $stmt->close();
                 return [
                     'exito' => false,
-                    'mensaje' => 'Error al registrar el vehículo'
+                    'mensaje' => 'Error al registrar el vehículo: ' . $error
                 ];
             }
+            
         } catch (Exception $e) {
+            error_log("Error creating vehicle: " . $e->getMessage());
             return [
                 'exito' => false,
-                'mensaje' => 'Error: ' . $e->getMessage()
+                'mensaje' => 'Error al registrar vehículo: ' . $e->getMessage()
             ];
         }
     }
-    
-    /**
+      /**
      * Validar datos de vehículo
-     */
-    private function validateVehicleData(array $data): array {
+     */    private function validateVehicleData(array $data): array {
         $errors = [];
+        
+        // Validaciones requeridas
+        if (empty($data['propietario_nombre'])) {
+            $errors[] = 'El nombre del propietario es requerido';
+        }
+        
+        if (empty($data['propietario_apellido'])) {
+            $errors[] = 'El apellido del propietario es requerido';
+        }
         
         if (empty($data['patente'])) {
             $errors[] = 'La patente es requerida';
@@ -195,22 +221,26 @@ class VehicleService {
             $errors[] = 'Formato de patente inválido';
         }
         
-        if (empty($data['marca_id'])) {
-            $errors[] = 'La marca es requerida';
+        if (empty($data['zona_autorizada'])) {
+            $errors[] = 'La zona autorizada es requerida';
         }
         
-        if (empty($data['modelo'])) {
-            $errors[] = 'El modelo es requerido';
+        // Validaciones opcionales
+        if (!empty($data['propietario_email']) && !filter_var($data['propietario_email'], FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Email inválido';
         }
         
-        if (empty($data['propietario'])) {
-            $errors[] = 'El propietario es requerido';
-        }
+        if (!empty($data['año'])) {
+            $currentYear = (int)date('Y');
+            $year = (int)$data['año'];
+            if ($year < 1990 || $year > ($currentYear + 1)) {
+                $errors[] = 'Año del vehículo inválido';
+            }        }
         
         return [
             'valido' => empty($errors),
             'errores' => $errors,
-            'mensaje' => empty($errors) ? 'Datos válidos' : 'Datos inválidos: ' . implode(', ', $errors)
+            'mensaje' => empty($errors) ? 'Datos válidos' : 'Errores encontrados: ' . implode(', ', $errors)
         ];
     }
 }

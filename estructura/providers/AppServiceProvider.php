@@ -11,6 +11,7 @@ require_once dirname(__DIR__) . '/services/NotificationService.php';
 require_once dirname(__DIR__) . '/services/ValidationService.php';
 require_once dirname(__DIR__) . '/services/ReservaService.php';
 require_once dirname(__DIR__) . '/services/ViewHelperService.php';
+require_once dirname(__DIR__) . '/services/ParkingSpaceService.php';
 
 /**
  * Application Service Provider
@@ -36,12 +37,20 @@ class AppServiceProvider extends ServiceProvider {
         $this->singleton('service.notification', function($container) {
             return new NotificationService($container->get('service.session'));
         });
-        
-        // Registrar ViewHelperService
+          // Registrar ViewHelperService
         $this->singleton('service.view', function($container) {
             return new ViewHelperService(
                 $container->get('service.config'),
                 $container->get('service.session')
+            );
+        });
+        
+        // Registrar ParkingSpaceService
+        $this->singleton('service.parking', function($container) {
+            return new ParkingSpaceService(
+                $container->get('database.connection'),
+                $container->get('service.validation'),
+                $container->get('service.notification')
             );
         });
         
@@ -67,13 +76,14 @@ class AppServiceProvider extends ServiceProvider {
                 $container->get('service.validation')
             );
         });
-        
-        // Registrar ReservaService
+          // Registrar ReservaService
         $this->bind('service.reserva', function($container) {
             return new ReservaService(
                 $container->get('repository.reserva'),
                 $container->get('repository.vehicle'),
-                $container->get('service.validation')
+                $container->get('service.validation'),
+                $container->get('service.notification'),
+                $container->get('service.parking')
             );
         });
     }

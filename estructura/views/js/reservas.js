@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     cargarEventos();
     verificarProximosEventos();
+    loadParkingStats(); // Cargar estadísticas de estacionamiento
     
     // Agregar validación de patente en tiempo real
     const patenteInput = document.getElementById('patente');
@@ -29,6 +30,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     
+    // Validar disponibilidad cuando cambian los campos relevantes
+    const formFields = ['zona', 'fecha', 'hora_inicio', 'hora_fin'];
+    formFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('change', checkAvailabilityOnChange);
+        }
+    });
+    
     // Validar formulario antes de enviar
     const reservaForm = document.getElementById('reservaForm');
     if (reservaForm) {
@@ -41,6 +51,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('La hora de fin debe ser posterior a la hora de inicio');
                 return false;
             }
+            
+            // Verificar disponibilidad final antes de enviar
+            e.preventDefault();
+            checkAvailabilityBeforeSubmit();
         });
     }
 });
@@ -352,3 +366,254 @@ function cargarZonas() {
         .catch(error => console.error('Error al cargar las zonas:', error));
 }
 */
+
+// === NUEVAS FUNCIONES PARA CONTROL DE CUPOS ===
+
+/**
+ * Verificar disponibilidad cuando cambian los campos del formulario
+ */
+function checkAvailabilityOnChange() {
+    const zona = document.getElementById('zona').value;
+    const fecha = document.getElementById('fecha').value;
+    const horaInicio = document.getElementById('hora_inicio').value;
+    const horaFin = document.getElementById('hora_fin').value;
+    
+    if (zona && fecha && horaInicio && horaFin) {
+        checkParkingAvailability(zona, fecha, horaInicio, horaFin);
+    }
+}
+
+/**
+ * Verificar disponibilidad antes de enviar el formulario
+ */
+function checkAvailabilityBeforeSubmit() {
+    const zona = document.getElementById('zona').value;
+    const fecha = document.getElementById('fecha').value;
+    const horaInicio = document.getElementById('hora_inicio').value;
+    const horaFin = document.getElementById('hora_fin').value;
+    
+    if (!zona || !fecha || !horaInicio || !horaFin) {
+        showNotification('error', 'Todos los campos son requeridos');
+        return;
+    }
+    
+    fetch(`${window.appConfig.paths.controllers}/parking_api.php?action=availability&zona=${zona}&fecha=${fecha}&hora_inicio=${horaInicio}&hora_fin=${horaFin}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.available) {
+                // Mostrar información de disponibilidad y proceder
+                showAvailabilityInfo(data);
+                document.getElementById('reservaForm').submit();
+            } else {
+                // Bloquear envío y mostrar error
+                showNotification('error', `No hay espacios disponibles en la zona ${zona}. Espacios ocupados: ${data.occupiedSpaces}/${data.maxSpaces}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error verificando disponibilidad:', error);
+            showNotification('warning', 'No se pudo verificar disponibilidad. Procediendo con la reserva...');
+            document.getElementById('reservaForm').submit();
+        });
+}
+
+/**
+ * Verificar disponibilidad de espacios de estacionamiento
+ */
+function checkParkingAvailability(zona, fecha, horaInicio, horaFin) {
+    const availabilityIndicator = document.getElementById('availability-indicator') || createAvailabilityIndicator();
+    
+    availabilityIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando disponibilidad...';
+    availabilityIndicator.className = 'availability-indicator checking';
+    
+    fetch(`${window.appConfig.paths.controllers}/parking_api.php?action=availability&zona=${zona}&fecha=${fecha}&hora_inicio=${horaInicio}&hora_fin=${horaFin}`)
+        .then(response => response.json())
+        .then(data => {
+            updateAvailabilityIndicator(data, zona);
+        })
+        .catch(error => {
+            console.error('Error verificando disponibilidad:', error);
+            availabilityIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error verificando disponibilidad';
+            availabilityIndicator.className = 'availability-indicator error';
+        });
+}
+
+/**
+ * Crear indicador de disponibilidad
+ */
+function createAvailabilityIndicator() {
+    const indicator = document.createElement('div');
+    indicator.id = 'availability-indicator';
+    indicator.className = 'availability-indicator mt-2';
+    
+    // Insertar después del campo zona
+    const zonaField = document.getElementById('zona').parentNode;
+    zonaField.appendChild(indicator);
+    
+    return indicator;
+}
+
+/**
+ * Actualizar indicador de disponibilidad
+ */
+function updateAvailabilityIndicator(data, zona) {
+    const indicator = document.getElementById('availability-indicator');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (data.available) {
+        indicator.innerHTML = `
+            <div class="alert alert-success p-2 mb-0">
+                <i class="fas fa-check-circle"></i> 
+                Espacios disponibles: ${data.availableSpaces}/${data.maxSpaces} 
+                <small>(${data.utilizationPercentage}% ocupado)</small>
+            </div>
+        `;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save"></i> Crear Reserva';
+        submitBtn.className = 'btn btn-primary w-100';
+        
+        if (data.utilizationPercentage >= 80) {
+            showNotification('warning', `Zona ${zona} está al ${data.utilizationPercentage}% de capacidad`);
+        }
+    } else {
+        indicator.innerHTML = `
+            <div class="alert alert-danger p-2 mb-0">
+                <i class="fas fa-times-circle"></i> 
+                No hay espacios disponibles (${data.occupiedSpaces}/${data.maxSpaces})
+            </div>
+        `;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-ban"></i> Zona Completa';
+        submitBtn.className = 'btn btn-secondary w-100';
+        
+        showNotification('error', `Zona ${zona} está completa. Seleccione otra zona u horario.`);
+    }
+}
+
+/**
+ * Mostrar información de disponibilidad
+ */
+function showAvailabilityInfo(data) {
+    const message = `Reserva confirmada. Espacios restantes: ${data.availableSpaces}/${data.maxSpaces}`;
+    
+    if (data.utilizationPercentage >= 90) {
+        showNotification('warning', message + ` (${data.utilizationPercentage}% ocupado)`);
+    } else {
+        showNotification('success', message);
+    }
+}
+
+/**
+ * Cargar estadísticas de estacionamiento
+ */
+function loadParkingStats() {
+    fetch(`${window.appConfig.paths.controllers}/parking_api.php?action=stats`)
+        .then(response => response.json())
+        .then(data => {
+            updateParkingStatsDisplay(data);
+        })
+        .catch(error => {
+            console.error('Error cargando estadísticas:', error);
+        });
+}
+
+/**
+ * Actualizar display de estadísticas
+ */
+function updateParkingStatsDisplay(stats) {
+    // Crear o actualizar el display de estadísticas
+    let statsContainer = document.getElementById('parking-stats');
+    if (!statsContainer) {
+        statsContainer = createStatsContainer();
+    }
+    
+    let statsHtml = '<h6><i class="fas fa-chart-bar"></i> Estado Actual de Estacionamientos</h6>';
+    statsHtml += '<div class="row">';
+    
+    Object.values(stats).forEach(zoneStat => {
+        const statusClass = getStatusClass(zoneStat.status);
+        const progressWidth = zoneStat.utilizationPercentage;
+        
+        statsHtml += `
+            <div class="col-md-6 mb-2">
+                <div class="card border-${statusClass} h-100">
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-1">Zona ${zoneStat.zona}</h6>
+                        <div class="progress mb-1" style="height: 10px;">
+                            <div class="progress-bar bg-${statusClass}" style="width: ${progressWidth}%"></div>
+                        </div>
+                        <small class="text-muted">
+                            ${zoneStat.occupiedSpaces}/${zoneStat.maxSpaces} ocupados (${progressWidth}%)
+                        </small>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    statsHtml += '</div>';
+    statsContainer.innerHTML = statsHtml;
+}
+
+/**
+ * Crear contenedor de estadísticas
+ */
+function createStatsContainer() {
+    const container = document.createElement('div');
+    container.id = 'parking-stats';
+    container.className = 'parking-stats mt-3 p-3 bg-light rounded';
+    
+    // Insertar en la sección de instrucciones
+    const instructionsCard = document.querySelector('.col-md-6:last-child .card-body');
+    if (instructionsCard) {
+        instructionsCard.appendChild(container);
+    }
+    
+    return container;
+}
+
+/**
+ * Obtener clase CSS para el estado
+ */
+function getStatusClass(status) {
+    switch (status) {
+        case 'available': return 'success';
+        case 'busy': return 'info';
+        case 'warning': return 'warning';
+        case 'critical': return 'danger';
+        default: return 'secondary';
+    }
+}
+
+/**
+ * Liberar espacio de estacionamiento
+ */
+function releaseSpace(reservationId) {
+    if (!confirm('¿Está seguro de que desea liberar este espacio?')) {
+        return;
+    }
+    
+    fetch(`${window.appConfig.paths.controllers}/parking_api.php`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'release',
+            reservationId: reservationId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('success', data.message);
+            cargarEventos(); // Recargar eventos
+            loadParkingStats(); // Actualizar estadísticas
+        } else {
+            showNotification('error', data.message || 'Error al liberar espacio');
+        }
+    })
+    .catch(error => {
+        console.error('Error liberando espacio:', error);
+        showNotification('error', 'Error de conexión al liberar espacio');
+    });
+}

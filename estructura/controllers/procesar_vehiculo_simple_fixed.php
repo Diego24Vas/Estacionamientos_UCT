@@ -8,14 +8,11 @@ try {
     $vehicleService = $app->get('service.vehicle');
     $notificationService = $app->get('service.notification');
     $sessionManager = $app->get('service.session');
-      // Verificar que se enviaron datos por POST
+    
+    // Verificar que se enviaron datos por POST
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("Método de solicitud no válido");
     }
-    
-    // DEBUG: Log de los datos recibidos
-    error_log("=== DEBUG VEHICULO ===");
-    error_log("POST data: " . print_r($_POST, true));
     
     // Campos requeridos básicos (ajustados al formulario real)
     $campos_requeridos = [
@@ -25,21 +22,30 @@ try {
         'zone_filter' => 'Zona autorizada'
     ];
     
-    // Verificar campos requeridos
+    // Verificar campos requeridos con información más detallada
     $errores = [];
+    $campos_recibidos = [];
+    
     foreach ($campos_requeridos as $campo => $nombre) {
         $valor = isset($_POST[$campo]) ? trim($_POST[$campo]) : '';
-        error_log("Campo: $campo = '$valor' (empty: " . (empty($valor) ? 'SÍ' : 'NO') . ")");
+        $campos_recibidos[$campo] = $valor;
         
-        if (!isset($_POST[$campo]) || empty(trim($_POST[$campo]))) {
-            $errores[] = "El campo '$nombre' es requerido";
+        if (empty($valor)) {
+            if (!isset($_POST[$campo])) {
+                $errores[] = "El campo '$nombre' no fue enviado";
+            } else {
+                $errores[] = "El campo '$nombre' está vacío";
+            }
         }
     }
-      if (!empty($errores)) {
-        error_log("ERRORES ENCONTRADOS: " . implode('. ', $errores));
+
+    if (!empty($errores)) {
+        // Información adicional para debug
+        $debug_info = "Datos recibidos: " . json_encode($campos_recibidos);
+        error_log("ERROR REGISTRO VEHICULO: " . implode('. ', $errores) . " | " . $debug_info);
         throw new Exception(implode('. ', $errores));
     }
-    
+
     // Obtener y limpiar datos del formulario
     $vehicleData = [
         'propietario_nombre' => trim($_POST['owner_first_name']),
@@ -53,10 +59,8 @@ try {
         'año' => $_POST['vehicle_year'] ?? null,
         'color' => trim($_POST['vehicle_color'] ?? ''),
         'zona_autorizada' => $_POST['zone_filter'],
-        'tipo_usuario' => $_POST['user_type'] ?? 'Regular'    ];
-    
-    // DEBUG: Log de los datos procesados
-    error_log("Datos para VehicleService: " . print_r($vehicleData, true));
+        'tipo_usuario' => $_POST['user_type'] ?? 'Regular'
+    ];
     
     // Usar VehicleService para crear el vehículo
     $result = $vehicleService->createVehicle($vehicleData);

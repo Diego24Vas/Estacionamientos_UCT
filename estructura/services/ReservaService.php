@@ -10,21 +10,23 @@ class ReservaService {
     private $vehicleRepository;
     private $validationService;
     private $notificationService;
+    private $parkingSpaceService;
     
     public function __construct(
         $reservaRepository = null,
         $vehicleRepository = null, 
         $validationService = null,
-        $notificationService = null
+        $notificationService = null,
+        $parkingSpaceService = null
     ) {
         // Si no se inyectan, resolver desde el container
         $this->reservaRepository = $reservaRepository ?? app('repository.reserva');
         $this->vehicleRepository = $vehicleRepository ?? app('repository.vehicle');
         $this->validationService = $validationService ?? app('service.validation');
         $this->notificationService = $notificationService ?? app('service.notification');
+        $this->parkingSpaceService = $parkingSpaceService ?? app('service.parking');
     }
-    
-    /**
+      /**
      * Crear una nueva reserva
      */
     public function crearReserva(array $data): array {
@@ -44,10 +46,43 @@ class ReservaService {
                 ];
             }
             
-            // Verificar disponibilidad de la zona
-            $disponible = $this->reservaRepository->verificarDisponibilidad(
-                $data['zona'], 
-                $data['fecha'], 
+            // Verificar disponibilidad usando el ParkingSpaceService
+            $availability = $this->parkingSpaceService->checkAvailability(
+                $data['zona'],
+                $data['fecha'],
+                $data['hora_inicio'],
+                $data['hora_fin']
+            );
+            
+            if (!$availability['available']) {
+                $message = "No hay espacios disponibles en la zona {$data['zona']} para el horario solicitado.";
+                if (isset($availability['availableSpaces'])) {
+                    $message .= " Espacios disponibles: {$availability['availableSpaces']}/{$availability['maxSpaces']}.";
+                }
+                return [
+                    'status' => 'error',
+                    'message' => $message,
+                    'availability' => $availability
+                ];
+            }
+            
+            // Usar ParkingSpaceService para crear la reserva con control de cupos
+            $reservationResult = $this->parkingSpaceService->reserveSpace($data);
+            
+            if ($reservationResult['success']) {
+                $this->notificationService->success($reservationResult['message']);
+                return [
+                    'status' => 'success',
+                    'message' => $reservationResult['message'],
+                    'reservationId' => $reservationResult['spaceNumber'] ?? null,
+                    'availability' => $reservationResult['availability'] ?? null
+                ];
+            } else {
+                return [
+                    'status' => 'error',
+                    'message' => $reservationResult['message']
+                ];
+            }
                 $data['hora_inicio'], 
                 $data['hora_fin']
             );
