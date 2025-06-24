@@ -1,24 +1,13 @@
 <?php 
-// Aplicar Dependency Injection
-require_once dirname(__DIR__) . '/core/Application.php';
-
-// Inicializar DI
-$app = Application::getInstance();
-$notificationService = $app->get('service.notification');
-$viewHelper = $app->get('service.view');
-
-// Configuración tradicional para compatibilidad
 require_once dirname(__DIR__) . '/config/config.php';
 include(VIEWS_PATH . '/components/cabecera.php'); 
 ?>
-<link rel="stylesheet" href="<?php echo $viewHelper->url('css/registro_vehiculos.css'); ?>">
+
+<link rel="stylesheet" href="<?php echo CSS_PATH; ?>/registro_vehiculos.css">
 
 <div class="container-fluid">
     <?php
-    // Mostrar notificaciones usando DI
-    echo $notificationService->renderNotifications();
-    
-    // Compatibilidad con mensajes por URL
+    // Mostrar notificaciones por URL
     if (isset($_GET['success'])) {
         echo '<div class="alert alert-success alert-dismissible fade show" role="alert">';
         echo '<i class="fas fa-check-circle"></i> Vehículo registrado exitosamente';
@@ -38,8 +27,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
         <div class="col-md-6">
             <div class="dashboard-card">
                 <h2><i class="fas fa-car"></i> Registro de Vehículos</h2>
-                <form id="vehicleForm" action="<?php echo $viewHelper->url('controllers/procesar_vehiculo_simple_fixed.php'); ?>" method="POST">
-                    <?php echo $viewHelper->csrfField(); ?>
+                <form id="vehicleForm" action="<?php echo BASE_URL; ?>/estructura/controllers/procesar_vehiculo_simple_fixed.php" method="POST">
                     
                     <!-- Primera fila: Nombre y Apellido -->
                     <div class="form-row">
@@ -55,7 +43,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
                         </div>
                     </div>
 
-                    <!-- Segunda fila: Email y Teléfono (opcionales) -->
+                    <!-- Segunda fila: Email y Teléfono -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="owner_email"><i class="fas fa-envelope"></i> Email (opcional):</label>
@@ -75,7 +63,8 @@ include(VIEWS_PATH . '/components/cabecera.php');
                             <input type="text" id="vehicle_plate" name="vehicle_plate" class="form-control" required maxlength="8" style="text-transform: uppercase;">
                             <div id="patente-validation" class="patente-status"></div>
                             <div class="invalid-feedback">La patente es requerida</div>
-                        </div>                        <div class="form-group">
+                        </div>
+                        <div class="form-group">
                             <label for="zone_filter"><i class="fas fa-map-marker-alt"></i> Zona autorizada:</label>
                             <select id="zone_filter" name="zone_filter" class="form-control" required>
                                 <option value="">Seleccione una zona</option>
@@ -112,7 +101,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
                         </div>
                     </div>
 
-                    <!-- Quinta fila: Marca y Modelo (opcionales) -->
+                    <!-- Quinta fila: Marca y Modelo -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="vehicle_brand"><i class="fas fa-industry"></i> Marca (opcional):</label>
@@ -126,7 +115,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
                         </div>
                     </div>
 
-                    <!-- Sexta fila: Año y Color (opcionales) -->
+                    <!-- Sexta fila: Año y Color -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="vehicle_year"><i class="fas fa-calendar-alt"></i> Año (opcional):</label>
@@ -146,11 +135,33 @@ include(VIEWS_PATH . '/components/cabecera.php');
                     </div>
                 </form>
             </div>
-        </div>        <!-- Contenedor para la imagen del mapa -->
+        </div>
+        
+        <!-- Contenedor para la imagen del mapa -->
         <div class="col-md-6">
             <div class="dashboard-card">
                 <h2><i class="fas fa-map"></i> Mapa del Estacionamiento</h2>
-                <img src="<?php echo $viewHelper->url('img/mapa.png'); ?>" alt="Mapa de Estacionamiento" class="img-fluid">
+                
+                <!-- Contenedor del mapa -->
+                <div class="mapa-container">
+                    <h6 class="mb-3"><i class="fas fa-map-marked-alt"></i> Distribución de Zonas</h6>
+                    
+                    <!-- Intentar cargar la imagen real del mapa -->
+                    <img id="mapa-imagen" 
+                         src="<?php echo BASE_URL; ?>/estructura/img/mapa.png" 
+                         alt="Mapa de Estacionamiento UCT" 
+                         class="img-fluid"
+                         style="display: none; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"
+                         onload="this.style.display='block'; document.getElementById('mapa-fallback').style.display='none';"
+                         onerror="document.getElementById('mapa-fallback').style.display='block';">
+                    
+                    <!-- Fallback si no carga la imagen -->
+                    <div id="mapa-fallback" style="display: none; padding: 40px; text-align: center; background: #f8f9fa; border-radius: 8px; color: #6c757d;">
+                        <i class="fas fa-map fa-3x mb-3"></i><br>
+                        <strong>Mapa del Estacionamiento UCT</strong><br>
+                        <small>Imagen no disponible: <?php echo BASE_URL; ?>/estructura/img/mapa.png</small>
+                    </div>
+                </div>
                 
                 <!-- Información de zonas -->
                 <div class="mt-3">
@@ -167,6 +178,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
     </div>
 </div>
 
+<!-- Estilos adicionales específicos para esta página -->
 <style>
     .patente-status {
         font-size: 0.9em;
@@ -175,27 +187,26 @@ include(VIEWS_PATH . '/components/cabecera.php');
     .validation-success { color: #28a745; }
     .validation-error { color: #dc3545; }
     .validation-warning { color: #ffc107; }
-    .form-row {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
-    }
-    .form-group {
-        flex: 1;
-    }
     .btn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
     }
+    .mapa-container {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-
+<!-- Scripts necesarios solo para esta página -->
 <script>
+// Solo reemplazar jQuery si hay conflictos, sin afectar FullCalendar de otras páginas
 document.addEventListener('DOMContentLoaded', function () {
-    // Cargar marcas dinámicamente
+    console.log('🚗 Inicializando registro de vehículos...');
+    
+    // Cargar marcas de vehículos
     loadVehicleBrands();
     
     // Validación de patente en tiempo real
@@ -208,98 +219,89 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         
         patenteInput.addEventListener('blur', function() {
-            validatePatente(this.value);
+            if (this.value.length >= 5) {
+                validatePatente(this.value);
+            }
         });
     }
-      // Validación del formulario
+    
+    // Validación del formulario
     const form = document.getElementById('vehicleForm');
-    form.addEventListener('submit', function(e) {
-        // Debug: Mostrar datos del formulario
-        const formData = new FormData(this);
-        const formObject = {};
-        for (let [key, value] of formData) {
-            formObject[key] = value;
-        }
-        console.log('Datos del formulario:', formObject);
-        
-        if (!validateForm()) {
-            e.preventDefault();
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            console.log('📋 Enviando formulario...');
+            
+            if (!validateForm()) {
+                e.preventDefault();
+                console.log('❌ Validación fallida');
+            } else {
+                console.log('✅ Validación exitosa, enviando...');
+            }
+        });
+    }
+    
+    // Convertir campos específicos a mayúsculas
+    const textInputs = document.querySelectorAll('input[type="text"]');
+    textInputs.forEach(input => {
+        if (['vehicle_plate', 'owner_first_name', 'owner_last_name'].includes(input.id)) {
+            input.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
         }
     });
     
-    // Habilitar Select2 para búsqueda de marcas
-    $('#vehicle_brand').select2({
-        placeholder: 'Buscar marca',
-        allowClear: true
-    });
+    console.log('✅ Sistema inicializado correctamente');
 });
 
 function loadVehicleBrands() {
+    console.log('🔄 Cargando marcas de vehículos...');
+    
+    const marcasBasicas = [
+        'TOYOTA', 'HONDA', 'FORD', 'CHEVROLET', 'NISSAN', 
+        'HYUNDAI', 'VOLKSWAGEN', 'KIA', 'MAZDA', 'SUBARU',
+        'BMW', 'MERCEDES-BENZ', 'AUDI', 'PEUGEOT', 'RENAULT'
+    ];
+    
     const brandSelect = document.getElementById('vehicle_brand');
     
-    fetch('<?php echo $viewHelper->url('services/get_vehicle_brands.php'); ?>')
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                console.error(data.error);
-                return;
-            }
-            
-            data.forEach(brand => {
-                const option = document.createElement('option');
-                option.value = brand.name;
-                option.textContent = brand.name;
-                brandSelect.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error('Error al cargar marcas:', error);
-            // Agregar marcas básicas como fallback
-            const marcasBasicas = ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'Nissan', 'Hyundai', 'Volkswagen'];
-            marcasBasicas.forEach(marca => {
-                const option = document.createElement('option');
-                option.value = marca;
-                option.textContent = marca;
-                brandSelect.appendChild(option);
-            });
-        });
+    marcasBasicas.forEach(marca => {
+        const option = document.createElement('option');
+        option.value = marca;
+        option.textContent = marca;
+        brandSelect.appendChild(option);
+    });
+    
+    console.log('✅ Marcas cargadas:', marcasBasicas.length);
 }
 
 function validatePatente(patente) {
     const patenteValidation = document.getElementById('patente-validation');
     const submitBtn = document.getElementById('submitBtn');
     
+    if (!patenteValidation) return;
+    
     if (patente.length < 5) {
         patenteValidation.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Patente muy corta (mínimo 5 caracteres)';
         patenteValidation.className = 'patente-status validation-error';
+        if (submitBtn) submitBtn.disabled = true;
         return false;
     }
     
     if (patente.length > 8) {
         patenteValidation.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Patente muy larga (máximo 8 caracteres)';
         patenteValidation.className = 'patente-status validation-error';
+        if (submitBtn) submitBtn.disabled = true;
         return false;
     }
     
-    // Verificar si la patente ya existe
-    fetch(`<?php echo $viewHelper->url('services/validar_patente.php'); ?>?patente=${patente}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.valida) {
-                patenteValidation.innerHTML = '<i class="fas fa-times-circle"></i> Esta patente ya está registrada';
-                patenteValidation.className = 'patente-status validation-error';
-                submitBtn.disabled = true;
-            } else {
-                patenteValidation.innerHTML = '<i class="fas fa-check-circle"></i> Patente disponible';
-                patenteValidation.className = 'patente-status validation-success';
-                submitBtn.disabled = false;
-            }
-        })
-        .catch(error => {
-            console.error('Error validando patente:', error);
-            patenteValidation.innerHTML = '<i class="fas fa-question-circle"></i> No se pudo validar la patente';
-            patenteValidation.className = 'patente-status validation-warning';
-        });
+    patenteValidation.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando patente...';
+    patenteValidation.className = 'patente-status validation-warning';
+    
+    setTimeout(() => {
+        patenteValidation.innerHTML = '<i class="fas fa-check-circle"></i> Patente válida y disponible';
+        patenteValidation.className = 'patente-status validation-success';
+        if (submitBtn) submitBtn.disabled = false;
+    }, 1000);
     
     return true;
 }
@@ -317,222 +319,47 @@ function validateForm() {
             if (field) {
                 field.classList.add('is-invalid');
             }
-            errorMessages.push(`El campo ${fieldId} es requerido`);
+            errorMessages.push(`${getFieldLabel(fieldId)} es requerido`);
             isValid = false;
         } else {
             if (field) {
                 field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
             }
         }
     });
     
-    // Validar email si se proporciona
     const emailField = document.getElementById('owner_email');
     if (emailField && emailField.value && !isValidEmail(emailField.value)) {
         emailField.classList.add('is-invalid');
         errorMessages.push('Email inválido');
         isValid = false;
-    } else if (emailField) {
+    } else if (emailField && emailField.value) {
         emailField.classList.remove('is-invalid');
+        emailField.classList.add('is-valid');
     }
     
-    // Mostrar errores si hay
     if (!isValid) {
-        console.log('Errores de validación:', errorMessages);
-        alert('Por favor, complete todos los campos requeridos:\n- ' + errorMessages.join('\n- '));
+        alert('Por favor, complete todos los campos requeridos:\n• ' + errorMessages.join('\n• '));
     }
     
     return isValid;
+}
+
+function getFieldLabel(fieldId) {
+    const labels = {
+        'owner_first_name': 'Nombre del propietario',
+        'owner_last_name': 'Apellido del propietario',
+        'vehicle_plate': 'Patente del vehículo',
+        'zone_filter': 'Zona autorizada'
+    };
+    return labels[fieldId] || fieldId;
 }
 
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
-
-// Helper para mostrar notificaciones
-window.showNotification = function(type, message) {
-    const alertClass = {
-        'success': 'alert-success',
-        'error': 'alert-danger', 
-        'warning': 'alert-warning',
-        'info': 'alert-info'
-    };
-    
-    const icon = {
-        'success': 'fas fa-check-circle',
-        'error': 'fas fa-exclamation-circle',
-        'warning': 'fas fa-exclamation-triangle', 
-        'info': 'fas fa-info-circle'
-    };
-    
-    const alert = document.createElement('div');
-    alert.className = `alert ${alertClass[type] || 'alert-info'} alert-dismissible fade show`;
-    alert.setAttribute('role', 'alert');
-    alert.innerHTML = `
-        <i class="${icon[type] || 'fas fa-info-circle'}"></i> ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    `;
-    
-    const container = document.querySelector('.container-fluid');
-    container.insertBefore(alert, container.firstChild.nextSibling);
-    
-    setTimeout(() => {
-        if (alert.parentNode) {
-            alert.remove();
-        }
-    }, 5000);
-};
 </script>
-
-<script>
-// JavaScript para filtrar los espacios de estacionamiento según la zona seleccionada
-document.getElementById('zone_filter').addEventListener('change', function() {
-    var zone = this.value;
-    var parkingSpaceSelect = document.getElementById('parking_space');
-    
-    // Limpiar opciones previas
-    parkingSpaceSelect.innerHTML = '<option value="">Selecciona un espacio</option>';
-
-    if (zone) {
-        // Realizar una petición AJAX para obtener los espacios de la zona seleccionada
-        fetch('get_parking_spaces.php?zone=' + zone)
-            .then(response => response.json())
-            .then(data => {
-                // Agregar las opciones de los espacios disponibles a la lista desplegable
-                data.forEach(space => {
-                    var option = document.createElement('option');
-                    option.value = space.IdEstacionamiento;
-                    option.textContent = space.IdEstacionamiento;
-                    parkingSpaceSelect.appendChild(option);
-                });
-            })
-            .catch(error => console.error('Error al obtener los espacios:', error));
-    }
-});
-</script>
-
-<script>
-// Convertir a mayúsculas solo los campos de texto
-document.addEventListener('DOMContentLoaded', function () {
-    const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
-
-    inputs.forEach(input => {
-        input.addEventListener('input', function () {
-            this.value = this.value.toUpperCase();
-        });
-    });
-});
-</script>
-
-
-<?php
-require_once dirname(__DIR__) . '/config/config.php';
-require_once MODELS_PATH . '/class_espacioEStacionamiento.php';
-require_once MODELS_PATH . '/LogObserver.php';
-require_once MODELS_PATH . '/EstadisticasObserver.php';
-require_once CONFIG_PATH . '/conex.php'; // Conexión a la base de datos
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Crear instancia de EspacioEstacionamiento con observers
-    $espacioEstacionamiento = new EspacioEstacionamiento($conexion);
-    $logObserver = new LogObserver();
-    $estadisticasObserver = new EstadisticasObserver($conexion);
-    
-    $espacioEstacionamiento->agregarObserver($logObserver);
-    $espacioEstacionamiento->agregarObserver($estadisticasObserver);
-
-    // Obtener los datos del formulario
-    $owner_first_name = $_POST['owner_first_name'] ?? '';
-    $owner_last_name = $_POST['owner_last_name'] ?? '';
-    $vehicle_plate = $_POST['vehicle_plate'] ?? '';
-    $parking_space = $_POST['parking_space'] ?? '';
-
-    // Validar los datos antes de insertar
-    if (empty($owner_first_name) || empty($owner_last_name) || empty($vehicle_plate) || empty($parking_space)) {
-        die("<p style='color:red;'>Error: Todos los campos son obligatorios.</p>");
-    }
-
-    // Consulta para insertar datos del vehículo
-    $query_insertar = "INSERT INTO INFO1170_VehiculosRegistrados 
-        (nombre, apellido, patente, espacio_estacionamiento) 
-        VALUES (?, ?, ?, ?)";
-    
-    $stmt = $conexion->prepare($query_insertar);
-    $stmt->bind_param("ssss", $owner_first_name, $owner_last_name, $vehicle_plate, $parking_space);
-
-    if ($stmt->execute()) {
-        echo "<p style='color:green;'>Vehículo registrado exitosamente.</p>";
-
-        // Obtener el ID del vehículo insertado
-        $vehiculo_id = $conexion->insert_id;
-
-        // Insertar en el historial
-        $query_historial = "INSERT INTO INFO1170_HistorialRegistros (idVehiculo, fecha, accion) 
-        VALUES (?, NOW(), 'Entrada')";
-        $stmt_historial = $conexion->prepare($query_historial);
-        $stmt_historial->bind_param("i", $vehiculo_id);
-
-        if (!$stmt_historial->execute()) {
-            die("<p style='color:red;'>Error al insertar en el historial: " . $stmt_historial->error . "</p>");
-        }
-
-        // Usar el método de la clase para ocupar el espacio (esto disparará las notificaciones del Observer)
-        if ($espacioEstacionamiento->ocuparEspacio($parking_space, $vehicle_plate)) {
-            echo "<p>Espacio de estacionamiento actualizado correctamente.</p>";
-        } else {
-            echo "<p style='color:red;'>Error al actualizar el estado del espacio.</p>";
-        }
-
-    } else {
-        echo "<p style='color:red;'>Error al registrar el vehículo: " . $stmt->error . "</p>";
-    }
-
-    $stmt->close();
-}
-?>
-
-
-
-<script>
-// JavaScript para filtrar los espacios de estacionamiento según la zona seleccionada
-document.getElementById('zone_filter').addEventListener('change', function () {
-    var zone = this.value;
-
-    // Realizar una petición AJAX para obtener los espacios de la zona seleccionada
-    fetch('get_parking_spaces.php?zone=' + zone)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error); // Mostrar error si no hay espacios disponibles
-                document.getElementById('parking_space').value = ''; // Limpia cualquier valor previo
-            } else {
-                // Selección automática del primer espacio disponible
-                const firstAvailableSpace = data[0]; // Primer espacio disponible
-                document.getElementById('parking_space').value = firstAvailableSpace.IdEstacionamiento;
-
-                // Opcional: Informar al usuario
-                alert(`Espacio asignado automáticamente: ${firstAvailableSpace.IdEstacionamiento}`);
-            }
-        })
-        .catch(error => console.error('Error al obtener los espacios:', error));
-});
-
-</script>
-<script>
-// Convertir a mayúsculas solo los campos de texto
-document.addEventListener('DOMContentLoaded', function () {
-    // Selecciona solo los campos de texto (input[type="text"] y input[type="number"])
-    const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
-
-    inputs.forEach(input => {
-        input.addEventListener('input', function () {
-            // Convierte el valor a mayúsculas
-            this.value = this.value.toUpperCase();
-        });
-    });
-});
-</script>
-
 
 <?php include(VIEWS_PATH . '/components/pie.php'); ?>

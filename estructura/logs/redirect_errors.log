@@ -1,0 +1,9 @@
+[2025-06-24 21:20:41] User logged out: admin
+  SERVER_NAME: localhost
+  HTTP_HOST: localhost
+  REQUEST_URI: /proyecto/Estacionamientos_UCT/estructura/controllers/logout.php
+  SCRIPT_NAME: /proyecto/Estacionamientos_UCT/estructura/controllers/logout.php
+  PHP_SELF: /proyecto/Estacionamientos_UCT/estructura/controllers/logout.php
+  BASE_URL: http://localhost/proyecto/Estacionamientos_UCT
+  Headers sent: No
+-----------------------------------

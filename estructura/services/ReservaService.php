@@ -26,7 +26,8 @@ class ReservaService {
         $this->notificationService = $notificationService ?? app('service.notification');
         $this->parkingSpaceService = $parkingSpaceService ?? app('service.parking');
     }
-      /**
+    
+    /**
      * Crear una nueva reserva
      */
     public function crearReserva(array $data): array {
@@ -57,7 +58,7 @@ class ReservaService {
             if (!$availability['available']) {
                 $message = "No hay espacios disponibles en la zona {$data['zona']} para el horario solicitado.";
                 if (isset($availability['availableSpaces'])) {
-                    $message .= " Espacios disponibles: {$availability['availableSpaces']}/{$availability['maxSpaces']}.";
+                    $message .= " Espacios disponibles: {$availability['availableSpaces']}/{$availability['maxSpaces']}. ";
                 }
                 return [
                     'status' => 'error',
@@ -82,32 +83,6 @@ class ReservaService {
                     'status' => 'error',
                     'message' => $reservationResult['message']
                 ];
-            }
-                $data['hora_inicio'], 
-                $data['hora_fin']
-            );
-            
-            if (!$disponible) {
-                return [
-                    'status' => 'error',
-                    'message' => 'Ya existe una reserva en esa zona para el horario solicitado'
-                ];
-            }
-            
-            // Crear la reserva
-            $reservaId = $this->reservaRepository->crear($data);
-            
-            if ($reservaId) {
-                // Enviar notificaciones
-                $this->notificationService->notificarReservaCreada($data);
-                
-                return [
-                    'status' => 'success',
-                    'message' => 'Reserva creada exitosamente',
-                    'reserva_id' => $reservaId
-                ];
-            } else {
-                return ['status' => 'error', 'message' => 'Error al crear la reserva'];
             }
             
         } catch (Exception $e) {

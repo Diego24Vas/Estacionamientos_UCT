@@ -18,7 +18,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
         </thead>
         <tbody>
             <?php
-            require_once MODELS_PATH . '/conex.php'; 
+            require_once CONFIG_PATH . '/conex.php'; // Corregido: usar CONFIG_PATH en lugar de MODELS_PATH
 
             // Paginación
             $limit = 10; // Número de registros por página

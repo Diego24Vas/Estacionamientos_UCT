@@ -23,7 +23,7 @@ class AuthService implements IAuthService {
             $this->userRepository = $userRepository;
         }
         
-        $this->sessionManager = new SessionManager();
+        $this->sessionManager = new AuthSessionManager();
     }
 
     // Método estático para obtener la instancia (Singleton)
@@ -236,7 +236,7 @@ class InactiveSessionState implements SessionState {
 }
 
 // Context para el patrón State
-class SessionManager {
+class AuthSessionManager {
     private $state;
 
     public function __construct() {

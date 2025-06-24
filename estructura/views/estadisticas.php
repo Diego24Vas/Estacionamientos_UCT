@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
+require_once SERVICES_PATH . '/logica_estadisticas.php'; // Incluir la lógica de estadísticas
 include(VIEWS_PATH . '/components/cabecera.php');
 ?>
 
@@ -11,8 +12,8 @@ include(VIEWS_PATH . '/components/cabecera.php');
     <title>Estadísticas de Estacionamiento</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="../css/stylesnew.css">
-    <script src="../js/alertas.js"></script>
+    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>/stylesnew.css">
+    <script src="<?php echo JS_PATH; ?>/alertas.js"></script>
     <style>
         .custom-alert {
             background-color: #e3f2fd;
@@ -103,13 +104,13 @@ include(VIEWS_PATH . '/components/cabecera.php');
                 <div class="stat-card">
                     <div class="stat-content">
                         <div>Máximo de Ocupación Diaria</div>
-                        <div class="value"><?= $max_ocupacion['ocupacion'] ?> vehículos</div>
+                        <div class="value"><?= isset($max_ocupacion['ocupacion']) ? $max_ocupacion['ocupacion'] : 0 ?> vehículos</div>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-content">
                         <div>Promedio Diario de Movimientos</div>
-                        <div class="value"><?= number_format($promedio_movimientos, 2) ?> vehículos</div>
+                        <div class="value"><?= isset($promedio_movimientos) ? number_format($promedio_movimientos, 2) : '0.00' ?> vehículos</div>
                     </div>
                 </div>
             </div>
@@ -135,7 +136,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
     <script>
         // Gráfico de los días de mayor actividad (por día de la semana)
         const ctxActividadSemanal = document.getElementById('graficoActividadSemanal').getContext('2d');
-        const datosActividadSemanal = <?= json_encode($grafico_dia_semana) ?>;
+        const datosActividadSemanal = <?= json_encode(isset($grafico_dia_semana) ? $grafico_dia_semana : []) ?>;
         const labelsActividadSemanal = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         const cantidadActividad = labelsActividadSemanal.map(dia => datosActividadSemanal[dia] || 0);
 
@@ -162,15 +163,15 @@ include(VIEWS_PATH . '/components/cabecera.php');
 
         // Gráfico de Entradas y Salidas por Semana (últimos 5 días + total semanal)
         const ctxEntradasSalidas = document.getElementById('graficoEntradasSalidas').getContext('2d');
-        const datosEntradasSalidas = <?= json_encode($grafico_entradas_salidas) ?>;
+        const datosEntradasSalidas = <?= json_encode(isset($grafico_entradas_salidas) ? $grafico_entradas_salidas : []) ?>;
         const fechasEntradasSalidas = datosEntradasSalidas.map(item => item.fecha);
         const entradas = datosEntradasSalidas.map(item => item.entradas);
         const salidas = datosEntradasSalidas.map(item => item.salidas);
 
         // Añadir total semanal
         fechasEntradasSalidas.push('Total Semana');
-        entradas.push(<?= $total_semanal['entradas_semanales'] ?>);
-        salidas.push(<?= $total_semanal['salidas_semanales'] ?>);
+        entradas.push(<?= isset($total_semanal['entradas_semanales']) ? $total_semanal['entradas_semanales'] : 0 ?>);
+        salidas.push(<?= isset($total_semanal['salidas_semanales']) ? $total_semanal['salidas_semanales'] : 0 ?>);
 
         new Chart(ctxEntradasSalidas, {
             type: 'bar',

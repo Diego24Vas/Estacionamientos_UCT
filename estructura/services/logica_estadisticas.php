@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
-require_once MODELS_PATH . '/conex.php';
+require_once CONFIG_PATH . '/conex.php'; // Corregido: usar CONFIG_PATH en lugar de MODELS_PATH
 
 // Máximo de ocupación diaria: Día con mayor ocupación (basado en entradas)
 $query_max_ocupacion = "
