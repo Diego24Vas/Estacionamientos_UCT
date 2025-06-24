@@ -2,6 +2,10 @@
 // Inicializar la aplicación con Dependency Injection
 require_once dirname(__DIR__) . '/core/Application.php';
 
+// Verificar autenticación obligatoria antes de cualquier otra operación
+require_once dirname(__DIR__) . '/services/session_manager.php';
+redirect_if_not_authenticated();
+
 // Inicializar el contenedor DI
 $app = Application::getInstance();
 

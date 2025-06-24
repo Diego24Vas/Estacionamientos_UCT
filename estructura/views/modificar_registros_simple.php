@@ -1,6 +1,11 @@
 <?php
 // Página para modificar registros de vehículos y reservas
 require_once dirname(__DIR__) . '/config/config.php';
+require_once dirname(__DIR__) . '/services/session_manager.php';
+
+// Verificar autenticación obligatoria
+redirect_if_not_authenticated();
+
 require_once CONFIG_PATH . '/conex.php';
 session_start();
 

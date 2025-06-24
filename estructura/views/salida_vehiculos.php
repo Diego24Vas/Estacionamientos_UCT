@@ -1,5 +1,10 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
+require_once dirname(__DIR__) . '/services/session_manager.php';
+
+// Verificar autenticación obligatoria
+redirect_if_not_authenticated();
+
 include(VIEWS_PATH . '/components/cabecera.php');
 require_once MODELS_PATH . '/conex.php';
 require_once MODELS_PATH . '/class_espacioEStacionamiento.php';

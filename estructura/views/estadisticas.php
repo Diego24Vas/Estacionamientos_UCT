@@ -1,7 +1,11 @@
 <?php
 require_once dirname(__DIR__) . '/config/config.php';
+require_once dirname(__DIR__) . '/services/session_manager.php';
 require_once SERVICES_PATH . '/logica_estadisticas.php'; // Incluir la lógica de estadísticas
 include(VIEWS_PATH . '/components/cabecera.php');
+
+// Verificar autenticación obligatoria
+redirect_if_not_authenticated();
 ?>
 
 <!DOCTYPE html>
