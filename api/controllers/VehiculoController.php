@@ -1,7 +1,7 @@
 <?php
-require_once './models/Reserva.php';
+require_once './models/Vehiculo.php';
 
-class ReservaController {
+class VehiculoController {
     
     public function listar() {
         try {
@@ -9,12 +9,12 @@ class ReservaController {
             $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
             $offset = ($pagina - 1) * $limite;
             
-            $reservas = Reserva::obtenerTodas($limite, $offset);
-            $total = Reserva::contarTotal();
+            $vehiculos = Vehiculo::obtenerTodos($limite, $offset);
+            $total = Vehiculo::contarTotal();
             
             echo json_encode([
                 'success' => true,
-                'data' => $reservas,
+                'data' => $vehiculos,
                 'pagination' => [
                     'total' => $total,
                     'pagina' => $pagina,
@@ -34,19 +34,44 @@ class ReservaController {
             
             if (!$id) {
                 http_response_code(400);
-                echo json_encode(['error' => 'ID de reserva es requerido']);
+                echo json_encode(['error' => 'ID del vehículo es requerido']);
                 return;
             }
             
-            $reserva = Reserva::obtenerPorId($id);
+            $vehiculo = Vehiculo::obtenerPorId($id);
             
-            if (!$reserva) {
+            if (!$vehiculo) {
                 http_response_code(404);
-                echo json_encode(['error' => 'Reserva no encontrada']);
+                echo json_encode(['error' => 'Vehículo no encontrado']);
                 return;
             }
             
-            echo json_encode(['success' => true, 'data' => $reserva]);
+            echo json_encode(['success' => true, 'data' => $vehiculo]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error interno del servidor']);
+        }
+    }
+    
+    public function obtenerPorPatente() {
+        try {
+            $patente = $_GET['patente'] ?? null;
+            
+            if (!$patente) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Patente es requerida']);
+                return;
+            }
+            
+            $vehiculo = Vehiculo::obtenerPorPatente($patente);
+            
+            if (!$vehiculo) {
+                http_response_code(404);
+                echo json_encode(['error' => 'Vehículo no encontrado']);
+                return;
+            }
+            
+            echo json_encode(['success' => true, 'data' => $vehiculo]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error interno del servidor']);
@@ -65,14 +90,14 @@ class ReservaController {
             }
             
             // Validar datos
-            $errores = Reserva::validarDatos($data);
+            $errores = Vehiculo::validarDatos($data);
             if (!empty($errores)) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Errores de validación', 'detalles' => $errores]);
                 return;
             }
             
-            $resultado = Reserva::crear($data);
+            $resultado = Vehiculo::crear($data);
             
             if (isset($resultado['error'])) {
                 http_response_code(400);
@@ -82,7 +107,7 @@ class ReservaController {
             
             echo json_encode([
                 'success' => true, 
-                'mensaje' => 'Reserva creada exitosamente',
+                'mensaje' => 'Vehículo registrado exitosamente',
                 'id' => $resultado['id']
             ]);
         } catch (Exception $e) {
@@ -97,7 +122,7 @@ class ReservaController {
             
             if (!$id) {
                 http_response_code(400);
-                echo json_encode(['error' => 'ID de reserva es requerido']);
+                echo json_encode(['error' => 'ID del vehículo es requerido']);
                 return;
             }
             
@@ -111,14 +136,14 @@ class ReservaController {
             }
             
             // Validar datos
-            $errores = Reserva::validarDatos($data, true);
+            $errores = Vehiculo::validarDatos($data, true);
             if (!empty($errores)) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Errores de validación', 'detalles' => $errores]);
                 return;
             }
             
-            $resultado = Reserva::actualizar($id, $data);
+            $resultado = Vehiculo::actualizar($id, $data);
             
             if (isset($resultado['error'])) {
                 http_response_code(400);
@@ -126,40 +151,24 @@ class ReservaController {
                 return;
             }
             
-            echo json_encode(['success' => true, 'mensaje' => 'Reserva actualizada exitosamente']);
+            echo json_encode(['success' => true, 'mensaje' => 'Vehículo actualizado exitosamente']);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error interno del servidor']);
         }
     }
     
-    public function cambiarEstado() {
+    public function eliminar() {
         try {
             $id = $_GET['id'] ?? null;
             
             if (!$id) {
                 http_response_code(400);
-                echo json_encode(['error' => 'ID de reserva es requerido']);
+                echo json_encode(['error' => 'ID del vehículo es requerido']);
                 return;
             }
             
-            $json = file_get_contents("php://input");
-            $data = json_decode($json, true);
-            
-            if (!isset($data['estado'])) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Estado es requerido']);
-                return;
-            }
-            
-            $estadosValidos = ['reservado', 'ocupado', 'liberado', 'cancelado'];
-            if (!in_array($data['estado'], $estadosValidos)) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Estado inválido. Debe ser: ' . implode(', ', $estadosValidos)]);
-                return;
-            }
-            
-            $resultado = Reserva::cambiarEstado($id, $data['estado']);
+            $resultado = Vehiculo::eliminar($id);
             
             if (isset($resultado['error'])) {
                 http_response_code(400);
@@ -167,79 +176,7 @@ class ReservaController {
                 return;
             }
             
-            echo json_encode(['success' => true, 'mensaje' => 'Estado de reserva actualizado exitosamente']);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Error interno del servidor']);
-        }
-    }
-    
-    public function listarPorUsuario() {
-        try {
-            $usuario = $_GET['usuario'] ?? null;
-            $limite = isset($_GET['limite']) ? (int)$_GET['limite'] : 50;
-            
-            if (!$usuario) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Usuario es requerido']);
-                return;
-            }
-            
-            $reservas = Reserva::obtenerPorUsuario($usuario, $limite);
-            
-            echo json_encode([
-                'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
-            ]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Error interno del servidor']);
-        }
-    }
-    
-    public function listarPorZona() {
-        try {
-            $zona = $_GET['zona'] ?? null;
-            $fecha = $_GET['fecha'] ?? null;
-            
-            if (!$zona) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Zona es requerida']);
-                return;
-            }
-            
-            $reservas = Reserva::obtenerPorZona($zona, $fecha);
-            
-            echo json_encode([
-                'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
-            ]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Error interno del servidor']);
-        }
-    }
-    
-    public function listarPorFecha() {
-        try {
-            $fecha = $_GET['fecha'] ?? null;
-            $zona = $_GET['zona'] ?? null;
-            
-            if (!$fecha) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Fecha es requerida']);
-                return;
-            }
-            
-            $reservas = Reserva::obtenerPorFecha($fecha, $zona);
-            
-            echo json_encode([
-                'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
-            ]);
+            echo json_encode(['success' => true, 'mensaje' => 'Vehículo eliminado exitosamente']);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error interno del servidor']);
@@ -257,12 +194,12 @@ class ReservaController {
                 return;
             }
             
-            $reservas = Reserva::buscar($termino, $limite);
+            $vehiculos = Vehiculo::buscar($termino, $limite);
             
             echo json_encode([
                 'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
+                'data' => $vehiculos,
+                'total' => count($vehiculos)
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -270,16 +207,22 @@ class ReservaController {
         }
     }
     
-    public function estadisticas() {
+    public function listarPorZona() {
         try {
-            $fechaInicio = $_GET['fecha_inicio'] ?? null;
-            $fechaFin = $_GET['fecha_fin'] ?? null;
+            $zona = $_GET['zona'] ?? null;
             
-            $estadisticas = Reserva::obtenerEstadisticas($fechaInicio, $fechaFin);
+            if (!$zona) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Zona es requerida']);
+                return;
+            }
+            
+            $vehiculos = Vehiculo::obtenerPorZona($zona);
             
             echo json_encode([
                 'success' => true,
-                'data' => $estadisticas
+                'data' => $vehiculos,
+                'total' => count($vehiculos)
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -287,3 +230,4 @@ class ReservaController {
         }
     }
 }
+?>

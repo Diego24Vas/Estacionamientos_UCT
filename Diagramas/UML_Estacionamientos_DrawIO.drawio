@@ -1,0 +1,174 @@
+<mxfile host="app.diagrams.net" modified="2025-06-25T00:00:00.000Z" agent="5.0" etag="UML_Estacionamientos_UCT" version="21.0.0" type="device">
+  <diagram id="UML_Sistema_Estacionamientos" name="UML - Sistema Estacionamientos UCT">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- TÍTULO DEL DIAGRAMA -->
+        <mxCell id="titulo" value="SISTEMA DE GESTIÓN DE ESTACIONAMIENTOS UCT&#xa;Modelo Entidad-Relación (UML)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#1976D2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="400" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ENTIDAD: VEHÍCULOS -->
+        <mxCell id="vehiculos" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;🚗 VEHÍCULOS&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;u&gt;+ id: INT (PK)&lt;/u&gt;&lt;br&gt;+ propietario_nombre: VARCHAR(100)&lt;br&gt;+ propietario_apellido: VARCHAR(100)&lt;br&gt;+ propietario_email: VARCHAR(150)&lt;br&gt;+ propietario_telefono: VARCHAR(20)&lt;br&gt;&lt;u&gt;+ patente: VARCHAR(20) (UNIQUE)&lt;/u&gt;&lt;br&gt;+ tipo: ENUM&lt;br&gt;+ marca: VARCHAR(50)&lt;br&gt;+ modelo: VARCHAR(50)&lt;br&gt;+ año: YEAR&lt;br&gt;+ color: VARCHAR(30)&lt;br&gt;+ zona_autorizada: VARCHAR(20) (FK)&lt;br&gt;+ tipo_usuario: ENUM&lt;br&gt;+ activo: BOOLEAN&lt;br&gt;+ fecha_registro: TIMESTAMP&lt;br&gt;+ fecha_actualizacion: TIMESTAMP&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;fillColor=#E8F5E8;strokeColor=#4CAF50;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="120" width="280" height="300" as="geometry" />
+        </mxCell>
+
+        <!-- ENTIDAD: CONFIGURACIÓN ZONAS -->
+        <mxCell id="zonas" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;🏢 CONFIGURACIÓN ZONAS&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;u&gt;+ id: INT (PK)&lt;/u&gt;&lt;br&gt;&lt;u&gt;+ zona: VARCHAR(10) (UNIQUE)&lt;/u&gt;&lt;br&gt;+ nombre: VARCHAR(100)&lt;br&gt;+ descripcion: TEXT&lt;br&gt;+ cupo_maximo: INT&lt;br&gt;+ cupo_reservado: INT&lt;br&gt;+ activa: BOOLEAN&lt;br&gt;+ color_zona: VARCHAR(7)&lt;br&gt;+ fecha_creacion: TIMESTAMP&lt;br&gt;+ fecha_actualizacion: TIMESTAMP&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;fillColor=#E3F2FD;strokeColor=#2196F3;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="450" y="120" width="280" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- ENTIDAD: RESERVAS -->
+        <mxCell id="reservas" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;📅 RESERVAS&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;u&gt;+ id: INT (PK)&lt;/u&gt;&lt;br&gt;+ evento: VARCHAR(255)&lt;br&gt;+ fecha: DATE&lt;br&gt;+ zona: VARCHAR(10) (FK)&lt;br&gt;+ hora_inicio: TIME&lt;br&gt;+ hora_fin: TIME&lt;br&gt;+ usuario: VARCHAR(255)&lt;br&gt;+ patente: VARCHAR(20) (FK)&lt;br&gt;+ numero_espacio: VARCHAR(20)&lt;br&gt;+ estado: ENUM&lt;br&gt;+ fecha_creacion: TIMESTAMP&lt;br&gt;+ fecha_liberacion: TIMESTAMP&lt;br&gt;+ observaciones: TEXT&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;fillColor=#FFF3E0;strokeColor=#FF9800;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="480" width="280" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- ENTIDAD: HISTORIAL OCUPACIÓN -->
+        <mxCell id="historial" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;📈 HISTORIAL OCUPACIÓN&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;u&gt;+ id: INT (PK)&lt;/u&gt;&lt;br&gt;+ zona: VARCHAR(10) (FK)&lt;br&gt;+ fecha: DATE&lt;br&gt;+ hora: TIME&lt;br&gt;+ espacios_ocupados: INT&lt;br&gt;+ espacios_totales: INT&lt;br&gt;+ porcentaje_ocupacion: DECIMAL(5,2)&lt;br&gt;+ tipo_registro: ENUM&lt;br&gt;+ fecha_registro: TIMESTAMP&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;fillColor=#F3E5F5;strokeColor=#9C27B0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="450" y="400" width="280" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- ENTIDAD: EVENTOS -->
+        <mxCell id="eventos" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;🔔 EVENTOS&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;u&gt;+ id: INT (PK)&lt;/u&gt;&lt;br&gt;+ tipo: ENUM&lt;br&gt;+ zona: VARCHAR(10) (FK)&lt;br&gt;+ usuario: VARCHAR(255)&lt;br&gt;+ patente: VARCHAR(20) (FK)&lt;br&gt;+ mensaje: TEXT&lt;br&gt;+ procesado: BOOLEAN&lt;br&gt;+ fecha_evento: TIMESTAMP&lt;br&gt;+ fecha_procesado: TIMESTAMP&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;fillColor=#FFEBEE;strokeColor=#F44336;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="120" width="280" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- ENTIDAD: MARCAS VEHÍCULOS -->
+        <mxCell id="marcas" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;🏷️ MARCAS VEHÍCULOS&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;u&gt;+ id: INT (PK)&lt;/u&gt;&lt;br&gt;&lt;u&gt;+ nombre: VARCHAR(50) (UNIQUE)&lt;/u&gt;&lt;br&gt;+ activa: BOOLEAN&lt;br&gt;+ fecha_creacion: TIMESTAMP&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;fillColor=#E8F5E8;strokeColor=#4CAF50;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="800" width="220" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ENTIDAD: USUARIOS -->
+        <mxCell id="usuarios" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;👤 USUARIOS&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;u&gt;+ id: INT (PK)&lt;/u&gt;&lt;br&gt;+ nombre: VARCHAR(255)&lt;br&gt;&lt;u&gt;+ email: VARCHAR(255) (UNIQUE)&lt;/u&gt;&lt;br&gt;+ contraseña: VARCHAR(255)&lt;br&gt;+ fecha_registro: TIMESTAMP&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;fillColor=#FFF8E1;strokeColor=#FFC107;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="450" y="640" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- RELACIÓN: VEHÍCULO -> ZONA -->
+        <mxCell id="rel_vehiculo_zona" style="endArrow=ERoneToMany;html=1;rounded=0;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeWidth=2;strokeColor=#1976D2;" edge="1" parent="1" source="vehiculos" target="zonas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_vehiculo_zona_label" value="zona_autorizada&#xa;(N:1)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#1976D2;fontStyle=1;" vertex="1" connectable="0" parent="rel_vehiculo_zona">
+          <mxGeometry x="-0.1" y="-2" relative="1" as="geometry">
+            <mxPoint x="5" y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- RELACIÓN: VEHÍCULO -> MARCA -->
+        <mxCell id="rel_vehiculo_marca" style="endArrow=ERoneToMany;html=1;rounded=0;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeWidth=2;strokeColor=#4CAF50;" edge="1" parent="1" source="vehiculos" target="marcas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_vehiculo_marca_label" value="marca&#xa;(N:1)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#4CAF50;fontStyle=1;" vertex="1" connectable="0" parent="rel_vehiculo_marca">
+          <mxGeometry x="-0.1" y="-2" relative="1" as="geometry">
+            <mxPoint x="0" y="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- RELACIÓN: RESERVA -> VEHÍCULO -->
+        <mxCell id="rel_reserva_vehiculo" style="endArrow=ERoneToMany;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeWidth=2;strokeColor=#FF9800;" edge="1" parent="1" source="reservas" target="vehiculos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_reserva_vehiculo_label" value="patente&#xa;(N:1)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#FF9800;fontStyle=1;" vertex="1" connectable="0" parent="rel_reserva_vehiculo">
+          <mxGeometry x="-0.1" y="-2" relative="1" as="geometry">
+            <mxPoint x="0" y="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- RELACIÓN: RESERVA -> ZONA -->
+        <mxCell id="rel_reserva_zona" style="endArrow=ERoneToMany;html=1;rounded=0;exitX=1;exitY=0.2;entryX=0;entryY=1;strokeWidth=2;strokeColor=#FF9800;" edge="1" parent="1" source="reservas" target="zonas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_reserva_zona_label" value="zona&#xa;(N:1)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#FF9800;fontStyle=1;" vertex="1" connectable="0" parent="rel_reserva_zona">
+          <mxGeometry x="-0.1" y="-2" relative="1" as="geometry">
+            <mxPoint x="5" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- RELACIÓN: HISTORIAL -> ZONA -->
+        <mxCell id="rel_historial_zona" style="endArrow=ERoneToMany;html=1;rounded=0;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeWidth=2;strokeColor=#9C27B0;" edge="1" parent="1" source="historial" target="zonas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_historial_zona_label" value="zona&#xa;(N:1)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#9C27B0;fontStyle=1;" vertex="1" connectable="0" parent="rel_historial_zona">
+          <mxGeometry x="-0.1" y="-2" relative="1" as="geometry">
+            <mxPoint x="0" y="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- RELACIÓN: EVENTO -> ZONA -->
+        <mxCell id="rel_evento_zona" style="endArrow=ERoneToMany;html=1;rounded=0;exitX=0;exitY=0.5;entryX=1;entryY=0.5;strokeWidth=2;strokeColor=#F44336;dashed=1;" edge="1" parent="1" source="eventos" target="zonas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_evento_zona_label" value="zona&#xa;(N:1) opcional" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#F44336;fontStyle=1;" vertex="1" connectable="0" parent="rel_evento_zona">
+          <mxGeometry x="-0.1" y="-2" relative="1" as="geometry">
+            <mxPoint x="0" y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- RELACIÓN: EVENTO -> VEHÍCULO -->
+        <mxCell id="rel_evento_vehiculo" style="endArrow=ERoneToMany;html=1;rounded=0;exitX=0;exitY=0.8;entryX=1;entryY=0.2;strokeWidth=2;strokeColor=#F44336;dashed=1;" edge="1" parent="1" source="eventos" target="vehiculos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_evento_vehiculo_label" value="patente&#xa;(N:1) opcional" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#F44336;fontStyle=1;" vertex="1" connectable="0" parent="rel_evento_vehiculo">
+          <mxGeometry x="-0.1" y="-2" relative="1" as="geometry">
+            <mxPoint x="15" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- RELACIÓN: USUARIO -> RESERVA -->
+        <mxCell id="rel_usuario_reserva" style="endArrow=ERoneToMany;html=1;rounded=0;exitX=0;exitY=0.5;entryX=1;entryY=0.8;strokeWidth=2;strokeColor=#FFC107;dashed=1;" edge="1" parent="1" source="usuarios" target="reservas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_usuario_reserva_label" value="usuario&#xa;(1:N) lógica" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#FFC107;fontStyle=1;" vertex="1" connectable="0" parent="rel_usuario_reserva">
+          <mxGeometry x="-0.1" y="-2" relative="1" as="geometry">
+            <mxPoint x="10" y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- LEYENDA -->
+        <mxCell id="leyenda_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#BDBDBD;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="350" width="280" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="leyenda_titulo" value="LEYENDA" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="850" y="360" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda_pk" value="Clave Primaria (PK)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=4;" vertex="1" parent="1">
+          <mxGeometry x="830" y="385" width="120" height="15" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda_unique" value="Clave Única (UNIQUE)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=4;" vertex="1" parent="1">
+          <mxGeometry x="830" y="405" width="120" height="15" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda_fk" value="Clave Foránea (FK)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="830" y="425" width="120" height="15" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda_oblig" value="——— Relación Obligatoria" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="830" y="445" width="140" height="15" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda_opcional" value="- - - - Relación Opcional" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="830" y="465" width="140" height="15" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda_cardinalidad" value="(N:1) = Muchos a Uno&#xa;(1:N) = Uno a Muchos" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="830" y="485" width="140" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- INFO DEL PROYECTO -->
+        <mxCell id="info_proyecto" value="Sistema de Gestión de Estacionamientos UCT&#xa;Base de datos: a2024_dvasquez&#xa;Fecha: Junio 2025&#xa;Versión: 1.0" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=8;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ESTADÍSTICAS DEL MODELO -->
+        <mxCell id="estadisticas" value="📊 ESTADÍSTICAS DEL MODELO&#xa;• 7 Entidades principales&#xa;• 8 Relaciones definidas&#xa;• 5 Claves foráneas&#xa;• 4 Triggers automáticos&#xa;• 4 Vistas optimizadas&#xa;• 4 Procedimientos almacenados" style="text;html=1;strokeColor=#1976D2;fillColor=#E3F2FD;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="580" width="280" height="120" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

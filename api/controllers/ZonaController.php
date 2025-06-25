@@ -1,27 +1,43 @@
 <?php
-require_once './models/Reserva.php';
+require_once './models/Zona.php';
 
-class ReservaController {
+class ZonaController {
     
     public function listar() {
         try {
-            $limite = isset($_GET['limite']) ? (int)$_GET['limite'] : 50;
-            $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-            $offset = ($pagina - 1) * $limite;
-            
-            $reservas = Reserva::obtenerTodas($limite, $offset);
-            $total = Reserva::contarTotal();
+            $soloActivas = isset($_GET['activas']) ? (bool)$_GET['activas'] : true;
+            $zonas = Zona::obtenerTodas($soloActivas);
             
             echo json_encode([
                 'success' => true,
-                'data' => $reservas,
-                'pagination' => [
-                    'total' => $total,
-                    'pagina' => $pagina,
-                    'limite' => $limite,
-                    'total_paginas' => ceil($total / $limite)
-                ]
+                'data' => $zonas,
+                'total' => count($zonas)
             ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error interno del servidor']);
+        }
+    }
+    
+    public function obtenerPorCodigo() {
+        try {
+            $zona = $_GET['zona'] ?? null;
+            
+            if (!$zona) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Código de zona es requerido']);
+                return;
+            }
+            
+            $zonaData = Zona::obtenerPorCodigo($zona);
+            
+            if (!$zonaData) {
+                http_response_code(404);
+                echo json_encode(['error' => 'Zona no encontrada']);
+                return;
+            }
+            
+            echo json_encode(['success' => true, 'data' => $zonaData]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error interno del servidor']);
@@ -34,19 +50,19 @@ class ReservaController {
             
             if (!$id) {
                 http_response_code(400);
-                echo json_encode(['error' => 'ID de reserva es requerido']);
+                echo json_encode(['error' => 'ID de zona es requerido']);
                 return;
             }
             
-            $reserva = Reserva::obtenerPorId($id);
+            $zona = Zona::obtenerPorId($id);
             
-            if (!$reserva) {
+            if (!$zona) {
                 http_response_code(404);
-                echo json_encode(['error' => 'Reserva no encontrada']);
+                echo json_encode(['error' => 'Zona no encontrada']);
                 return;
             }
             
-            echo json_encode(['success' => true, 'data' => $reserva]);
+            echo json_encode(['success' => true, 'data' => $zona]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error interno del servidor']);
@@ -65,14 +81,14 @@ class ReservaController {
             }
             
             // Validar datos
-            $errores = Reserva::validarDatos($data);
+            $errores = Zona::validarDatos($data);
             if (!empty($errores)) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Errores de validación', 'detalles' => $errores]);
                 return;
             }
             
-            $resultado = Reserva::crear($data);
+            $resultado = Zona::crear($data);
             
             if (isset($resultado['error'])) {
                 http_response_code(400);
@@ -82,7 +98,7 @@ class ReservaController {
             
             echo json_encode([
                 'success' => true, 
-                'mensaje' => 'Reserva creada exitosamente',
+                'mensaje' => 'Zona creada exitosamente',
                 'id' => $resultado['id']
             ]);
         } catch (Exception $e) {
@@ -97,7 +113,7 @@ class ReservaController {
             
             if (!$id) {
                 http_response_code(400);
-                echo json_encode(['error' => 'ID de reserva es requerido']);
+                echo json_encode(['error' => 'ID de zona es requerido']);
                 return;
             }
             
@@ -111,14 +127,14 @@ class ReservaController {
             }
             
             // Validar datos
-            $errores = Reserva::validarDatos($data, true);
+            $errores = Zona::validarDatos($data, true);
             if (!empty($errores)) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Errores de validación', 'detalles' => $errores]);
                 return;
             }
             
-            $resultado = Reserva::actualizar($id, $data);
+            $resultado = Zona::actualizar($id, $data);
             
             if (isset($resultado['error'])) {
                 http_response_code(400);
@@ -126,7 +142,7 @@ class ReservaController {
                 return;
             }
             
-            echo json_encode(['success' => true, 'mensaje' => 'Reserva actualizada exitosamente']);
+            echo json_encode(['success' => true, 'mensaje' => 'Zona actualizada exitosamente']);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error interno del servidor']);
@@ -139,27 +155,20 @@ class ReservaController {
             
             if (!$id) {
                 http_response_code(400);
-                echo json_encode(['error' => 'ID de reserva es requerido']);
+                echo json_encode(['error' => 'ID de zona es requerido']);
                 return;
             }
             
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
             
-            if (!isset($data['estado'])) {
+            if (!isset($data['activa'])) {
                 http_response_code(400);
-                echo json_encode(['error' => 'Estado es requerido']);
+                echo json_encode(['error' => 'Estado activa es requerido']);
                 return;
             }
             
-            $estadosValidos = ['reservado', 'ocupado', 'liberado', 'cancelado'];
-            if (!in_array($data['estado'], $estadosValidos)) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Estado inválido. Debe ser: ' . implode(', ', $estadosValidos)]);
-                return;
-            }
-            
-            $resultado = Reserva::cambiarEstado($id, $data['estado']);
+            $resultado = Zona::cambiarEstado($id, $data['activa']);
             
             if (isset($resultado['error'])) {
                 http_response_code(400);
@@ -167,102 +176,31 @@ class ReservaController {
                 return;
             }
             
-            echo json_encode(['success' => true, 'mensaje' => 'Estado de reserva actualizado exitosamente']);
+            echo json_encode(['success' => true, 'mensaje' => 'Estado de zona actualizado exitosamente']);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error interno del servidor']);
         }
     }
     
-    public function listarPorUsuario() {
-        try {
-            $usuario = $_GET['usuario'] ?? null;
-            $limite = isset($_GET['limite']) ? (int)$_GET['limite'] : 50;
-            
-            if (!$usuario) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Usuario es requerido']);
-                return;
-            }
-            
-            $reservas = Reserva::obtenerPorUsuario($usuario, $limite);
-            
-            echo json_encode([
-                'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
-            ]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Error interno del servidor']);
-        }
-    }
-    
-    public function listarPorZona() {
+    public function disponibilidad() {
         try {
             $zona = $_GET['zona'] ?? null;
-            $fecha = $_GET['fecha'] ?? null;
             
-            if (!$zona) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Zona es requerida']);
-                return;
+            if ($zona) {
+                $disponibilidad = Zona::obtenerDisponibilidad($zona);
+                if (!$disponibilidad) {
+                    http_response_code(404);
+                    echo json_encode(['error' => 'Zona no encontrada']);
+                    return;
+                }
+            } else {
+                $disponibilidad = Zona::obtenerDisponibilidad();
             }
-            
-            $reservas = Reserva::obtenerPorZona($zona, $fecha);
             
             echo json_encode([
                 'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
-            ]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Error interno del servidor']);
-        }
-    }
-    
-    public function listarPorFecha() {
-        try {
-            $fecha = $_GET['fecha'] ?? null;
-            $zona = $_GET['zona'] ?? null;
-            
-            if (!$fecha) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Fecha es requerida']);
-                return;
-            }
-            
-            $reservas = Reserva::obtenerPorFecha($fecha, $zona);
-            
-            echo json_encode([
-                'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
-            ]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Error interno del servidor']);
-        }
-    }
-    
-    public function buscar() {
-        try {
-            $termino = $_GET['q'] ?? '';
-            $limite = isset($_GET['limite']) ? (int)$_GET['limite'] : 20;
-            
-            if (strlen($termino) < 2) {
-                http_response_code(400);
-                echo json_encode(['error' => 'El término de búsqueda debe tener al menos 2 caracteres']);
-                return;
-            }
-            
-            $reservas = Reserva::buscar($termino, $limite);
-            
-            echo json_encode([
-                'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
+                'data' => $disponibilidad
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -272,10 +210,7 @@ class ReservaController {
     
     public function estadisticas() {
         try {
-            $fechaInicio = $_GET['fecha_inicio'] ?? null;
-            $fechaFin = $_GET['fecha_fin'] ?? null;
-            
-            $estadisticas = Reserva::obtenerEstadisticas($fechaInicio, $fechaFin);
+            $estadisticas = Zona::obtenerEstadisticas();
             
             echo json_encode([
                 'success' => true,
@@ -286,4 +221,61 @@ class ReservaController {
             echo json_encode(['error' => 'Error interno del servidor']);
         }
     }
+    
+    public function ocupar() {
+        try {
+            $json = file_get_contents("php://input");
+            $data = json_decode($json, true);
+            
+            if (!isset($data['zona'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Zona es requerida']);
+                return;
+            }
+            
+            $incremento = $data['espacios'] ?? 1;
+            
+            $resultado = Zona::actualizarCupoReservado($data['zona'], $incremento);
+            
+            if (isset($resultado['error'])) {
+                http_response_code(400);
+                echo json_encode(['error' => $resultado['error']]);
+                return;
+            }
+            
+            echo json_encode(['success' => true, 'mensaje' => 'Espacio ocupado exitosamente']);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error interno del servidor']);
+        }
+    }
+    
+    public function liberar() {
+        try {
+            $json = file_get_contents("php://input");
+            $data = json_decode($json, true);
+            
+            if (!isset($data['zona'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Zona es requerida']);
+                return;
+            }
+            
+            $decremento = ($data['espacios'] ?? 1) * -1;
+            
+            $resultado = Zona::actualizarCupoReservado($data['zona'], $decremento);
+            
+            if (isset($resultado['error'])) {
+                http_response_code(400);
+                echo json_encode(['error' => $resultado['error']]);
+                return;
+            }
+            
+            echo json_encode(['success' => true, 'mensaje' => 'Espacio liberado exitosamente']);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error interno del servidor']);
+        }
+    }
 }
+?>

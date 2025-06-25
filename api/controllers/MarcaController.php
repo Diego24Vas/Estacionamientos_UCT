@@ -1,26 +1,23 @@
 <?php
-require_once './models/Reserva.php';
+require_once './models/Marca.php';
 
-class ReservaController {
+class MarcaController {
     
     public function listar() {
         try {
-            $limite = isset($_GET['limite']) ? (int)$_GET['limite'] : 50;
-            $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
-            $offset = ($pagina - 1) * $limite;
+            $soloActivas = isset($_GET['activas']) ? (bool)$_GET['activas'] : true;
+            $conEstadisticas = isset($_GET['estadisticas']) ? (bool)$_GET['estadisticas'] : false;
             
-            $reservas = Reserva::obtenerTodas($limite, $offset);
-            $total = Reserva::contarTotal();
+            if ($conEstadisticas) {
+                $marcas = Marca::obtenerConEstadisticas();
+            } else {
+                $marcas = Marca::obtenerTodas($soloActivas);
+            }
             
             echo json_encode([
                 'success' => true,
-                'data' => $reservas,
-                'pagination' => [
-                    'total' => $total,
-                    'pagina' => $pagina,
-                    'limite' => $limite,
-                    'total_paginas' => ceil($total / $limite)
-                ]
+                'data' => $marcas,
+                'total' => count($marcas)
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -34,19 +31,19 @@ class ReservaController {
             
             if (!$id) {
                 http_response_code(400);
-                echo json_encode(['error' => 'ID de reserva es requerido']);
+                echo json_encode(['error' => 'ID de marca es requerido']);
                 return;
             }
             
-            $reserva = Reserva::obtenerPorId($id);
+            $marca = Marca::obtenerPorId($id);
             
-            if (!$reserva) {
+            if (!$marca) {
                 http_response_code(404);
-                echo json_encode(['error' => 'Reserva no encontrada']);
+                echo json_encode(['error' => 'Marca no encontrada']);
                 return;
             }
             
-            echo json_encode(['success' => true, 'data' => $reserva]);
+            echo json_encode(['success' => true, 'data' => $marca]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error interno del servidor']);
@@ -65,14 +62,14 @@ class ReservaController {
             }
             
             // Validar datos
-            $errores = Reserva::validarDatos($data);
+            $errores = Marca::validarDatos($data);
             if (!empty($errores)) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Errores de validación', 'detalles' => $errores]);
                 return;
             }
             
-            $resultado = Reserva::crear($data);
+            $resultado = Marca::crear($data);
             
             if (isset($resultado['error'])) {
                 http_response_code(400);
@@ -82,7 +79,7 @@ class ReservaController {
             
             echo json_encode([
                 'success' => true, 
-                'mensaje' => 'Reserva creada exitosamente',
+                'mensaje' => 'Marca creada exitosamente',
                 'id' => $resultado['id']
             ]);
         } catch (Exception $e) {
@@ -97,7 +94,7 @@ class ReservaController {
             
             if (!$id) {
                 http_response_code(400);
-                echo json_encode(['error' => 'ID de reserva es requerido']);
+                echo json_encode(['error' => 'ID de marca es requerido']);
                 return;
             }
             
@@ -111,14 +108,14 @@ class ReservaController {
             }
             
             // Validar datos
-            $errores = Reserva::validarDatos($data, true);
+            $errores = Marca::validarDatos($data, true);
             if (!empty($errores)) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Errores de validación', 'detalles' => $errores]);
                 return;
             }
             
-            $resultado = Reserva::actualizar($id, $data);
+            $resultado = Marca::actualizar($id, $data);
             
             if (isset($resultado['error'])) {
                 http_response_code(400);
@@ -126,7 +123,32 @@ class ReservaController {
                 return;
             }
             
-            echo json_encode(['success' => true, 'mensaje' => 'Reserva actualizada exitosamente']);
+            echo json_encode(['success' => true, 'mensaje' => 'Marca actualizada exitosamente']);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error interno del servidor']);
+        }
+    }
+    
+    public function eliminar() {
+        try {
+            $id = $_GET['id'] ?? null;
+            
+            if (!$id) {
+                http_response_code(400);
+                echo json_encode(['error' => 'ID de marca es requerido']);
+                return;
+            }
+            
+            $resultado = Marca::eliminar($id);
+            
+            if (isset($resultado['error'])) {
+                http_response_code(400);
+                echo json_encode(['error' => $resultado['error']]);
+                return;
+            }
+            
+            echo json_encode(['success' => true, 'mensaje' => 'Marca eliminada exitosamente']);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error interno del servidor']);
@@ -139,27 +161,20 @@ class ReservaController {
             
             if (!$id) {
                 http_response_code(400);
-                echo json_encode(['error' => 'ID de reserva es requerido']);
+                echo json_encode(['error' => 'ID de marca es requerido']);
                 return;
             }
             
             $json = file_get_contents("php://input");
             $data = json_decode($json, true);
             
-            if (!isset($data['estado'])) {
+            if (!isset($data['activa'])) {
                 http_response_code(400);
-                echo json_encode(['error' => 'Estado es requerido']);
+                echo json_encode(['error' => 'Estado activa es requerido']);
                 return;
             }
             
-            $estadosValidos = ['reservado', 'ocupado', 'liberado', 'cancelado'];
-            if (!in_array($data['estado'], $estadosValidos)) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Estado inválido. Debe ser: ' . implode(', ', $estadosValidos)]);
-                return;
-            }
-            
-            $resultado = Reserva::cambiarEstado($id, $data['estado']);
+            $resultado = Marca::cambiarEstado($id, $data['activa']);
             
             if (isset($resultado['error'])) {
                 http_response_code(400);
@@ -167,79 +182,7 @@ class ReservaController {
                 return;
             }
             
-            echo json_encode(['success' => true, 'mensaje' => 'Estado de reserva actualizado exitosamente']);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Error interno del servidor']);
-        }
-    }
-    
-    public function listarPorUsuario() {
-        try {
-            $usuario = $_GET['usuario'] ?? null;
-            $limite = isset($_GET['limite']) ? (int)$_GET['limite'] : 50;
-            
-            if (!$usuario) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Usuario es requerido']);
-                return;
-            }
-            
-            $reservas = Reserva::obtenerPorUsuario($usuario, $limite);
-            
-            echo json_encode([
-                'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
-            ]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Error interno del servidor']);
-        }
-    }
-    
-    public function listarPorZona() {
-        try {
-            $zona = $_GET['zona'] ?? null;
-            $fecha = $_GET['fecha'] ?? null;
-            
-            if (!$zona) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Zona es requerida']);
-                return;
-            }
-            
-            $reservas = Reserva::obtenerPorZona($zona, $fecha);
-            
-            echo json_encode([
-                'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
-            ]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Error interno del servidor']);
-        }
-    }
-    
-    public function listarPorFecha() {
-        try {
-            $fecha = $_GET['fecha'] ?? null;
-            $zona = $_GET['zona'] ?? null;
-            
-            if (!$fecha) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Fecha es requerida']);
-                return;
-            }
-            
-            $reservas = Reserva::obtenerPorFecha($fecha, $zona);
-            
-            echo json_encode([
-                'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
-            ]);
+            echo json_encode(['success' => true, 'mensaje' => 'Estado de marca actualizado exitosamente']);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => 'Error interno del servidor']);
@@ -257,12 +200,12 @@ class ReservaController {
                 return;
             }
             
-            $reservas = Reserva::buscar($termino, $limite);
+            $marcas = Marca::buscar($termino, $limite);
             
             echo json_encode([
                 'success' => true,
-                'data' => $reservas,
-                'total' => count($reservas)
+                'data' => $marcas,
+                'total' => count($marcas)
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -270,16 +213,31 @@ class ReservaController {
         }
     }
     
-    public function estadisticas() {
+    public function masUsadas() {
         try {
-            $fechaInicio = $_GET['fecha_inicio'] ?? null;
-            $fechaFin = $_GET['fecha_fin'] ?? null;
+            $limite = isset($_GET['limite']) ? (int)$_GET['limite'] : 10;
             
-            $estadisticas = Reserva::obtenerEstadisticas($fechaInicio, $fechaFin);
+            $marcas = Marca::obtenerMasUsadas($limite);
             
             echo json_encode([
                 'success' => true,
-                'data' => $estadisticas
+                'data' => $marcas,
+                'total' => count($marcas)
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Error interno del servidor']);
+        }
+    }
+    
+    public function importarComunes() {
+        try {
+            $resultado = Marca::importarMarcasComunes();
+            
+            echo json_encode([
+                'success' => true,
+                'mensaje' => 'Marcas comunes importadas exitosamente',
+                'marcas_creadas' => $resultado['marcas_creadas']
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -287,3 +245,4 @@ class ReservaController {
         }
     }
 }
+?>
