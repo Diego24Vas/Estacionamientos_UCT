@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Estacionamientos UCT - API Frontend</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .api-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .endpoint {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .response {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            border-left: 4px solid #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-left: 4px solid #dc3545;
+            background: #f8d7da;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .token-display {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Estacionamientos UCT - API Frontend</h1>
+        <p>Esta página demuestra cómo conectar el frontend con la API REST implementada.</p>
+        
+        <div class="api-section">
+            <h2>Estado de la API</h2>
+            <button onclick="checkApiStatus()">Verificar Estado de la API</button>
+            <div id="api-status-response" class="response"></div>
+        </div>
+
+        <!-- Sección de Autenticación -->
+        <div class="api-section">
+            <h2>1. Autenticación</h2>
+            
+            <div class="endpoint">
+                <h3>Login</h3>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="login-email" placeholder="usuario@uct.cl" value="admin@uct.cl">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" id="login-password" placeholder="password" value="admin123">
+                </div>
+                <button onclick="login()">Iniciar Sesión</button>
+                <div id="login-response" class="response"></div>
+            </div>
+
+            <div class="endpoint">
+                <h3>Registro</h3>
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="register-name" placeholder="Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="register-email" placeholder="juan@uct.cl">
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" id="register-password" placeholder="password">
+                </div>
+                <div class="form-group">
+                    <label>Rol:</label>
+                    <select id="register-rol">
+                        <option value="estudiante">Estudiante</option>
+                        <option value="docente">Docente</option>
+                        <option value="administrativo">Administrativo</option>
+                    </select>
+                </div>
+                <button onclick="register()">Registrar Usuario</button>
+                <div id="register-response" class="response"></div>
+            </div>
+
+            <div class="token-display">
+                <strong>Token actual:</strong> <span id="current-token">No autenticado</span>
+            </div>
+        </div>
+
+        <!-- Sección de Vehículos -->
+        <div class="api-section">
+            <h2>2. Gestión de Vehículos</h2>
+            
+            <div class="endpoint">
+                <h3>Listar Vehículos</h3>
+                <button onclick="getVehicles()">Obtener Todos los Vehículos</button>
+                <div id="vehicles-response" class="response"></div>
+            </div>
+
+            <div class="endpoint">
+                <h3>Validar Patente</h3>
+                <div class="form-group">
+                    <label>Patente:</label>
+                    <input type="text" id="validate-plate" placeholder="JOOD20" value="JOOD20">
+                </div>
+                <button onclick="validatePlate()">Validar Patente</button>
+                <div id="validate-plate-response" class="response"></div>
+            </div>
+
+            <div class="endpoint">
+                <h3>Crear Vehículo</h3>
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="vehicle-name" placeholder="Juan">
+                </div>
+                <div class="form-group">
+                    <label>Apellido:</label>
+                    <input type="text" id="vehicle-lastname" placeholder="Pérez">
+                </div>
+                <div class="form-group">
+                    <label>Patente:</label>
+                    <input type="text" id="vehicle-plate" placeholder="XYZ789">
+                </div>
+                <div class="form-group">
+                    <label>Espacio de Estacionamiento:</label>
+                    <select id="vehicle-space">
+                        <option value="">Seleccionar espacio</option>
+                        <option value="A01">A01 - Zona A</option>
+                        <option value="A02">A02 - Zona A</option>
+                        <option value="B1">B1 - Zona B</option>
+                        <option value="B2">B2 - Zona B</option>
+                        <option value="C1">C1 - Zona C</option>
+                        <option value="D1">D1 - Zona D</option>
+                    </select>
+                </div>
+                <button onclick="createVehicle()">Crear Vehículo</button>
+                <div id="create-vehicle-response" class="response"></div>
+            </div>
+        </div>
+
+        <!-- Sección de Reservas -->
+        <div class="api-section">
+            <h2>3. Gestión de Reservas</h2>
+            
+            <div class="endpoint">
+                <h3>Listar Reservas</h3>
+                <button onclick="getReservations()">Obtener Todas las Reservas</button>
+                <div id="reservations-response" class="response"></div>
+            </div>
+
+            <div class="endpoint">
+                <h3>Verificar Disponibilidad por Zona</h3>
+                <div class="form-group">
+                    <label>Zona:</label>
+                    <select id="availability-zone">
+                        <option value="A">Zona A</option>
+                        <option value="B">Zona B</option>
+                        <option value="C">Zona C</option>
+                        <option value="D">Zona D</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Fecha:</label>
+                    <input type="date" id="availability-date">
+                </div>
+                <div class="form-group">
+                    <label>Hora Inicio:</label>
+                    <input type="time" id="availability-start-time">
+                </div>
+                <div class="form-group">
+                    <label>Hora Fin:</label>
+                    <input type="time" id="availability-end-time">
+                </div>
+                <button onclick="checkAvailability()">Verificar Disponibilidad</button>
+                <div id="availability-response" class="response"></div>
+            </div>
+
+            <div class="endpoint">
+                <h3>Crear Reserva</h3>
+                <div class="form-group">
+                    <label>Evento:</label>
+                    <input type="text" id="reservation-evento" placeholder="Reunión de trabajo">
+                </div>
+                <div class="form-group">
+                    <label>Fecha:</label>
+                    <input type="date" id="reservation-date">
+                </div>
+                <div class="form-group">
+                    <label>Hora Inicio:</label>
+                    <input type="time" id="reservation-start-time">
+                </div>
+                <div class="form-group">
+                    <label>Hora Fin:</label>
+                    <input type="time" id="reservation-end-time">
+                </div>
+                <div class="form-group">
+                    <label>Zona:</label>
+                    <select id="reservation-zone">
+                        <option value="A">Zona A</option>
+                        <option value="B">Zona B</option>
+                        <option value="C">Zona C</option>
+                        <option value="D">Zona D</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nombre Usuario:</label>
+                    <input type="text" id="reservation-user" placeholder="Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label>Patente:</label>
+                    <input type="text" id="reservation-patente" placeholder="ABC123">
+                </div>
+                <button onclick="createReservation()">Crear Reserva</button>
+                <div id="create-reservation-response" class="response"></div>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h2>Enlaces Útiles</h2>
+            <p><strong>Documentación Swagger:</strong> <a href="./api/docs" target="_blank">Ver Documentación Interactiva</a></p>
+            <p><strong>API Endpoint Base:</strong> <code>./api/</code></p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = './api';
+        let authToken = null;
+
+        // Función auxiliar para hacer requests a la API
+        async function apiRequest(endpoint, options = {}) {
+            const url = `${API_BASE}${endpoint}`;
+            const defaultHeaders = {
+                'Content-Type': 'application/json',
+            };
+
+            if (authToken) {
+                defaultHeaders['Authorization'] = `Bearer ${authToken}`;
+            }
+
+            const config = {
+                headers: defaultHeaders,
+                ...options,
+                headers: { ...defaultHeaders, ...options.headers }
+            };
+
+            try {
+                const response = await fetch(url, config);
+                const data = await response.json();
+                return { success: response.ok, data, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Función para mostrar respuestas
+        function displayResponse(elementId, response) {
+            const element = document.getElementById(elementId);
+            element.className = 'response ' + (response.success ? 'success' : 'error');
+            element.textContent = JSON.stringify(response, null, 2);
+        }
+
+        // Función para verificar estado de la API
+        async function checkApiStatus() {
+            const response = await apiRequest('/');
+            displayResponse('api-status-response', response);
+        }
+
+        // Función de login
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const response = await apiRequest('/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.success && response.data.token) {
+                authToken = response.data.token;
+                document.getElementById('current-token').textContent = authToken.substring(0, 50) + '...';
+            }
+
+            displayResponse('login-response', response);
+        }
+
+        // Función de registro
+        async function register() {
+            const nombre = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const rol = document.getElementById('register-rol').value;
+
+            const response = await apiRequest('/auth/register', {
+                method: 'POST',
+                body: JSON.stringify({ nombre, email, password, rol })
+            });
+
+            displayResponse('register-response', response);
+        }
+
+        // Función para obtener vehículos
+        async function getVehicles() {
+            const response = await apiRequest('/vehicles');
+            displayResponse('vehicles-response', response);
+        }
+
+        // Función para validar patente
+        async function validatePlate() {
+            const plate = document.getElementById('validate-plate').value;
+            const response = await apiRequest(`/vehicles/validate/${plate}`);
+            displayResponse('validate-plate-response', response);
+        }
+
+        // Función para crear vehículo
+        async function createVehicle() {
+            const nombre = document.getElementById('vehicle-name').value;
+            const apellido = document.getElementById('vehicle-lastname').value;
+            const patente = document.getElementById('vehicle-plate').value;
+            const espacio_estacionamiento = document.getElementById('vehicle-space').value;
+
+            const response = await apiRequest('/vehicles', {
+                method: 'POST',
+                body: JSON.stringify({ nombre, apellido, patente, espacio_estacionamiento })
+            });
+
+            displayResponse('create-vehicle-response', response);
+        }
+
+        // Función para obtener reservas
+        async function getReservations() {
+            const response = await apiRequest('/reservations');
+            displayResponse('reservations-response', response);
+        }
+
+        // Función para verificar disponibilidad
+        async function checkAvailability() {
+            const zona = document.getElementById('availability-zone').value;
+            const fecha = document.getElementById('availability-date').value;
+            const hora_inicio = document.getElementById('availability-start-time').value;
+            const hora_fin = document.getElementById('availability-end-time').value;
+
+            const params = new URLSearchParams({
+                zona,
+                fecha,
+                hora_inicio,
+                hora_fin
+            });
+
+            const response = await apiRequest(`/reservations/availability?${params}`);
+            displayResponse('availability-response', response);
+        }
+
+        // Función para crear reserva
+        async function createReservation() {
+            const evento = document.getElementById('reservation-evento').value;
+            const fecha = document.getElementById('reservation-date').value;
+            const hora_inicio = document.getElementById('reservation-start-time').value;
+            const hora_fin = document.getElementById('reservation-end-time').value;
+            const zona = document.getElementById('reservation-zone').value;
+            const usuario = document.getElementById('reservation-user').value;
+            const patente = document.getElementById('reservation-patente').value;
+
+            const response = await apiRequest('/reservations', {
+                method: 'POST',
+                body: JSON.stringify({ evento, fecha, hora_inicio, hora_fin, zona, usuario, patente })
+            });
+
+            displayResponse('create-reservation-response', response);
+        }
+
+        // Configurar fechas por defecto
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().slice(0, 10);
+            
+            // Configurar fechas por defecto
+            document.getElementById('availability-date').value = today;
+            document.getElementById('availability-start-time').value = '08:00';
+            document.getElementById('availability-end-time').value = '18:00';
+
+            document.getElementById('reservation-date').value = today;
+            document.getElementById('reservation-start-time').value = '08:00';
+            document.getElementById('reservation-end-time').value = '18:00';
+
+            // Verificar estado inicial de la API
+            checkApiStatus();
+        });
+    </script>
+</body>
+</html>

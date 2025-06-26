@@ -151,3 +151,21 @@
   BASE_URL: http://localhost/proyecto/Estacionamientos_UCT
   Headers sent: No
 -----------------------------------
+[2025-06-26 05:52:14] User logged out: admin
+  SERVER_NAME: localhost
+  HTTP_HOST: localhost
+  REQUEST_URI: /proyecto/Estacionamientos_UCT/estructura/controllers/logout.php
+  SCRIPT_NAME: /proyecto/Estacionamientos_UCT/estructura/controllers/logout.php
+  PHP_SELF: /proyecto/Estacionamientos_UCT/estructura/controllers/logout.php
+  BASE_URL: http://localhost/proyecto/Estacionamientos_UCT
+  Headers sent: No
+-----------------------------------
+[2025-06-26 05:55:38] User logged out: rodrigo
+  SERVER_NAME: localhost
+  HTTP_HOST: localhost
+  REQUEST_URI: /proyecto/Estacionamientos_UCT/estructura/controllers/logout.php
+  SCRIPT_NAME: /proyecto/Estacionamientos_UCT/estructura/controllers/logout.php
+  PHP_SELF: /proyecto/Estacionamientos_UCT/estructura/controllers/logout.php
+  BASE_URL: http://localhost/proyecto/Estacionamientos_UCT
+  Headers sent: No
+-----------------------------------
