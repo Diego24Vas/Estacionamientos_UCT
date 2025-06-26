@@ -15,8 +15,8 @@ class AuthController {
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="email", type="string", example="admin@uct.cl"),
-     *             @OA\Property(property="password", type="string", example="admin123")
+     *             @OA\Property(property="username", type="string", example="admin"),
+     *             @OA\Property(property="password", type="string", example="password123")
      *         )
      *     ),
      *     @OA\Response(response=200, description="Login exitoso"),
@@ -27,23 +27,23 @@ class AuthController {
         try {
             $data = json_decode(file_get_contents('php://input'), true);
             
-            if (!isset($data['email']) || !isset($data['password'])) {
+            if (!isset($data['username']) || !isset($data['password'])) {
                 http_response_code(400);
-                return ['error' => 'Email y contraseña son requeridos'];
+                return ['error' => 'Nombre de usuario y contraseña son requeridos'];
             }
             
-            // Buscar usuario por email en la tabla correcta
+            // Buscar usuario por nombre en la tabla correcta
             $user = $this->db->fetch(
-                "SELECT id, nombre, email, contraseña FROM INFO1170_RegistroUsuarios WHERE email = ?",
-                [$data['email']]
+                "SELECT id, nombre, email, contraseña FROM INFO1170_RegistroUsuarios WHERE nombre = ?",
+                [$data['username']]
             );
             
             if ($user && password_verify($data['password'], $user['contraseña'])) {
                 // Generar token JWT simple
                 $token = base64_encode(json_encode([
                     'user_id' => $user['id'],
+                    'username' => $user['nombre'],
                     'email' => $user['email'],
-                    'nombre' => $user['nombre'],
                     'exp' => time() + 3600 // 1 hora
                 ]));
                 
@@ -62,8 +62,8 @@ class AuthController {
                 if ($user && $user['contraseña'] === $data['password']) {
                     $token = base64_encode(json_encode([
                         'user_id' => $user['id'],
+                        'username' => $user['nombre'],
                         'email' => $user['email'],
-                        'nombre' => $user['nombre'],
                         'exp' => time() + 3600
                     ]));
                     

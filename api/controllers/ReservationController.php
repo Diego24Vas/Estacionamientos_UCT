@@ -273,7 +273,7 @@ class ReservationController {
             $reservation = $this->db->fetch(
                 "SELECT r.*, u.nombre as usuario_nombre 
                  FROM INFO1170_Reservas r 
-                 LEFT JOIN INFO1170_Usuarios u ON r.usuario_id = u.id 
+                 LEFT JOIN INFO1170_RegistroUsuarios u ON r.usuario_id = u.id 
                  WHERE r.id = ?",
                 [$id]
             );

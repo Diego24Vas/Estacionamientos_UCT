@@ -104,12 +104,12 @@
             <div class="endpoint">
                 <h3>Login</h3>
                 <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" id="login-email" placeholder="usuario@uct.cl" value="admin@uct.cl">
+                    <label>Nombre de Usuario:</label>
+                    <input type="text" id="login-username" placeholder="Ingrese su nombre de usuario" value="">
                 </div>
                 <div class="form-group">
                     <label>Contraseña:</label>
-                    <input type="password" id="login-password" placeholder="password" value="admin123">
+                    <input type="password" id="login-password" placeholder="Ingrese su contraseña" value="">
                 </div>
                 <button onclick="login()">Iniciar Sesión</button>
                 <div id="login-response" class="response"></div>
@@ -326,12 +326,12 @@
 
         // Función de login
         async function login() {
-            const email = document.getElementById('login-email').value;
+            const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
 
             const response = await apiRequest('/auth/login', {
                 method: 'POST',
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ username, password })
             });
 
             if (response.success && response.data.token) {
