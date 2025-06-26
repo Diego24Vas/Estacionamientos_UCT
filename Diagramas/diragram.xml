@@ -1,0 +1,77 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="MVC Híbrido 2025">
+    <mxGraphModel dx="1182" dy="633" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- View -->
+        <mxCell id="2" value="🌐 Cliente Web / Móvil / Postman" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5fe;strokeColor=#0277bd;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="60" width="240" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- API Gateway -->
+        <mxCell id="3" value="🚪 API Gateway<br/>index.php" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="360" y="60" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Router -->
+        <mxCell id="4" value="🛣️ Router + Middleware" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1c4e9;strokeColor=#512da8;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="560" y="60" width="180" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Controller Moderno -->
+        <mxCell id="5" value="🎮 Controladores API (Auth, Vehicle, Reserva)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="780" y="60" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Servicios -->
+        <mxCell id="6" value="⚙️ Servicios (AuthService, ReservaService...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="780" y="160" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Model -->
+        <mxCell id="7" value="📊 Modelos (Vehículo, Reserva, Usuario...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffecb3;strokeColor=#ffa000;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="780" y="260" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Base de Datos -->
+        <mxCell id="8" value="🗄️ Base de Datos MySQL<br/>INFO1170_..." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#c2185b;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="780" y="360" width="260" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Sistema Legacy -->
+        <mxCell id="9" value="🏛️ Sistema Legacy (procesar_*.php + vistas)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;fontSize=13;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="360" y="260" width="370" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Conexiones -->
+        <mxCell id="10" style="endArrow=block;html=1;strokeColor=#000000;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" style="endArrow=block;html=1;strokeColor=#000000;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" style="endArrow=block;html=1;strokeColor=#000000;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" style="endArrow=block;html=1;strokeColor=#000000;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" style="endArrow=block;html=1;strokeColor=#000000;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" style="endArrow=block;html=1;strokeColor=#000000;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" style="endArrow=block;html=1;dashed=1;strokeColor=#7b1fa2;" edge="1" parent="1" source="6" target="9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" style="endArrow=block;html=1;dashed=1;strokeColor=#7b1fa2;" edge="1" parent="1" source="9" target="8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
