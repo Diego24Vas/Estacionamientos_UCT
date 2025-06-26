@@ -26,39 +26,72 @@ redirect_if_not_authenticated();
         }
         .container {
             padding: 20px 15px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
+        
+        .container h2 {
+            color: #212529;
+            font-weight: 700;
+        }
+        
+        .modo-oscuro .container h2 {
+            color: #ffffff;
+        }
+        
         .alert {
-            margin-bottom: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
         .dashboard {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 20px;
+            margin-bottom: 30px;
         }
+        
         .dashboard-card {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            width: 48%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #ffffff;
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
+        
         .dashboard-card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f8f9fa;
         }
-        .dashboard-card .card-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        
+        /* Modo oscuro para tarjetas de gráficos */
+        .modo-oscuro .dashboard-card {
+            background: #2d3748;
+            border-color: #4a5568;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
+        
+        .modo-oscuro .dashboard-card h2 {
+            color: #ffffff;
+            border-bottom-color: #4a5568;
+        }
+        
         .table-card {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #ffffff;
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             margin-top: 20px;
+        }
+        
+        .modo-oscuro .table-card {
+            background: #2d3748;
+            border-color: #4a5568;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         .actions {
             display: flex;
@@ -71,29 +104,126 @@ redirect_if_not_authenticated();
             margin-top: 20px;
         }
 
-        /* Estilo adicional */
-        .stat-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        /* Estilos modernos para las tarjetas de estadísticas */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
-        .stat-card .stat-content {
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+        }
+
+        .stat-card .stat-header {
             display: flex;
+            align-items: flex-start;
             justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-card .stat-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .stat-card .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            display: flex;
             align-items: center;
-            width: 100%;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
         }
-        .stat-card .stat-content div {
-            font-size: 1.2rem;
-            font-weight: bold;
+
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #212529;
+            margin: 8px 0;
+            line-height: 1.2;
         }
-        .stat-card .stat-content .value {
-            color: #007bff;
+
+        .stat-card .stat-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        /* Modo oscuro para las tarjetas */
+        .modo-oscuro .stat-card {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+
+        .modo-oscuro .stat-card .stat-title {
+            color: #a0aec0;
+        }
+
+        .modo-oscuro .stat-card .stat-value {
+            color: #ffffff;
+        }
+
+        .modo-oscuro .stat-card .stat-label {
+            color: #a0aec0;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .stat-card .stat-value {
+                font-size: 1.75rem;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 15px 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stat-card .stat-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            
+            .stat-card .stat-icon {
+                align-self: flex-end;
+            }
         }
     </style>
 </head>
@@ -102,19 +232,30 @@ redirect_if_not_authenticated();
     <div class="container">
         <h2 class="mb-4 text-center">Estadísticas de Estacionamiento</h2>
 
-        <div class="dashboard">
-            <!-- Contenedor combinado para "Máximo de Ocupación Diaria" y "Promedio Diario de Movimientos" -->
-            <div class="dashboard-card">
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <div>Máximo de Ocupación Diaria</div>
-                        <div class="value"><?= isset($max_ocupacion['ocupacion']) ? $max_ocupacion['ocupacion'] : 0 ?> vehículos</div>
+        <!-- Tarjetas de estadísticas principales -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <h3 class="stat-title">Máximo de Ocupación Diaria</h3>
+                        <div class="stat-value"><?= isset($max_ocupacion['ocupacion']) ? $max_ocupacion['ocupacion'] : 0 ?></div>
+                        <p class="stat-label">vehículos</p>
+                    </div>
+                    <div class="stat-icon">
+                        🚗
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <div>Promedio Diario de Movimientos</div>
-                        <div class="value"><?= isset($promedio_movimientos) ? number_format($promedio_movimientos, 2) : '0.00' ?> vehículos</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <h3 class="stat-title">Promedio Diario de Movimientos</h3>
+                        <div class="stat-value"><?= isset($promedio_movimientos) ? number_format($promedio_movimientos, 2) : '0.00' ?></div>
+                        <p class="stat-label">vehículos promedio</p>
+                    </div>
+                    <div class="stat-icon">
+                        📊
                     </div>
                 </div>
             </div>

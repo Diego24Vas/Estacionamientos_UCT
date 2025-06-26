@@ -77,7 +77,6 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="<?php echo BASE_URL; ?>/estructura/img/logo.png" alt="Logo Universidad" class="sidebar-logo">
-            <h2>Gestión Estacionamiento</h2>
         </div>
         <ul class="sidebar-menu">
             <li>
