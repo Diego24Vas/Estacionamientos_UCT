@@ -250,7 +250,7 @@ body.modo-oscuro {
 }
 
 .sidebar-menu li {
-    margin: 20px 0;
+    margin: 15px 0;
     text-align: left;
 }
 
@@ -258,27 +258,84 @@ body.modo-oscuro {
     color: white;
     text-decoration: none;
     font-size: 1rem;
-    padding: 10px 20px;
+    font-weight: 500;
+    padding: 12px 20px;
     display: flex;
     align-items: center;
-    transition: background 0.3s ease;
+    border-radius: 8px;
+    margin: 12px 8px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-menu a:hover {
-    background-color: #0249a0;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
     color: #fff;
 }
 
+/* Efecto de botón activo/seleccionado */
+.sidebar-menu a.active {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-left: 4px solid #ffc107;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: translateX(4px);
+}
+
+.sidebar-menu a.active .menu-icon {
+    color: #ffc107;
+    opacity: 1;
+}
+
+/* Botón especial de modo oscuro */
+.sidebar-menu .btn-dark-mode {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    margin: 12px 8px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    width: calc(100% - 16px);
+}
+
+.sidebar-menu .btn-dark-mode:hover {
+    background: rgba(255, 193, 7, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 193, 7, 0.3);
+    color: #ffc107;
+}
+
 .menu-icon {
-    font-size: 20px;
+    font-size: 18px;
     margin-right: 15px;
+    width: 20px;
+    text-align: center;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-menu a:hover .menu-icon {
+    opacity: 1;
 }
 
 /* Main Content */
 .main-content {
     margin-left: 250px; /* Same width as the sidebar */
     padding: 20px;
-    background: linear-gradient(to bottom, #93ceef, #c8d5e2);
+    background: linear-gradient(to bottom, #85C1E9, #c8d5e2);
     min-height: 100vh;
 }
 

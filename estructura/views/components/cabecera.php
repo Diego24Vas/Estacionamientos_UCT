@@ -75,6 +75,11 @@ $(document).ready(function() {
 });
 </script>
 
+<?php
+// Obtener el nombre del archivo actual para marcar el menú activo
+$current_page = basename($_SERVER['PHP_SELF']);
+?>
+
 </head>
 <body style="background-color: #e9f7fd;">
     <!-- Sidebar -->
@@ -84,36 +89,36 @@ $(document).ready(function() {
         </div>
         <ul class="sidebar-menu">
             <li>
-                <a href="<?php echo BASE_URL; ?>/estructura/views/pag_inicio.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/pag_inicio.php" <?php echo ($current_page == 'pag_inicio.php') ? 'class="active"' : ''; ?>>
                     <i class="fas fa-home menu-icon"></i> Inicio
                 </a>
             </li>
             <li>
-                <a href="<?php echo BASE_URL; ?>/estructura/views/registro_vehiculos.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/registro_vehiculos.php" <?php echo ($current_page == 'registro_vehiculos.php') ? 'class="active"' : ''; ?>>
                     <i class="fas fa-car menu-icon"></i> Registro de Vehículos
                 </a>
             </li>            <li>
-                <a href="<?php echo BASE_URL; ?>/estructura/views/modificar_registros_simple.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/modificar_registros_simple.php" <?php echo ($current_page == 'modificar_registros_simple.php') ? 'class="active"' : ''; ?>>
                     <i class="fas fa-edit menu-icon"></i> Modificar Registros
                 </a>
             </li>
             <li>
-                <a href="<?php echo BASE_URL; ?>/estructura/views/ver_historial_vehiculos.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/ver_historial_vehiculos.php" <?php echo ($current_page == 'ver_historial_vehiculos.php') ? 'class="active"' : ''; ?>>
                     <i class="fas fa-history menu-icon"></i> Ver Historial
                 </a>
             </li>
             <li>
-                <a href="<?php echo BASE_URL; ?>/estructura/views/estadisticas.php">
+                <a href="<?php echo BASE_URL; ?>/estructura/views/estadisticas.php" <?php echo ($current_page == 'estadisticas.php') ? 'class="active"' : ''; ?>>
                     <i class="fas fa-chart-bar menu-icon"></i> Estadísticas
                 </a>
             </li>
-            <li>                <a href="<?php echo BASE_URL; ?>/estructura/views/reservas_simple.php">
+            <li>                <a href="<?php echo BASE_URL; ?>/estructura/views/reservas_simple.php" <?php echo ($current_page == 'reservas_simple.php') ? 'class="active"' : ''; ?>>
                     <i class="fas fa-calendar-check menu-icon"></i> Reservas
                 </a>
             </li>
             <!-- Botón de Modo Oscuro -->
             <li>
-                <button id="modoOscuroBtn" class="btn btn-dark-mode" style="width:90%;margin:0 5%;display:flex;align-items:center;gap:10px;justify-content:left;background:none;border:none;color:white;font-size:1rem;padding:10px 20px;cursor:pointer;">
+                <button id="modoOscuroBtn" class="btn-dark-mode">
                     <i class="fas fa-moon"></i> <span id="modoOscuroTexto">Modo Oscuro</span>
                 </button>
             </li>            <li>
