@@ -6,7 +6,7 @@ require_once dirname(__DIR__) . '/services/session_manager.php';
 redirect_if_not_authenticated();
 
 require_once CONFIG_PATH . '/conex.php';
-session_start();
+// Remover session_start() duplicado ya que session_manager.php ya maneja las sesiones
 
 include(VIEWS_PATH . '/components/cabecera.php'); 
 

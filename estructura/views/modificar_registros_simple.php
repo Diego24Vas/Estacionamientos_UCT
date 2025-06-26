@@ -7,7 +7,6 @@ require_once dirname(__DIR__) . '/services/session_manager.php';
 redirect_if_not_authenticated();
 
 require_once CONFIG_PATH . '/conex.php';
-session_start();
 
 // Procesar edición de vehículo
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'editar_vehiculo') {
@@ -433,9 +432,19 @@ document.getElementById('reserva_patente').addEventListener('input', function(e)
     e.target.value = e.target.value.toUpperCase();
 });
 
-// Auto-cerrar alertas después de 5 segundos
+// Auto-cerrar alertas después de 5 segundos con verificación de jQuery
 setTimeout(function() {
-    $('.alert').fadeOut('slow');
+    if (typeof $ !== 'undefined' && $.fn.fadeOut) {
+        $('.alert').fadeOut('slow');
+    } else {
+        // Fallback sin jQuery
+        document.querySelectorAll('.alert').forEach(function(alert) {
+            alert.style.opacity = '0';
+            setTimeout(function() {
+                alert.style.display = 'none';
+            }, 1000);
+        });
+    }
 }, 5000);
 </script>
 

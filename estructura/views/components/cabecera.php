@@ -7,28 +7,31 @@
     <!-- Font Awesome para íconos -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-    <!-- Archivo CSS de estilos personalizados -->
-    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>/stylesnew.css">
-    <!-- FullCalendar CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet">
-
-    <!-- FullCalendar JS -->
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.js"></script>
-
     <!-- Bootstrap CSS desde CDN -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- jQuery desde CDN -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- jQuery COMPLETO (no slim) desde CDN - DEBE IR ANTES DE FullCalendar -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <!-- Moment.js para FullCalendar -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+
+    <!-- FullCalendar CSS y JS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.js"></script>
 
     <!-- Bootstrap JS desde CDN -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Archivo CSS de estilos personalizados -->
+    <link rel="stylesheet" href="<?php echo CSS_PATH; ?>/stylesnew.css">
+
     <title>Gestión de Estacionamiento - Universidad</title>
+    
 <script>
-    $(document).ready(function() {
-        // Inicializar el calendario
+$(document).ready(function() {
+    // Inicializar el calendario solo si el elemento existe
+    if ($('#calendar').length) {
         $('#calendar').fullCalendar({
             defaultView: 'month',
             events: [
@@ -36,39 +39,40 @@
                     title: 'Evento de prueba',
                     start: '2024-11-25',
                     end: '2024-11-26',
-                    color: '#f44336', // Color del evento
+                    color: '#f44336',
                 },
                 {
                     title: 'Mantenimiento programado',
                     start: '2024-12-05',
-                    color: '#ff9800', // Otro color
+                    color: '#ff9800',
                 }
             ]
         });
-        
-        // Verificar estado de autenticación cada 5 minutos
-        function verificarAutenticacion() {
-            $.ajax({
-                url: '<?php echo BASE_URL; ?>/estructura/controllers/verificar_autenticacion.php',
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    if (!data.authenticated) {
-                        console.log('Sesión expirada o no válida. Redirigiendo...');
-                        window.location.href = '<?php echo BASE_URL; ?>/estructura/views/inicio.php';
-                    } else {
-                        console.log('Sesión activa:', data.user.nombre);
-                    }
-                },
-                error: function() {
-                    console.error('Error al verificar autenticación');
+    }
+    
+    // Verificar estado de autenticación cada 5 minutos
+    function verificarAutenticacion() {
+        $.ajax({
+            url: '<?php echo BASE_URL; ?>/estructura/controllers/verificar_autenticacion.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                if (!data.authenticated) {
+                    console.log('Sesión expirada o no válida. Redirigiendo...');
+                    window.location.href = '<?php echo BASE_URL; ?>/estructura/views/inicio.php';
+                } else {
+                    console.log('Sesión activa:', data.user.nombre);
                 }
-            });
-        }
-        
-        // Verificar autenticación cada 5 minutos (300000 ms)
-        setInterval(verificarAutenticacion, 300000);
-    });
+            },
+            error: function() {
+                console.error('Error al verificar autenticación');
+            }
+        });
+    }
+    
+    // Verificar autenticación cada 5 minutos (300000 ms)
+    setInterval(verificarAutenticacion, 300000);
+});
 </script>
 
 </head>
