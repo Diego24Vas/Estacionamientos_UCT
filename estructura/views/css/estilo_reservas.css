@@ -51,3 +51,86 @@
     font-size: 0.9rem;
     color: #6c757d;
 }
+
+/* Estilos para modo oscuro en página de reservas */
+.modo-oscuro .card {
+    background: #23272b !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modo-oscuro .container h2 {
+    color: #4dabf7 !important;
+}
+
+.modo-oscuro .form-label {
+    color: #fff !important;
+}
+
+.modo-oscuro .form-control {
+    background: #23272b !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+}
+
+.modo-oscuro .form-control:focus {
+    background: #23272b !important;
+    color: #fff !important;
+    border-color: #0366d6 !important;
+    box-shadow: 0 0 0 0.2rem rgba(3, 102, 214, 0.25) !important;
+}
+
+.modo-oscuro .card h4 {
+    color: #4dabf7 !important;
+}
+
+.modo-oscuro #recordatorios {
+    color: #fff !important;
+}
+
+.modo-oscuro .text-muted {
+    color: #aaa !important;
+}
+
+.modo-oscuro .card-reserva {
+    background: #23272b !important;
+    color: #fff !important;
+    border: 1px solid #0366d6 !important;
+}
+
+.modo-oscuro .card-reserva:hover {
+    box-shadow: 0 4px 8px rgba(3, 102, 214, 0.3) !important;
+}
+
+.modo-oscuro .alert-info {
+    background: #1a4480 !important;
+    color: #fff !important;
+    border-color: #0366d6 !important;
+}
+
+.modo-oscuro strong {
+    color: #fff !important;
+}
+
+.modo-oscuro .form-text {
+    color: #aaa !important;
+}
+
+/* Estilos para select en modo oscuro */
+.modo-oscuro select.form-control option {
+    background: #23272b !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .validation-success {
+    color: #28a745 !important;
+}
+
+.modo-oscuro .validation-error {
+    color: #dc3545 !important;
+}
+
+.modo-oscuro .validation-warning {
+    color: #ffc107 !important;
+}

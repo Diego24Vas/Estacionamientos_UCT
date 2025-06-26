@@ -33,6 +33,7 @@ include(VIEWS_PATH . '/components/cabecera.php');
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="<?php echo $viewHelper->url('css/estilo_reservas.css'); ?>" rel="stylesheet">
+    <link href="<?php echo $viewHelper->url('css/stylesnew.css'); ?>" rel="stylesheet">
     <title>Gestión de Reservas</title>
     <style>
         .validation-success { color: #28a745; }
@@ -83,6 +84,27 @@ include(VIEWS_PATH . '/components/cabecera.php');
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+        }
+        
+        /* Estilos adicionales para modo oscuro */
+        .modo-oscuro .card-reserva:hover {
+            box-shadow: 0 4px 8px rgba(3,102,214,0.3) !important;
+        }
+        
+        .modo-oscuro .availability-indicator.checking {
+            color: #aaa !important;
+        }
+        
+        .modo-oscuro .availability-indicator.available {
+            color: #28a745 !important;
+        }
+        
+        .modo-oscuro .availability-indicator.full {
+            color: #dc3545 !important;
+        }
+        
+        .modo-oscuro .availability-indicator.error {
+            color: #ffc107 !important;
         }
     </style>
 </head>

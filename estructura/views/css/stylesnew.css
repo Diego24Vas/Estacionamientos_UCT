@@ -288,3 +288,259 @@ body.modo-oscuro {
     padding: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+/* Estilos específicos para modo oscuro en reservas */
+.modo-oscuro .card {
+    background: #23272b !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+.modo-oscuro .card-reserva {
+    background: #23272b !important;
+    color: #fff !important;
+    border-color: #0366d6 !important;
+}
+
+.modo-oscuro .card-header {
+    background: #333 !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+.modo-oscuro .text-muted {
+    color: #aaa !important;
+}
+
+.modo-oscuro .text-center {
+    color: #fff !important;
+}
+
+.modo-oscuro .badge {
+    background: #444 !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .badge.bg-primary {
+    background: #0366d6 !important;
+}
+
+.modo-oscuro .badge.bg-success {
+    background: #28a745 !important;
+}
+
+.modo-oscuro .badge.bg-warning {
+    background: #ffc107 !important;
+    color: #000 !important;
+}
+
+.modo-oscuro .badge.bg-info {
+    background: #17a2b8 !important;
+}
+
+.modo-oscuro .badge.bg-secondary {
+    background: #6c757d !important;
+}
+
+.modo-oscuro h1,
+.modo-oscuro h2,
+.modo-oscuro h3,
+.modo-oscuro h4,
+.modo-oscuro h5,
+.modo-oscuro h6 {
+    color: #fff !important;
+}
+
+.modo-oscuro .small,
+.modo-oscuro small {
+    color: #ccc !important;
+}
+
+.modo-oscuro .fas,
+.modo-oscuro .fa {
+    color: inherit !important;
+}
+
+.modo-oscuro .text-primary {
+    color: #4dabf7 !important;
+}
+
+.modo-oscuro .btn-primary {
+    background-color: #0366d6 !important;
+    border-color: #0366d6 !important;
+}
+
+.modo-oscuro .btn-warning {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #000 !important;
+}
+
+.modo-oscuro .btn-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.modo-oscuro .btn-sm {
+    color: inherit !important;
+}
+
+.modo-oscuro .modal-content {
+    background: #23272b !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .modal-header {
+    background: #333 !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+.modo-oscuro .modal-body {
+    background: #23272b !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .form-label {
+    color: #fff !important;
+}
+
+.modo-oscuro .form-text {
+    color: #aaa !important;
+}
+
+/* Estilos específicos para tablas en modo oscuro */
+.modo-oscuro .table-responsive {
+    background: #23272b !important;
+    border-radius: 8px;
+}
+
+.modo-oscuro .table-striped > tbody > tr:nth-of-type(odd) > td {
+    background-color: #2a2e33 !important;
+}
+
+.modo-oscuro .table-striped > tbody > tr:nth-of-type(even) > td {
+    background-color: #23272b !important;
+}
+
+.modo-oscuro .table-hover tbody tr:hover {
+    background-color: #333 !important;
+}
+
+.modo-oscuro .table thead th {
+    background-color: #333 !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+.modo-oscuro .table-responsive .table {
+    background: transparent !important;
+}
+
+.modo-oscuro .nav-tabs {
+    border-color: #444 !important;
+}
+
+.modo-oscuro .nav-tabs .nav-link {
+    background: #23272b !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+.modo-oscuro .nav-tabs .nav-link:hover {
+    background: #333 !important;
+    color: #fff !important;
+    border-color: #444 !important;
+}
+
+.modo-oscuro .nav-tabs .nav-link.active {
+    background: #0366d6 !important;
+    color: #fff !important;
+    border-color: #0366d6 !important;
+}
+
+.modo-oscuro .tab-content {
+    background: #23272b !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .btn-sm {
+    border: 1px solid transparent;
+}
+
+.modo-oscuro .btn-warning.btn-sm {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #000 !important;
+}
+
+.modo-oscuro .btn-danger.btn-sm {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .btn-primary.btn-sm {
+    background-color: #0366d6 !important;
+    border-color: #0366d6 !important;
+    color: #fff !important;
+}
+
+/* Estilos adicionales para garantizar visibilidad en modo oscuro */
+.modo-oscuro * {
+    border-color: #444 !important;
+}
+
+.modo-oscuro p,
+.modo-oscuro span,
+.modo-oscuro div,
+.modo-oscuro li,
+.modo-oscuro td,
+.modo-oscuro th {
+    color: #fff !important;
+}
+
+.modo-oscuro .text-dark {
+    color: #fff !important;
+}
+
+.modo-oscuro .bg-white {
+    background: #23272b !important;
+    color: #fff !important;
+}
+
+.modo-oscuro .shadow {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.4) !important;
+}
+
+.modo-oscuro .rounded {
+    background: #23272b !important;
+}
+
+.modo-oscuro .text-success {
+    color: #28a745 !important;
+}
+
+.modo-oscuro .text-danger {
+    color: #dc3545 !important;
+}
+
+.modo-oscuro .text-info {
+    color: #17a2b8 !important;
+}
+
+.modo-oscuro .text-warning {
+    color: #ffc107 !important;
+}
+
+.modo-oscuro .text-secondary {
+    color: #6c757d !important;
+}
+
+.modo-oscuro .btn-close {
+    filter: invert(1);
+}
+
+.modo-oscuro .spinner-border {
+    color: #4dabf7 !important;
+}
